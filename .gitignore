@@ -1,0 +1,14 @@
+# Environment variables
+.env
+
+# Node.js dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+
+# OS files
+.DS_Store
+
+# WebStorm IDE settings
+.idea/
