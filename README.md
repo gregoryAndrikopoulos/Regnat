@@ -2,7 +2,7 @@
 
 ## Overview
 This project is a structured WebdriverIO v8 test automation setup for testing an existing website.  
-It includes functional, cross-browser, and mobile testing using WebdriverIO with Mocha, with all dependencies installed locally within the project.
+It currently includes functional testing using WebdriverIO with Mocha.
 
 ## Technologies Used
 - **WebdriverIO v8** – Automation testing framework.
