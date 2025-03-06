@@ -2,6 +2,7 @@
   "name": "webdriverio-mocha-suite",
   "version": "1.0.0",
   "description": "Structured WebdriverIO v8 test automation setup using Mocha, with local dependencies and support for functional, cross-browser, and mobile testing.",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test:local": "npx wdio run ./conf/wdio/wdio.conf.js"
@@ -11,9 +12,9 @@
   "license": "ISC",
   "devDependencies": {
     "@wdio/cli": "8.38.1",
+    "@wdio/globals": "8.38.0",
     "@wdio/local-runner": "8.38.0",
     "@wdio/mocha-framework": "8.38.0",
     "@wdio/spec-reporter": "8.38.0"
   }
 }
-
