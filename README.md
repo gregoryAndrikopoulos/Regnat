@@ -1,8 +1,14 @@
-# WebdriverIO Mocha Suite
+# automationexercise-wdio-tests
 
 ## Overview
 This project is a structured WebdriverIO v9 test automation setup for testing an existing website.  
-It currently includes functional testing using WebdriverIO with Mocha.
+
+---
+
+### Website Under Test
+Website under test: [automationexercise](https://www.automationexercise.com/)
+
+---
 
 ## Technologies Used
 - **WebdriverIO v9** – Automation testing framework.
@@ -10,16 +16,22 @@ It currently includes functional testing using WebdriverIO with Mocha.
 - **Node.js** – JavaScript runtime environment.
 - **Chromedriver Service** – For local browser testing.
 
+---
+
 ## Installation and Setup
 
 ### Prerequisites
 - Node.js v18+
 - pnpm v10+
 
+---
+
 ### Install Dependencies
 ```bash 
 pnpm install
 ```
+
+---
 
 ## Running Tests
 

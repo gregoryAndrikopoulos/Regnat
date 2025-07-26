@@ -1,7 +1,7 @@
 {
-  "name": "webdriverio-mocha-suite",
+  "name": "automationexercise-wdio-tests",
   "version": "1.0.0",
-  "description": "Structured WebdriverIO v9 test automation setup using Mocha, with local dependencies and support for functional testing.",
+  "description": "This project is a structured WebdriverIO v9 test automation setup for testing an existing website.",
   "type": "module",
   "main": "index.js",
   "scripts": {
