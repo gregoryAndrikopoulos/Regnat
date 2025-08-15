@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test:local": "wdio run wdio/wdio.conf.js"
+    "test:local": "wdio run config/wdio.conf.js"
   },
   "keywords": ["webdriverio", "mocha", "automation", "testing", "web"],
   "author": "",

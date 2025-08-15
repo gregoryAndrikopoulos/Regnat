@@ -21,7 +21,7 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        '../specs/**/*.spec.js'
+        '../test/**/*.spec.js'
     ],
     // Patterns to exclude.
     exclude: [
@@ -38,7 +38,7 @@ export const config = {
     //
     // First, you can define how many instances should be started at the same time. Let's
     // say you have 3 different capabilities (Chrome, Firefox, and Safari) and you have
-    // set maxInstances to 1; wdio will spawn 3 processes. Therefore, if you have 10 spec
+    // set maxInstances to 1; config will spawn 3 processes. Therefore, if you have 10 spec
     // files and you set maxInstances to 10, all spec files will get tested at the same time
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
@@ -65,15 +65,15 @@ export const config = {
     // Set specific log levels per logger
     // loggers:
     // - webdriver, webdriverio
-    // - @wdio/browserstack-service, @wdio/lighthouse-service, @wdio/sauce-service
-    // - @wdio/mocha-framework, @wdio/jasmine-framework
-    // - @wdio/local-runner
-    // - @wdio/sumologic-reporter
-    // - @wdio/cli, @wdio/config, @wdio/utils
+    // - @config/browserstack-service, @config/lighthouse-service, @config/sauce-service
+    // - @config/mocha-framework, @config/jasmine-framework
+    // - @config/local-runner
+    // - @config/sumologic-reporter
+    // - @config/cli, @config/config, @config/utils
     // Level of logging verbosity: trace | debug | info | warn | error | silent
     // logLevels: {
     //     webdriver: 'info',
-    //     '@wdio/appium-service': 'info'
+    //     '@config/appium-service': 'info'
     // },
     //
     // If you only want to run your tests until a specific amount of tests have failed use
@@ -106,7 +106,7 @@ export const config = {
     // The following are supported: Mocha, Jasmine, and Cucumber
     // see also: https://webdriver.io/docs/frameworks
     //
-    // Make sure you have the wdio adapter package for the specific framework installed
+    // Make sure you have the config adapter package for the specific framework installed
     // before running any tests.
     framework: 'mocha',
     
@@ -142,7 +142,7 @@ export const config = {
     // resolved to continue.
     /**
      * Gets executed once before all workers get launched.
-     * @param {object} config wdio configuration object
+     * @param {object} config config configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
     // onPrepare: function (config, capabilities) {
@@ -170,7 +170,7 @@ export const config = {
     /**
      * Gets executed just before initialising the webdriver session and test framework. It allows you
      * to manipulate configurations depending on the capability or spec.
-     * @param {object} config wdio configuration object
+     * @param {object} config config configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs List of spec file paths that are to be run
      * @param {string} cid worker id (e.g. 0-0)
@@ -256,7 +256,7 @@ export const config = {
     // },
     /**
      * Gets executed right after terminating the webdriver session.
-     * @param {object} config wdio configuration object
+     * @param {object} config config configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs List of spec file paths that ran
      */
@@ -266,7 +266,7 @@ export const config = {
      * Gets executed after all workers got shut down and the process is about to exit. An error
      * thrown in the onComplete hook will result in the test run failing.
      * @param {object} exitCode 0 - success, 1 - fail
-     * @param {object} config wdio configuration object
+     * @param {object} config config configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
