@@ -43,7 +43,7 @@ export const config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: process.env.CI ? 1 : 5,
+    maxInstances: 5,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -52,14 +52,12 @@ export const config = {
     capabilities: [{
         browserName: 'chrome',
         'goog:chromeOptions': {
-            args: [
-                '--headless=new',
-                '--no-sandbox',
-                '--disable-dev-shm-usage',
-                // unique profile per worker to avoid "user data dir in use"
-                `--user-data-dir=/tmp/chrome-profile-${process.env.WDIO_WORKER_ID || process.pid}`,
-            ]
-        },
+            // Local: no flags (headed, what worked for you).
+            // CI: headless + safe flags (common in GitHub Actions runners).
+            args: process.env.CI
+              ? ['--headless=new', '--no-sandbox', '--disable-dev-shm-usage']
+              : []
+        }
     }],
 
     //
