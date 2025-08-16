@@ -43,14 +43,23 @@ export const config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    maxInstances: process.env.CI ? 1 : 5,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-        browserName: 'chrome'
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+            args: [
+                '--headless=new',
+                '--no-sandbox',
+                '--disable-dev-shm-usage',
+                // unique profile per worker to avoid "user data dir in use"
+                `--user-data-dir=/tmp/chrome-profile-${process.env.WDIO_WORKER_ID || process.pid}`,
+            ]
+        },
     }],
 
     //
