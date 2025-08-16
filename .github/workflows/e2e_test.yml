@@ -1,0 +1,50 @@
+name: e2e Test
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.14.0'
+
+      - name: 🧰 Setup pnpm
+        run: npm install -g pnpm
+
+      - name: 🗃️ Cache pnpm package store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: ⚙️ Install dependencies
+        run: pnpm install
+
+      - name: 🧪 Run e2e Test
+        env:
+          CI: true
+          FORCE_COLOR: '3'
+        run: pnpm test:ci
+
+      - name: 📎 Upload logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wdio-logs
+          path: |
+            logs/**
+            reports/**
+            allure-results/**
+          if-no-files-found: ignore

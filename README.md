@@ -10,6 +10,11 @@ Website under test: [automationexercise](https://www.automationexercise.com/)
 
 ---
 
+## Workflow Status
+[![Functional Tests](https://github.com/gregoryAndrikopoulos/automationexercise-wdio-tests/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/automationexercise-wdio-tests/actions/workflows/e2e_test.yml)
+
+---
+
 ## Technologies Used
 - **WebdriverIO v9** – Automation testing framework.
 - **Mocha** – Test framework for writing and executing tests.

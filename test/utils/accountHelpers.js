@@ -2,6 +2,7 @@ import HomePage from '../../page-objects/HomePage.js';
 import SignupLoginPage from '../../page-objects/SignupLoginPage.js';
 import RegistrationPage from '../../page-objects/RegistrationPage.js';
 import ConfirmationPage from '../../page-objects/ConfirmationPage.js';
+import { LONG_TIMEOUT } from "../../utils/testConstants.js";
 import { buildAddress } from './dataTemplates.js';
 
 export async function loginOrRegister({ name, email, password }) {
@@ -19,7 +20,7 @@ export async function loginOrRegister({ name, email, password }) {
       (await HomePage.loggedInBanner.isDisplayed().catch(() => false)) ||
       (await SignupLoginPage.loginError?.isDisplayed().catch(() => false)) ||
       (await SignupLoginPage.signupNameInput.isDisplayed().catch(() => false)),
-    { timeout: 5000, interval: 200 }
+    { timeout: LONG_TIMEOUT, interval: 200 }
   );
 
   const loggedIn = await HomePage.loggedInBanner.isDisplayed().catch(() => false);
