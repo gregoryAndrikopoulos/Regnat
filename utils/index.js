@@ -1,5 +1,5 @@
-import ConsentPage from "../page-objects/ConsentPage.js";
-import {DEFAULT_TIMEOUT, SHORT_TIMEOUT, HOMEPAGE_LINK} from './testConstants.js';
+import ConsentPage from '../page-objects/ConsentPage.js';
+import { DEFAULT_TIMEOUT, SHORT_TIMEOUT, HOMEPAGE_LINK } from './testConstants.js';
 
 async function clickElem(elem) {
     await elem.waitForExist({ timeout: DEFAULT_TIMEOUT });

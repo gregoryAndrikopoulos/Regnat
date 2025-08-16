@@ -1,8 +1,9 @@
 import HomePage from '../../../page-objects/HomePage.js';
 import SignupLoginPage from '../../../page-objects/SignupLoginPage.js';
 import RegistrationPage from '../../../page-objects/RegistrationPage.js';
-import { TEST_USER_NAME, TEST_USER_EMAIL, TEST_USER_PASSWORD } from '../../../utils/testConstants.js';
+import { TEST_USER_NAME, TEST_USER_EMAIL_1, TEST_USER_PASSWORD_1 } from '../../../utils/testConstants.js';
 import { goHomeAcceptConsent } from '../../../utils/index.js';
+import { buildAddress } from '../../utils/dataTemplates.js';
 
 describe('Test Case 1: Register User', function () {
   it('Should create and delete an account', async function () {
@@ -13,7 +14,7 @@ describe('Test Case 1: Register User', function () {
     await expect(SignupLoginPage.newUserSignupHeader).toBeDisplayed();
     await expect(SignupLoginPage.newUserSignupHeader).toHaveText(/New User Signup!/i);
 
-    await SignupLoginPage.signupEmailInput.setValue(TEST_USER_EMAIL);
+    await SignupLoginPage.signupEmailInput.setValue(TEST_USER_EMAIL_1);
     await SignupLoginPage.signupNameInput.setValue(TEST_USER_NAME);
     await SignupLoginPage.signupButton.click();
 
@@ -24,23 +25,14 @@ describe('Test Case 1: Register User', function () {
     await expect(RegistrationPage.addressInfoHeader).toHaveText(/Address Information/i);
 
     await expect(RegistrationPage.nameInput).toHaveValue(TEST_USER_NAME);
-    await expect(RegistrationPage.emailInput).toHaveValue(TEST_USER_EMAIL);
+    await expect(RegistrationPage.emailInput).toHaveValue(TEST_USER_EMAIL_1);
 
     await RegistrationPage.selectTitle('Mr');
-    await RegistrationPage.setPasswordAndDob({ password: TEST_USER_PASSWORD, day: '24', month: 'May', year: '1993' });
+    await RegistrationPage.setPasswordAndDob({ password: TEST_USER_PASSWORD_1, day: '24', month: 'May', year: '1993' });
     await RegistrationPage.setPreferenceToggles({ newsletter: true, offers: true });
-    await RegistrationPage.fillAddressInfo({
-      firstName: 'Gregory',
-      lastName: 'Tester',
-      company: 'Best Company Ever',
-      address: '123 Main St',
-      address2: 'Unit 4',
-      country: 'United States',
-      state: 'IL',
-      city: 'Chicago',
-      zipcode: '60601',
-      mobile: '+14155550123',
-    });
+    await expect(RegistrationPage.newsletterCheckbox).toBeSelected();
+    await expect(RegistrationPage.offersCheckbox).toBeSelected();
+    await RegistrationPage.fillAddressInfo(buildAddress());
     await RegistrationPage.submit();
 
     await expect(HomePage.statusHeader).toBeDisplayed();

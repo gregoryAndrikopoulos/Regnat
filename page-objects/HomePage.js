@@ -15,6 +15,7 @@ class HomePage {
   get deleteAccountMenuLink() { return $('header .nav a[href="/delete_account"]'); }
   get loggedInBanner() { return $('header*=Logged in as'); }
   get loggedInUsername() { return this.loggedInBanner.$('b'); }
+  get logoutMenuLink() { return $('header .nav a[href="/logout"]'); }
   get homeNavActive() { return $('header .shop-menu a[href="/"][style*="color: orange"]'); }
   get heroCarousel() { return $('#slider-carousel'); }
   get featuresTitle() { return $('.features_items h2.title'); }
@@ -26,13 +27,12 @@ class HomePage {
 
   /* ----------------------------------------------- ACTION METHODS ----------------------------------------------- */
 
-  async assertHomePageVisible() {
+  async commonHomePageAssertions() {
     await expect(browser).toHaveUrl(HOMEPAGE_LINK);
     await expect(this.logo).toBeDisplayed();
     await expect(this.homeMenuLink).toBeDisplayed();
     await expect(this.productsMenuLink).toBeDisplayed();
     await expect(this.cartMenuLink).toBeDisplayed();
-    await expect(this.signupLoginLink).toBeDisplayed();
     await expect(this.testCasesMenuLink).toBeDisplayed();
     await expect(this.apiTestingMenuLink).toBeDisplayed();
     await expect(this.videoTutorialsMenuLink).toBeDisplayed();
@@ -48,6 +48,15 @@ class HomePage {
     await expect(this.brandsTitle).toHaveText(/Brands/i);
     await expect(this.recommendedItemsTitle).toBeDisplayed();
     await expect(this.recommendedItemsTitle).toHaveText(/Recommended Items/i);
+  }
+
+  async assertHomePageVisible() {
+    await this.commonHomePageAssertions();
+    await expect(this.signupLoginLink).toBeDisplayed();
+  }
+
+  async assertHomePageVisiblePostLogin() {
+    await this.commonHomePageAssertions();
   }
 }
 
