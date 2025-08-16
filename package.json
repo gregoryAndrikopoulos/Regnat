@@ -5,9 +5,18 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test:local": "wdio run config/wdio.conf.js"
+    "test:local": "wdio run config/wdio.conf.js",
+    "test:ci": "wdio run config/wdio.conf.js --spec test/e2e/**/*.spec.js"
   },
-  "keywords": ["webdriverio", "mocha", "automation", "testing", "web"],
+  "keywords": [
+    "webdriverio",
+    "mocha",
+    "e2e",
+    "test automation",
+    "ci/cd",
+    "github actions",
+    "web"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
