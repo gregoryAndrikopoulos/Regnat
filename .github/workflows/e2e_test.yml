@@ -35,6 +35,7 @@ jobs:
       - name: 🧪 Run e2e Test
         env:
           CI: true
+          FORCE_COLOR: '3'
         run: pnpm test:ci
 
       - name: 📎 Upload logs (on failure)
