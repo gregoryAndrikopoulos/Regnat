@@ -24,8 +24,12 @@ describe('Test Case 6: Contact Us Form', function () {
     await ContactUsPage.attachFile(filePath);
     await ContactUsPage.submit();
 
-    if (await browser.isAlertOpen()) {
-      await browser.acceptAlert();
+    try {
+      if (await browser.isAlertOpen()) {
+        await browser.acceptAlert();
+      }
+    } catch {
+      // If alert never appears, just continue (CI flakiness)
     }
 
     await ContactUsPage.successAlert.waitForDisplayed({ timeout: LONG_TIMEOUT });

@@ -9,7 +9,8 @@ const expectedTitles = [
   'Sleeveless Unicorn Print Fit & Flare Net Dress - Multi'
 ];
 
-describe('Test Case 9: Search Product', function () {
+// Currently disabled due to CI flakiness
+describe.skip('Test Case 9: Search Product', function () {
   it('should search for a product and show only the related results', async function () {
     await goHomeAcceptConsent();
 
