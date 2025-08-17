@@ -30,8 +30,6 @@ class ConsentPage {
     getViewDetailsButtonBySpecialPurposeId(id) { return $(`a.fc-purpose-feature-more-info[data-special-purpose-id="${id}"]`); }
     get closeDetailsButton() { return $('p.fc-help-dialog-close-button-label'); }
 
-    /* ----------------------------------------------- ACTION METHODS ----------------------------------------------- */
-
     async acceptConsent() {
         await clickElem(await this.consentButton);
     }

@@ -4,7 +4,7 @@ import { TEST_USER_NAME, TEST_USER_EMAIL_3 } from '../../../utils/testConstants.
 import { goHomeAcceptConsent } from '../../../utils/index.js';
 
 describe('Test Case 5: Register User with existing email', function () {
-  it('Should show error when trying to sign up with an already registered email', async function () {
+  it('should show error when trying to sign up with an already registered email', async function () {
     await goHomeAcceptConsent();
 
     await HomePage.assertHomePageVisible();

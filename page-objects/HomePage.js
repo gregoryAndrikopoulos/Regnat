@@ -25,8 +25,6 @@ class HomePage {
   get statusHeader() { return $('h2.title.text-center'); }
   get continueButton() { return $('[data-qa="continue-button"]'); }
 
-  /* ----------------------------------------------- ACTION METHODS ----------------------------------------------- */
-
   async commonHomePageAssertions() {
     await expect(browser).toHaveUrl(HOMEPAGE_LINK);
     await expect(this.logo).toBeDisplayed();

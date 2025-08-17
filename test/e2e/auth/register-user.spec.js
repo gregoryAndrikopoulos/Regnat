@@ -6,7 +6,7 @@ import { goHomeAcceptConsent } from '../../../utils/index.js';
 import { buildAddress } from '../../utils/dataTemplates.js';
 
 describe('Test Case 1: Register User', function () {
-  it('Should create and delete an account', async function () {
+  it('should create and delete an account', async function () {
     await goHomeAcceptConsent();
 
     await HomePage.assertHomePageVisible();

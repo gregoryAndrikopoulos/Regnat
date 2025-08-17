@@ -5,7 +5,7 @@ import { loginOrRegister } from '../../utils/accountHelpers.js';
 import { goHomeAcceptConsent } from "../../../utils/index.js";
 
 describe('Test Case 4: Logout User', function () {
-  it('Should login and then logout, returning to login page', async function () {
+  it('should login and then logout, returning to login page', async function () {
     await goHomeAcceptConsent();
 
     await loginOrRegister({
