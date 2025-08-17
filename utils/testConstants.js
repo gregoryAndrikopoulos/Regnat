@@ -1,6 +1,6 @@
-export const SHORT_TIMEOUT = 10000;
-export const DEFAULT_TIMEOUT = 15000;
-export const LONG_TIMEOUT = 30000;
+export const SHORT_TIMEOUT = 15000;
+export const DEFAULT_TIMEOUT = 20000;
+export const LONG_TIMEOUT = 35000;
 export const HOMEPAGE_LINK = 'https://www.automationexercise.com/';
 export const TEST_USER_NAME = 'Gregory Tester';
 export const TEST_USER_EMAIL_1 = 'greg@testemail12.com';

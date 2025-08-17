@@ -5,7 +5,7 @@ import { loginOrRegister } from '../../utils/accountHelpers.js';
 import { goHomeAcceptConsent } from "../../../utils/index.js";
 
 describe('Test Case 2: Login User with correct email and password', function () {
-  it('Should verify that account exists and login user or create one and successfully login', async function () {
+  it('should verify that account exists and login user or create one and successfully login', async function () {
     await goHomeAcceptConsent();
 
     await loginOrRegister({

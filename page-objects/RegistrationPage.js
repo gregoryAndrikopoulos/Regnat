@@ -28,8 +28,6 @@ class RegistrationPage {
   get mobileNumberInput() { return $('[data-qa="mobile_number"]'); }
   get createAccountButton() { return $('[data-qa="create-account"]'); }
 
-  /* ----------------------------------------------- ACTION METHODS ----------------------------------------------- */
-
   async selectTitle(title = 'Mr') {
     if (title === 'Mr') await this.titleMrLabel.click();
     if (title === 'Mrs') await this.titleMrsLabel.click();
