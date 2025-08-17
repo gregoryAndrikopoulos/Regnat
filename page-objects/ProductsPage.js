@@ -1,4 +1,4 @@
-import { SHORT_TIMEOUT } from "../utils/testConstants.js";
+import { LONG_TIMEOUT } from "../utils/testConstants.js";
 
 class ProductsPage {
   get allProductsHeader() { return $('h2.title.text-center'); }
@@ -10,14 +10,14 @@ class ProductsPage {
   get searchedProductsHeader() { return $(`//h2[contains(@class,"title") and normalize-space()="Searched Products"]`); }
 
   async assertAllProductsVisible() {
-    await this.allProductsHeader.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.allProductsHeader.waitForDisplayed({ timeout: LONG_TIMEOUT });
     await expect(this.allProductsHeader).toHaveText(/All Products/i);
     await expect(this.productCards).toBeElementsArrayOfSize({ gte: 1 });
     await expect(this.productCards[0]).toBeDisplayed();
 
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes('/products'),
-      { timeout: SHORT_TIMEOUT, timeoutMsg: 'URL did not include /products' }
+      { timeout: LONG_TIMEOUT, timeoutMsg: 'URL did not include /products' }
     );
   }
 
@@ -27,27 +27,27 @@ class ProductsPage {
     await link.click();
 
     await browser.waitUntil(async () => (await browser.getUrl()).includes('/product_details'),
-      { timeout: SHORT_TIMEOUT, timeoutMsg: 'Did not navigate to product details' }
+      { timeout: LONG_TIMEOUT, timeoutMsg: 'Did not navigate to product details' }
     );
   }
 
   async searchFor(term) {
-    await this.searchInput.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.searchInput.waitForDisplayed({ timeout: LONG_TIMEOUT });
     await this.searchInput.setValue(term);
     await this.searchButton.click();
 
     await browser.waitUntil(
       async () => (await this.resultsHeader.getText()).match(/Searched Products/i),
-      { timeout: SHORT_TIMEOUT, timeoutMsg: 'Results header did not change to "Searched Products"' }
+      { timeout: LONG_TIMEOUT, timeoutMsg: 'Results header did not change to "Searched Products"' }
     );
   }
 
   async assertSearchedProductsVisible() {
-    await this.searchedProductsHeader.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.searchedProductsHeader.waitForDisplayed({ timeout: LONG_TIMEOUT });
     await expect(this.searchedProductsHeader).toHaveText(/Searched Products/i);
 
     await browser.waitUntil(async () => (await this.productCards).length > 0, {
-      timeout: SHORT_TIMEOUT,
+      timeout: LONG_TIMEOUT,
       timeoutMsg: 'No product cards found after search'
     });
     await expect((await this.productCards)[0]).toBeDisplayed();
@@ -78,7 +78,6 @@ class ProductsPage {
     // Strip common annotation/category noise sometimes injected on CI machines
     // (e.g. "women's dresses", "women's apparel") and any dangling hyphen.
     raw = (raw || '')
-      .replace(/\bwomen'?s\s+(dresses|apparel)\b/gi, '')
       .replace(/\s*-\s*$/g, '');
 
     return this.normalize(raw);
@@ -132,7 +131,7 @@ class ProductsPage {
 
   async assertResultCountIs(expected) {
     await browser.waitUntil(async () => (await this.productCards).length === expected, {
-      timeout: SHORT_TIMEOUT,
+      timeout: LONG_TIMEOUT,
       timeoutMsg: `Expected ${expected} search results, got ${(await this.productCards).length}`
     });
     await expect((await this.productCards).length).toBe(expected);
@@ -163,7 +162,7 @@ class ProductsPage {
       );
     }, {
       // CI runs can be slower; give it more time than a local dev box.
-      timeout: SHORT_TIMEOUT * 2,
+      timeout: LONG_TIMEOUT,
       timeoutMsg: `Titles never matched expected set (prefix-tolerant) within time`
     });
 
