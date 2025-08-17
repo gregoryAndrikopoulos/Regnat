@@ -1,4 +1,4 @@
-import { LONG_TIMEOUT } from "../utils/testConstants.js";
+import { SHORT_TIMEOUT } from "../utils/testConstants.js";
 
 class ProductsPage {
   get allProductsHeader() { return $('h2.title.text-center'); }
@@ -10,14 +10,14 @@ class ProductsPage {
   get searchedProductsHeader() { return $(`//h2[contains(@class,"title") and normalize-space()="Searched Products"]`); }
 
   async assertAllProductsVisible() {
-    await this.allProductsHeader.waitForDisplayed({ timeout: LONG_TIMEOUT });
+    await this.allProductsHeader.waitForDisplayed({ timeout: SHORT_TIMEOUT });
     await expect(this.allProductsHeader).toHaveText(/All Products/i);
     await expect(this.productCards).toBeElementsArrayOfSize({ gte: 1 });
     await expect(this.productCards[0]).toBeDisplayed();
 
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes('/products'),
-      { timeout: LONG_TIMEOUT, timeoutMsg: 'URL did not include /products' }
+      { timeout: SHORT_TIMEOUT, timeoutMsg: 'URL did not include /products' }
     );
   }
 
@@ -27,27 +27,27 @@ class ProductsPage {
     await link.click();
 
     await browser.waitUntil(async () => (await browser.getUrl()).includes('/product_details'),
-      { timeout: LONG_TIMEOUT, timeoutMsg: 'Did not navigate to product details' }
+      { timeout: SHORT_TIMEOUT, timeoutMsg: 'Did not navigate to product details' }
     );
   }
 
   async searchFor(term) {
-    await this.searchInput.waitForDisplayed({ timeout: LONG_TIMEOUT });
+    await this.searchInput.waitForDisplayed({ timeout: SHORT_TIMEOUT });
     await this.searchInput.setValue(term);
     await this.searchButton.click();
 
     await browser.waitUntil(
       async () => (await this.resultsHeader.getText()).match(/Searched Products/i),
-      { timeout: LONG_TIMEOUT, timeoutMsg: 'Results header did not change to "Searched Products"' }
+      { timeout: SHORT_TIMEOUT, timeoutMsg: 'Results header did not change to "Searched Products"' }
     );
   }
 
   async assertSearchedProductsVisible() {
-    await this.searchedProductsHeader.waitForDisplayed({ timeout: LONG_TIMEOUT });
+    await this.searchedProductsHeader.waitForDisplayed({ timeout: SHORT_TIMEOUT });
     await expect(this.searchedProductsHeader).toHaveText(/Searched Products/i);
 
     await browser.waitUntil(async () => (await this.productCards).length > 0, {
-      timeout: LONG_TIMEOUT,
+      timeout: SHORT_TIMEOUT,
       timeoutMsg: 'No product cards found after search'
     });
     await expect((await this.productCards)[0]).toBeDisplayed();
@@ -62,25 +62,13 @@ class ProductsPage {
   }
 
   async getCardTitle(card) {
-    // Prefer the overlay title only if it exists AND is displayed (hover state can be flaky on CI)
-    const overlay = await card.$('.product-overlay .overlay-content p');
-    const regular = await card.$('.single-products .productinfo p');
+    const overlayTitle = await card.$('.product-overlay .overlay-content p');
+    const regularTitle = await card.$('.single-products .productinfo p');
 
-    const readText = async (el) => {
-      if (!(await el.isExisting())) return '';
-      if (typeof el.isDisplayed === 'function' && !(await el.isDisplayed())) return '';
-      return await el.getText();
-    };
-
-    let raw = await readText(overlay);
-    if (!raw) raw = await readText(regular);
-
-    // Strip common annotation/category noise sometimes injected on CI machines
-    // (e.g. "women's dresses", "women's apparel") and any dangling hyphen.
-    raw = (raw || '')
-      .replace(/\s*-\s*$/g, '');
-
-    return this.normalize(raw);
+    let text = '';
+    if (await overlayTitle.isExisting()) text = await overlayTitle.getText();
+    if (!text && await regularTitle.isExisting()) text = await regularTitle.getText();
+    return this.normalize(text);
   }
 
   /**
@@ -131,49 +119,24 @@ class ProductsPage {
 
   async assertResultCountIs(expected) {
     await browser.waitUntil(async () => (await this.productCards).length === expected, {
-      timeout: LONG_TIMEOUT,
+      timeout: SHORT_TIMEOUT,
       timeoutMsg: `Expected ${expected} search results, got ${(await this.productCards).length}`
     });
     await expect((await this.productCards).length).toBe(expected);
   }
 
-  /**
-   * Compare expected titles to actual card titles allowing extra suffix noise
-   * (e.g., ad/annotation/category text) that CI sometimes appends.
-   * We still assert the result count matches exactly.
-   */
-  startsWithWordBoundary(actual, expected) {
-    if (!actual.startsWith(expected)) return false;
-    // If there’s more text after the expected title, the next char must be a non-alphanumeric
-    // so "multiwomen's" won’t falsely fail if expected is "multi".
-    const next = actual.charAt(expected.length);
-    return !next || /[^a-z0-9]/i.test(next);
-  }
-
   async assertResultsTitlesInclude(expectedTitles = []) {
     const expected = expectedTitles.map(t => this.normalize(t));
-
-    // Wait until the DOM settles AND our tolerant comparison passes
-    await browser.waitUntil(async () => {
-      const actual = await this.getAllCardTitles();
-      if (actual.length !== expected.length) return false;
-      return expected.every(e =>
-        actual.some(a => this.startsWithWordBoundary(a, e))
-      );
-    }, {
-      // CI runs can be slower; give it more time than a local dev box.
-      timeout: LONG_TIMEOUT,
-      timeoutMsg: `Titles never matched expected set (prefix-tolerant) within time`
-    });
-
-    // Sanity: compute the final actual and report helpful diff if it somehow fails after wait
     const actual = await this.getAllCardTitles();
+
+    // ensure counts match (no extras)
     await expect(actual.length).toBe(expected.length);
 
-    const missing = expected.filter(e => !actual.some(a => this.startsWithWordBoundary(a, e)));
+    // check every expected is present (order-insensitive)
+    const missing = expected.filter(e => !actual.includes(e));
     if (missing.length) {
       throw new Error(
-        `Missing expected titles (prefix-tolerant):\n${missing.join('\n')}\n\nActual:\n${actual.join('\n')}`
+        `Missing expected titles:\n${missing.join('\n')}\n\nActual:\n${actual.join('\n')}`
       );
     }
     await expect(missing.length === 0).toBe(true);
