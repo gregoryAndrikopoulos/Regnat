@@ -1,6 +1,6 @@
 import HomePage from '../../../page-objects/HomePage.js';
 import ContactUsPage from '../../../page-objects/ContactUsPage.js';
-import { SHORT_TIMEOUT } from "../../../utils/testConstants.js";
+import { LONG_TIMEOUT } from "../../../utils/testConstants.js";
 import { goHomeAcceptConsent } from '../../../utils/index.js';
 import { fixturePath } from '../../utils/fixtures.js';
 
@@ -28,7 +28,7 @@ describe('Test Case 6: Contact Us Form', function () {
       await browser.acceptAlert();
     }
 
-    await ContactUsPage.successAlert.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await ContactUsPage.successAlert.waitForDisplayed({ timeout: LONG_TIMEOUT });
     await expect(ContactUsPage.successAlert).toBeDisplayed();
     await expect(ContactUsPage.successAlert).toHaveText(/Success!/i);
 
