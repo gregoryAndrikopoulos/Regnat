@@ -13,7 +13,7 @@ importers:
         version: 9.18.4(@types/node@24.1.0)(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))
       '@wdio/globals':
         specifier: 9.17.0
-        version: 9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4)
+        version: 9.17.0(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))(webdriverio@9.18.4)
       '@wdio/local-runner':
         specifier: 9.18.0
         version: 9.18.0(@wdio/globals@9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4))(webdriverio@9.18.4)
@@ -23,6 +23,9 @@ importers:
       '@wdio/spec-reporter':
         specifier: 9.18.0
         version: 9.18.0
+      expect-webdriverio:
+        specifier: ^5
+        version: 5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4)
       pnpm:
         specifier: ^10.13.1
         version: 10.13.1
@@ -2190,7 +2193,7 @@ snapshots:
     dependencies:
       '@vitest/snapshot': 2.1.9
       '@wdio/config': 9.18.0
-      '@wdio/globals': 9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4)
+      '@wdio/globals': 9.17.0(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))(webdriverio@9.18.4)
       '@wdio/logger': 9.18.0
       '@wdio/protocols': 9.16.2
       '@wdio/types': 9.16.2
@@ -2235,7 +2238,7 @@ snapshots:
       '@wdio/types': 9.16.2
       chalk: 5.4.1
 
-  '@wdio/globals@9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4)':
+  '@wdio/globals@9.17.0(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))(webdriverio@9.18.4)':
     dependencies:
       expect-webdriverio: 5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4)
       webdriverio: 9.18.4
@@ -2298,7 +2301,7 @@ snapshots:
       '@types/node': 20.19.9
       '@wdio/config': 9.18.0
       '@wdio/dot-reporter': 9.18.0
-      '@wdio/globals': 9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4)
+      '@wdio/globals': 9.17.0(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))(webdriverio@9.18.4)
       '@wdio/logger': 9.18.0
       '@wdio/types': 9.16.2
       '@wdio/utils': 9.18.0
@@ -2780,7 +2783,7 @@ snapshots:
   expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4):
     dependencies:
       '@vitest/snapshot': 3.2.4
-      '@wdio/globals': 9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4)
+      '@wdio/globals': 9.17.0(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))(webdriverio@9.18.4)
       '@wdio/logger': 9.18.0
       expect: 30.0.5
       jest-matcher-utils: 30.0.5

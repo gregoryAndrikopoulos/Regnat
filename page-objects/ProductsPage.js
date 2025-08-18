@@ -1,4 +1,4 @@
-import { SHORT_TIMEOUT } from "../utils/testConstants.js";
+import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ProductsPage {
   get allProductsHeader() { return $('h2.title.text-center'); }

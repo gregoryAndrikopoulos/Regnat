@@ -1,6 +1,6 @@
 import HomePage from '../../../page-objects/HomePage.js';
 import SignupLoginPage from '../../../page-objects/SignupLoginPage.js';
-import { goHomeAcceptConsent } from '../../../utils/index.js';
+import { goHomeAcceptConsent } from '../../../support/utils/index.js';
 
 describe('Test Case 3: Login User with incorrect email and password', function () {
   it('should show an error when logging in with incorrect credentials', async function () {

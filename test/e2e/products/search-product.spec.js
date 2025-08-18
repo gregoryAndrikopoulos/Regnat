@@ -1,6 +1,6 @@
 import HomePage from '../../../page-objects/HomePage.js';
 import ProductsPage from '../../../page-objects/ProductsPage.js';
-import { goHomeAcceptConsent } from '../../../utils/index.js';
+import { goHomeAcceptConsent } from '../../../support/utils/index.js';
 
 const term = 'sleeveless';
 const expectedTitles = [
@@ -9,8 +9,7 @@ const expectedTitles = [
   'Sleeveless Unicorn Print Fit & Flare Net Dress - Multi'
 ];
 
-// Currently disabled due to CI flakiness
-describe.skip('Test Case 9: Search Product', function () {
+describe('Test Case 9: Search Product', function () {
   it('should search for a product and show only the related results', async function () {
     await goHomeAcceptConsent();
 
