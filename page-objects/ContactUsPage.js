@@ -1,14 +1,30 @@
 import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ContactUsPage {
-  get getInTouchHeader() { return $('//h2[contains(.,"Get In Touch")]'); }
-  get nameInput() { return $('[data-qa="name"]'); }
-  get emailInput() { return $('[data-qa="email"]'); }
-  get subjectInput() { return $('[data-qa="subject"]'); }
-  get messageTextarea() { return $('[data-qa="message"]'); }
-  get uploadInput() { return $('input[name="upload_file"]'); }
-  get submitButton() { return $('[data-qa="submit-button"]'); }
-  get successAlert() { return $('.status.alert-success'); }
+  get getInTouchHeader() {
+    return $('//h2[contains(.,"Get In Touch")]');
+  }
+  get nameInput() {
+    return $('[data-qa="name"]');
+  }
+  get emailInput() {
+    return $('[data-qa="email"]');
+  }
+  get subjectInput() {
+    return $('[data-qa="subject"]');
+  }
+  get messageTextarea() {
+    return $('[data-qa="message"]');
+  }
+  get uploadInput() {
+    return $('input[name="upload_file"]');
+  }
+  get submitButton() {
+    return $('[data-qa="submit-button"]');
+  }
+  get successAlert() {
+    return $(".status.alert-success");
+  }
 
   async fillForm({ name, email, subject, message }) {
     if (name !== undefined) await this.nameInput.setValue(name);

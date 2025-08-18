@@ -12,3 +12,8 @@ npm-debug.log*
 
 # WebStorm IDE settings
 .idea/
+
+# Test artifacts
+allure-results/
+allure-report/
+reports/
