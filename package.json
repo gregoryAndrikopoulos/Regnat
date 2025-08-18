@@ -7,8 +7,8 @@
   "scripts": {
     "test:local": "wdio run config/wdio.conf.js",
     "test:ci": "wdio run config/wdio.conf.js",
-    "grid:up": "docker compose -f infra/docker-compose.yml up -d",
-    "grid:down": "docker compose -f infra/docker-compose.yml down",
+    "grid:up": "docker compose -f infra/docker-compose.yml pull && docker compose -f infra/docker-compose.yml up -d",
+    "grid:down": "docker compose -f infra/docker-compose.yml down -v",
     "grid:logs": "docker compose -f infra/docker-compose.yml logs -f",
     "grid:status": "curl -s http://localhost:4444/status | jq '.value.ready'"
   },
@@ -19,7 +19,9 @@
     "test automation",
     "ci/cd",
     "github actions",
-    "web"
+    "web",
+    "selenium-grid",
+    "docker"
   ],
   "author": "",
   "license": "ISC",
