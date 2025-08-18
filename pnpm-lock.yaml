@@ -17,6 +17,9 @@ importers:
       '@wdio/globals':
         specifier: 9.17.0
         version: 9.17.0(expect-webdriverio@5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4))(webdriverio@9.18.4)
+      '@wdio/junit-reporter':
+        specifier: 9.18.0
+        version: 9.18.0
       '@wdio/local-runner':
         specifier: 9.18.0
         version: 9.18.0(@wdio/globals@9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4))(webdriverio@9.18.4)
@@ -456,6 +459,10 @@ packages:
     peerDependencies:
       expect-webdriverio: ^5.3.4
       webdriverio: ^9.0.0
+
+  '@wdio/junit-reporter@9.18.0':
+    resolution: {integrity: sha512-R96QpG/JPiMzM0HFd0MSGyLeWtgqS+0wxLNqmY2iKj/0KhJTHx8jT5KZAq0kdvfRoQXfd2mdev9PKcIH7+u4kg==}
+    engines: {node: '>=18.20.0'}
 
   '@wdio/local-runner@9.18.0':
     resolution: {integrity: sha512-7myEUBkmeOOCyRfJsMbgT6UrXdFFErmrgJo4V4lkv0gUHyf/ngXMFaLy1K6uzU+D909Y0JfRl1CsllILu+Nr9A==}
@@ -1231,8 +1238,15 @@ packages:
     resolution: {integrity: sha512-fi0NG4bPjCHunUJffmLd0gxssIgkNmArMvis4iNah6Owg1MCJjWhEcDLmsK6iGkJq3tHwbDkTlce70/tmXN4cQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
+  json-stringify-safe@5.0.1:
+    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
+
   jszip@3.10.1:
     resolution: {integrity: sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g==}
+
+  junit-report-builder@5.1.1:
+    resolution: {integrity: sha512-ZNOIIGMzqCGcHQEA2Q4rIQQ3Df6gSIfne+X9Rly9Bc2y55KxAZu8iGv+n2pP0bLf0XAOctJZgeloC54hWzCahQ==}
+    engines: {node: '>=16'}
 
   lazystream@1.0.1:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
@@ -1298,6 +1312,10 @@ packages:
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
+
+  make-dir@3.1.0:
+    resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
+    engines: {node: '>=8'}
 
   md5@2.3.0:
     resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
@@ -1583,6 +1601,10 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
+  semver@6.3.1:
+    resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
+    hasBin: true
+
   semver@7.7.2:
     resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
     engines: {node: '>=10'}
@@ -1860,6 +1882,10 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  xmlbuilder@15.1.1:
+    resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}
+    engines: {node: '>=8.0'}
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -2303,6 +2329,13 @@ snapshots:
     dependencies:
       expect-webdriverio: 5.4.1(@wdio/globals@9.17.0)(@wdio/logger@9.18.0)(webdriverio@9.18.4)
       webdriverio: 9.18.4
+
+  '@wdio/junit-reporter@9.18.0':
+    dependencies:
+      '@wdio/reporter': 9.18.0
+      '@wdio/types': 9.16.2
+      json-stringify-safe: 5.0.1
+      junit-report-builder: 5.1.1
 
   '@wdio/local-runner@9.18.0(@wdio/globals@9.17.0(expect-webdriverio@5.4.1)(webdriverio@9.18.4))(webdriverio@9.18.4)':
     dependencies:
@@ -3200,12 +3233,20 @@ snapshots:
 
   json-parse-even-better-errors@3.0.2: {}
 
+  json-stringify-safe@5.0.1: {}
+
   jszip@3.10.1:
     dependencies:
       lie: 3.3.0
       pako: 1.0.11
       readable-stream: 2.3.8
       setimmediate: 1.0.5
+
+  junit-report-builder@5.1.1:
+    dependencies:
+      lodash: 4.17.21
+      make-dir: 3.1.0
+      xmlbuilder: 15.1.1
 
   lazystream@1.0.1:
     dependencies:
@@ -3261,6 +3302,10 @@ snapshots:
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.4
+
+  make-dir@3.1.0:
+    dependencies:
+      semver: 6.3.1
 
   md5@2.3.0:
     dependencies:
@@ -3566,6 +3611,8 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
+  semver@6.3.1: {}
+
   semver@7.7.2: {}
 
   serialize-error@12.0.0:
@@ -3859,6 +3906,8 @@ snapshots:
   wrappy@1.0.2: {}
 
   ws@8.18.3: {}
+
+  xmlbuilder@15.1.1: {}
 
   y18n@5.0.8: {}
 
