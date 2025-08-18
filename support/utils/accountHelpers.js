@@ -2,7 +2,7 @@ import HomePage from '../../page-objects/HomePage.js';
 import SignupLoginPage from '../../page-objects/SignupLoginPage.js';
 import RegistrationPage from '../../page-objects/RegistrationPage.js';
 import ConfirmationPage from '../../page-objects/ConfirmationPage.js';
-import { LONG_TIMEOUT } from "../../utils/testConstants.js";
+import { LONG_TIMEOUT } from "./testConstants.js";
 import { buildAddress } from './dataTemplates.js';
 
 export async function loginOrRegister({ name, email, password }) {

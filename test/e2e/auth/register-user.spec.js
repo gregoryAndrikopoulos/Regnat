@@ -1,9 +1,9 @@
 import HomePage from '../../../page-objects/HomePage.js';
 import SignupLoginPage from '../../../page-objects/SignupLoginPage.js';
 import RegistrationPage from '../../../page-objects/RegistrationPage.js';
-import { TEST_USER_NAME, TEST_USER_EMAIL_1, TEST_USER_PASSWORD_1 } from '../../../utils/testConstants.js';
-import { goHomeAcceptConsent } from '../../../utils/index.js';
-import { buildAddress } from '../../utils/dataTemplates.js';
+import { TEST_USER_NAME, TEST_USER_EMAIL_1, TEST_USER_PASSWORD_1 } from '../../../support/utils/testConstants.js';
+import { goHomeAcceptConsent } from '../../../support/utils/index.js';
+import { buildAddress } from '../../../support/utils/dataTemplates.js';
 
 describe('Test Case 1: Register User', function () {
   it('should create and delete an account', async function () {

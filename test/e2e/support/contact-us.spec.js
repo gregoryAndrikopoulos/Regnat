@@ -1,13 +1,12 @@
 import HomePage from '../../../page-objects/HomePage.js';
 import ContactUsPage from '../../../page-objects/ContactUsPage.js';
-import { SHORT_TIMEOUT } from "../../../utils/testConstants.js";
-import { goHomeAcceptConsent } from '../../../utils/index.js';
-import { fixturePath } from '../../utils/fixtures.js';
+import { SHORT_TIMEOUT } from "../../../support/utils/testConstants.js";
+import { goHomeAcceptConsent } from '../../../support/utils/index.js';
+import { fixturePath } from '../../../support/fixtures/fixtures.js';
 
 const filePath = fixturePath('contact-attachment.txt');
 
-// Currently disabled due to CI flakiness
-describe.skip('Test Case 6: Contact Us Form', function () {
+describe('Test Case 6: Contact Us Form', function () {
   it('should submit the contact form and show success message', async function () {
     await goHomeAcceptConsent();
 

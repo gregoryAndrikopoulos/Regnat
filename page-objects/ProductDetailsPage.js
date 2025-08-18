@@ -1,4 +1,4 @@
-import { SHORT_TIMEOUT } from "../utils/testConstants.js";
+import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ProductDetailsPage {
   get container() { return $('.product-details'); }

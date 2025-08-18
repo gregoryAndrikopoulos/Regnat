@@ -1,5 +1,5 @@
 import { $ } from '@wdio/globals';
-import { clickElem } from '../utils/index.js';
+import { clickElem } from '../support/utils/index.js';
 
 class ConsentPage {
     /* Landing page */

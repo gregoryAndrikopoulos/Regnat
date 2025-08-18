@@ -1,4 +1,4 @@
-import { SHORT_TIMEOUT } from '../utils/testConstants.js';
+import { SHORT_TIMEOUT } from '../support/utils/testConstants.js';
 
 class TestCasesPage {
   get header() { return $('.col-sm-9.col-sm-offset-1 > h2.title.text-center'); }

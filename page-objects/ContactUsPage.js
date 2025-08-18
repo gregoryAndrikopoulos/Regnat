@@ -1,4 +1,4 @@
-import { SHORT_TIMEOUT } from "../utils/testConstants.js";
+import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ContactUsPage {
   get getInTouchHeader() { return $('//h2[contains(.,"Get In Touch")]'); }

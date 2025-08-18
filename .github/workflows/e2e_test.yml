@@ -32,6 +32,24 @@ jobs:
       - name: ⚙️ Install dependencies
         run: pnpm install
 
+      - name: 🐳 Grid up (Docker Compose)
+        run: pnpm grid:up
+
+      - name: ⏳ Wait for Grid readiness
+        shell: bash
+        run: |
+          for i in {1..30}; do
+            READY=$(pnpm -s grid:status || true)
+            if [[ "$READY" == "true" ]]; then
+              echo "Grid is ready"
+              exit 0
+            fi
+            echo "Grid not ready yet... ($i/30)"
+            sleep 2
+          done
+          echo "Grid failed to become ready in time" >&2
+          exit 1
+
       - name: 🧪 Run e2e Test
         env:
           CI: true

@@ -1,5 +1,5 @@
 import { $ } from '@wdio/globals';
-import { HOMEPAGE_LINK } from '../utils/testConstants.js';
+import { HOMEPAGE_LINK } from '../support/utils/testConstants.js';
 
 class HomePage {
   get homeMarker() { return $('.features_items .title.text-center'); }
