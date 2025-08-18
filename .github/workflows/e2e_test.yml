@@ -57,7 +57,7 @@ jobs:
         env:
           CI: true
           FORCE_COLOR: "3"
-        run: pnpm specs:ci
+        run: pnpm test:ci
 
       - name: 📊 Generate Allure HTML
         if: always()
