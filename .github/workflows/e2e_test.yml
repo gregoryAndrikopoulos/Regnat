@@ -2,7 +2,7 @@ name: e2e Test
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -16,10 +16,10 @@ jobs:
       - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.14.0'
+          node-version: "20.14.0"
 
       - name: 🧰 Setup pnpm
-        run: npm install -g pnpm
+        run: npm install -g pnpm@10.13.1
 
       - name: 🗃️ Cache pnpm package store
         uses: actions/cache@v4
@@ -56,7 +56,7 @@ jobs:
       - name: 🧪 Run e2e Test
         env:
           CI: true
-          FORCE_COLOR: '3'
+          FORCE_COLOR: "3"
         run: pnpm test:ci
 
       - name: 📊 Generate Allure HTML
@@ -82,3 +82,7 @@ jobs:
           path: reports/junit/**
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: 🧹 Grid down (cleanup)
+        if: always()
+        run: pnpm grid:down
