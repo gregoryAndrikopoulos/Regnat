@@ -25,8 +25,8 @@ Website under test:
 -   **WebdriverIO v9** -- Automation testing framework.
 -   **Mocha** -- Test framework for writing and executing tests.
 -   **Node.js** -- JavaScript runtime environment.
--   **Chromedriver Service** -- For local browser testing.
 -   **Docker + Selenium Grid 4** -- For browser execution in isolated containers.
+-   **Allure** -- For advanced reporting and test result visualization.
 -   **GitHub Actions** -- For continuous integration and automated test
     runs.
 
