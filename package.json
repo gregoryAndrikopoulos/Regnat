@@ -12,7 +12,7 @@
     "grid:logs": "docker compose -f infra/docker-compose.yml logs -f",
     "grid:status": "curl -s http://localhost:4444/status | jq '.value.ready'",
     "report:allure:generate": "allure generate allure-results --clean -o allure-report",
-    "report:allure:open": "allure open allure-report || (allure generate allure-results --clean -o allure-report && allure open allure-report)"
+    "report:allure:open:local": "bash -lc 'allure open \"${ALLURE_PATH:-$HOME/Downloads/allure/allure-report}\"'"
   },
   "keywords": [
     "webdriverio",
