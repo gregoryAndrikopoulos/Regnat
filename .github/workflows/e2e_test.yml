@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: "20.14.0"
 
-      - name: 🧰 Enable Corepack
-        run: corepack enable
+      - name: 🧰 Enable Corepack & pin pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.13.1 --activate
+          pnpm -v
 
       - name: 🗃️ Cache pnpm package store
         uses: actions/cache@v4
