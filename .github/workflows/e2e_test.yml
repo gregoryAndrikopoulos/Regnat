@@ -50,19 +50,35 @@ jobs:
           echo "Grid failed to become ready in time" >&2
           exit 1
 
+      - name: ✨ Ensure Allure CLI
+        run: pnpm exec allure --version || true
+
       - name: 🧪 Run e2e Test
         env:
           CI: true
           FORCE_COLOR: '3'
         run: pnpm test:ci
 
-      - name: 📎 Upload logs (on failure)
+      - name: 📊 Generate Allure HTML
+        if: always()
+        run: pnpm exec allure generate allure-results --clean -o allure-report || echo "No allure results"
+
+      - name: 📎 Upload Allure artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure
+          path: |
+            allure-results/**
+            allure-report/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: 📎 Upload JUnit (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: wdio-logs
-          path: |
-            logs/**
-            reports/**
-            allure-results/**
+          name: junit-xml
+          path: reports/junit/**
           if-no-files-found: ignore
+          retention-days: 14

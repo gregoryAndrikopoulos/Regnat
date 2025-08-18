@@ -131,7 +131,19 @@ export const config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: [
+        'spec',
+        ['allure', { outputDir: 'allure-results', addConsoleLogs: true }],
+        ['junit', { outputDir: 'reports/junit', outputFileFormat: opts => `junit-${opts.cid}.xml` }]
+    ],
+    afterTest: async (test, context, { passed }) => {
+        if (!passed) {
+            const png = await browser.takeScreenshot()
+            ;(await import('@wdio/allure-reporter')).default.addAttachment(
+              'screenshot', Buffer.from(png, 'base64'), 'image/png'
+            )
+        }
+    },
 
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/

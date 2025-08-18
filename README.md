@@ -25,8 +25,8 @@ Website under test:
 -   **WebdriverIO v9** -- Automation testing framework.
 -   **Mocha** -- Test framework for writing and executing tests.
 -   **Node.js** -- JavaScript runtime environment.
--   **Chromedriver Service** -- For local browser testing.
 -   **Docker + Selenium Grid 4** -- For browser execution in isolated containers.
+-   **Allure** -- For advanced reporting and test result visualization.
 -   **GitHub Actions** -- For continuous integration and automated test
     runs.
 
@@ -131,3 +131,28 @@ manually:
 ``` bash
 pnpm test:ci
 ```
+
+------------------------------------------------------------------------
+
+### View Allure Reports (CI)
+
+After the CI run completes, download the **`allure`** artifact from the GitHub Actions run.  
+It contains both:
+
+- `allure-results/` → raw JSON output.
+- `allure-report/` → generated HTML report.
+
+To open the report locally (after downloading/unzipping the artifact):
+
+```bash
+pnpm report:allure:open:local
+```
+
+> By default this script looks for the report under `~/Downloads/allure/allure-report`.  
+> If your report is in another directory, you can override the path:
+
+```bash
+ALLURE_PATH="/path/to/allure-report" pnpm report:allure:open:local
+```
+
+------------------------------------------------------------------------
