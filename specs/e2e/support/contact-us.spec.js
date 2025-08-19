@@ -1,3 +1,4 @@
+import { expect } from "@wdio/globals";
 import HomePage from "../../../page-objects/HomePage.js";
 import ContactUsPage from "../../../page-objects/ContactUsPage.js";
 import { SHORT_TIMEOUT } from "../../../support/utils/testConstants.js";

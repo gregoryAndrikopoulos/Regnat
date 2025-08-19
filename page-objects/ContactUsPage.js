@@ -1,3 +1,4 @@
+import { expect } from "@wdio/globals";
 import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ContactUsPage {

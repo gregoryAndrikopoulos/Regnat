@@ -1,13 +1,22 @@
+import { expect } from "@wdio/globals";
 import HomePage from "../../../page-objects/HomePage.js";
 import SignupLoginPage from "../../../page-objects/SignupLoginPage.js";
 import RegistrationPage from "../../../page-objects/RegistrationPage.js";
 import {
   TEST_USER_NAME,
-  TEST_USER_EMAIL_1,
-  TEST_USER_PASSWORD_1,
-} from "../../../support/utils/testConstants.js";
+  getCredentials,
+} from "../../../support/utils/envCredentials.js";
 import { goHomeAcceptConsent } from "../../../support/utils/index.js";
 import { buildAddress } from "../../../support/utils/dataTemplates.js";
+import { BAD_CREDENTIALS } from "../../../support/utils/testConstants.js";
+
+// Pick the credential set explicitly for this spec (set 1)
+const { email: TEST_USER_EMAIL, password: TEST_USER_PASSWORD } =
+  getCredentials(1);
+
+before(function () {
+  if (!TEST_USER_EMAIL || !TEST_USER_PASSWORD) throw new Error(BAD_CREDENTIALS);
+});
 
 describe("Test Case 1: Register User", function () {
   it("should create and delete an account", async function () {
@@ -20,7 +29,7 @@ describe("Test Case 1: Register User", function () {
       /New User Signup!/i
     );
 
-    await SignupLoginPage.signupEmailInput.setValue(TEST_USER_EMAIL_1);
+    await SignupLoginPage.signupEmailInput.setValue(TEST_USER_EMAIL);
     await SignupLoginPage.signupNameInput.setValue(TEST_USER_NAME);
     await SignupLoginPage.signupButton.click();
 
@@ -35,11 +44,11 @@ describe("Test Case 1: Register User", function () {
     );
 
     await expect(RegistrationPage.nameInput).toHaveValue(TEST_USER_NAME);
-    await expect(RegistrationPage.emailInput).toHaveValue(TEST_USER_EMAIL_1);
+    await expect(RegistrationPage.emailInput).toHaveValue(TEST_USER_EMAIL);
 
     await RegistrationPage.selectTitle("Mr");
     await RegistrationPage.setPasswordAndDob({
-      password: TEST_USER_PASSWORD_1,
+      password: TEST_USER_PASSWORD,
       day: "24",
       month: "May",
       year: "1993",

@@ -1,3 +1,4 @@
+import { expect } from "@wdio/globals";
 import HomePage from "../../page-objects/HomePage.js";
 import SignupLoginPage from "../../page-objects/SignupLoginPage.js";
 import RegistrationPage from "../../page-objects/RegistrationPage.js";

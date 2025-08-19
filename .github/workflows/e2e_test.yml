@@ -9,6 +9,15 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
 
+    # Make all credential sets available to the job (each spec picks its own via getCreds(n))
+    env:
+      TEST_USER_EMAIL_1: ${{ secrets.TEST_USER_EMAIL_1 }}
+      TEST_USER_PASSWORD_1: ${{ secrets.TEST_USER_PASSWORD_1 }}
+      TEST_USER_EMAIL_2: ${{ secrets.TEST_USER_EMAIL_2 }}
+      TEST_USER_PASSWORD_2: ${{ secrets.TEST_USER_PASSWORD_2 }}
+      TEST_USER_EMAIL_3: ${{ secrets.TEST_USER_EMAIL_3 }}
+      TEST_USER_PASSWORD_3: ${{ secrets.TEST_USER_PASSWORD_3 }}
+
     steps:
       - name: 📦 Checkout code
         uses: actions/checkout@v5
