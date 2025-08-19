@@ -1,8 +1,13 @@
 {
   "name": "regnat",
   "version": "1.0.0",
+  "private": true,
   "description": "Regnat is a structured WebdriverIO v9 test automation framework for scalable end-to-end testing.",
   "type": "module",
+  "engines": {
+    "node": ">=20 <21",
+    "pnpm": ">=10 <11"
+  },
   "packageManager": "pnpm@10.13.1",
   "main": "index.js",
   "scripts": {

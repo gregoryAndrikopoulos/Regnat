@@ -27,7 +27,7 @@ For demonstration purposes, it is currently configured to run against
 - **Mocha** — Test framework for writing and executing tests.
 - **Node.js** — JavaScript runtime environment.
 - **Docker + Selenium Grid 4** — For browser execution in isolated containers.
-- **Allure** — For advanced reporting and test result visualization.
+- **Allure** — Advanced reporting (captures failure screenshots & console logs).
 - **GitHub Actions** — For continuous integration and automated test
   runs.
 - **dotenv** — Local environment variable management.
@@ -50,6 +50,7 @@ pnpm 10.13.1
 ```
 
 **Getting set up:**
+
 ```bash
 asdf install
 asdf current
@@ -57,6 +58,7 @@ node -v && pnpm -v
 ```
 
 **Changing versions locally:**
+
 ```bash
 asdf install nodejs <new> && asdf local nodejs <new>
 asdf install pnpm <new>   && asdf local pnpm <new>
@@ -107,12 +109,14 @@ This suite currently targets **automationexercise**, which shows a **display nam
 ## Installation and Setup
 
 ### Prerequisites
+
 - **asdf** (version manager)
 - **Docker Desktop** (with Compose)
 
 > This repo pins tool versions in `.tool-versions` (Node 20.14.0, pnpm 10.13.1).
 
 ### Install toolchain & deps (recommended)
+
 ```bash
 asdf install                 # installs node & pnpm from .tool-versions
 node -v && pnpm -v          # quick verify
@@ -120,6 +124,7 @@ pnpm install                # project deps
 ```
 
 ### Without asdf (fallback)
+
 If you don’t use asdf, install matching versions manually:
 
 - **Node.js 20.x** (your choice of installer)
