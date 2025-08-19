@@ -1,9 +1,7 @@
 # Regnat
 
-## Overview
+> Structured WebdriverIO v9 test automation setup for reliable end-to-end testing.
 
-**Regnat** is a structured WebdriverIO v9 test automation setup designed for
-reliable end-to-end testing of existing websites.  
 It provides a clean, maintainable foundation for scalable automation, with
 support for Selenium Grid, Docker, CI/CD pipelines, and Allure reporting.
 
@@ -25,12 +23,12 @@ For demonstration purposes, it is currently configured to run against
 
 ## Technologies Used
 
-- **WebdriverIO v9** -- Automation testing framework.
-- **Mocha** -- Test framework for writing and executing tests.
-- **Node.js** -- JavaScript runtime environment.
-- **Docker + Selenium Grid 4** -- For browser execution in isolated containers.
-- **Allure** -- For advanced reporting and test result visualization.
-- **GitHub Actions** -- For continuous integration and automated test
+- **WebdriverIO v9** — Automation testing framework.
+- **Mocha** — Test framework for writing and executing tests.
+- **Node.js** — JavaScript runtime environment.
+- **Docker + Selenium Grid 4** — For browser execution in isolated containers.
+- **Allure** — For advanced reporting and test result visualization.
+- **GitHub Actions** — For continuous integration and automated test
   runs.
 
 ### Developer Tooling
@@ -127,7 +125,7 @@ To execute your test suite using the local WebdriverIO configuration,
 run:
 
 ```bash
-pnpm specs:local
+pnpm test:local
 ```
 
 ### Run tests in CI (GitHub Actions)
@@ -136,7 +134,7 @@ The workflow runs automatically on pushes/PRs, but can also be triggered
 manually:
 
 ```bash
-pnpm specs:ci
+pnpm test:ci
 ```
 
 ---
@@ -181,3 +179,7 @@ ALLURE_PATH="/path/to/allure-report" pnpm report:allure:open:ci
 ```
 
 ---
+
+## License
+
+This project is licensed under the ISC License – see the [LICENSE](./LICENSE) file for details.
