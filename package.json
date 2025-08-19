@@ -1,7 +1,7 @@
 {
   "name": "regnat",
   "version": "1.0.0",
-  "description": "This project is a structured WebdriverIO v9 test automation setup for testing an existing website.",
+  "description": "Regnat is a structured WebdriverIO v9 test automation framework for scalable end-to-end testing.",
   "type": "module",
   "packageManager": "pnpm@10.13.1",
   "main": "index.js",
