@@ -1,22 +1,25 @@
-# automationexercise-wdio-tests
+# Regnat
 
 ## Overview
 
-This project is a structured WebdriverIO v9 test automation setup for
-testing an existing website.
+**Regnat** is a structured WebdriverIO v9 test automation setup designed for
+reliable end-to-end testing of existing websites.  
+It provides a clean, maintainable foundation for scalable automation, with
+support for Selenium Grid, Docker, CI/CD pipelines, and Allure reporting.
 
 ---
 
 ### Website Under Test
 
-Website under test:
-[automationexercise](https://www.automationexercise.com/)
+Regnat is designed to test any modern web application.  
+For demonstration purposes, it is currently configured to run against
+[automationexercise](https://www.automationexercise.com/).
 
 ---
 
 ## Workflow Status
 
-[![e2e Tests](https://github.com/gregoryAndrikopoulos/automationexercise-wdio-tests/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/automationexercise-wdio-tests/actions/workflows/e2e_test.yml)
+[![e2e Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
 
 ---
 
@@ -138,6 +141,24 @@ pnpm specs:ci
 
 ---
 
+### View Allure Reports (Local)
+
+When you run tests locally, **raw results** are written to `allure-results/`.  
+Use this script to generate and open the corresponding HTML report:
+
+```bash
+pnpm report:allure:open:local
+```
+
+> By default this script looks for the report under `./allure-report`.  
+> You can override the path with `ALLURE_PATH` if needed:
+
+```bash
+ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:local
+```
+
+---
+
 ### View Allure Reports (CI)
 
 After the CI run completes, download the **`allure`** artifact from the GitHub Actions run.  
@@ -157,24 +178,6 @@ pnpm report:allure:open:ci
 
 ```bash
 ALLURE_PATH="/path/to/allure-report" pnpm report:allure:open:ci
-```
-
----
-
-### View Allure Reports (Local)
-
-When you run tests locally, **raw results** are written to `allure-results/`.  
-Use this script to generate and open the corresponding HTML report:
-
-```bash
-pnpm report:allure:open:local
-```
-
-> By default this script looks for the report under `./allure-report`.  
-> You can override the path with `ALLURE_PATH` if needed:
-
-```bash
-ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:local
 ```
 
 ---
