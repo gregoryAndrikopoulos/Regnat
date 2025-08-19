@@ -1,5 +1,5 @@
 {
-  "name": "automationexercise-wdio-tests",
+  "name": "regnat",
   "version": "1.0.0",
   "description": "This project is a structured WebdriverIO v9 test automation setup for testing an existing website.",
   "type": "module",
