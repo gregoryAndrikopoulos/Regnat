@@ -6,6 +6,10 @@ settings:
 
 importers:
   .:
+    dependencies:
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
     devDependencies:
       "@eslint/js":
         specifier: ^9.33.0

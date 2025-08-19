@@ -30,10 +30,48 @@ For demonstration purposes, it is currently configured to run against
 - **Allure** — For advanced reporting and test result visualization.
 - **GitHub Actions** — For continuous integration and automated test
   runs.
+- **dotenv** — Local environment variable management.
+- **GitHub Secrets** — Secure storage of CI credentials.
 
 ### Developer Tooling
 
 - **ESLint + Prettier** — Linting and formatting.
+
+---
+
+## Environment & Secrets
+
+### Local (.env)
+
+Create a `.env` at the repo root (do **not** commit it). Example:
+
+```ini
+TEST_USER_EMAIL_1=
+TEST_USER_PASSWORD_1=
+TEST_USER_EMAIL_2=
+TEST_USER_PASSWORD_2=
+TEST_USER_EMAIL_3=
+TEST_USER_PASSWORD_3=
+```
+
+### CI (GitHub Actions)
+
+Create repository **Secrets** with the same names used locally:
+
+- `TEST_USER_EMAIL_1`, `TEST_USER_PASSWORD_1`
+- `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`
+- `TEST_USER_EMAIL_3`, `TEST_USER_PASSWORD_3`
+
+### Site-specific note (display name)
+
+This suite currently targets **automationexercise**, which shows a **display name** after login.
+
+> Sign-up flow detail: automationexercise first prompts for **Name** and **Email Address** before creating an account.
+
+### Security
+
+- Never commit `.env` or print raw secrets in logs.
+- Rotate real credentials if leaked or shared beyond CI.
 
 ---
 

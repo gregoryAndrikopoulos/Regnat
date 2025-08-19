@@ -1,3 +1,4 @@
+import { expect } from "@wdio/globals";
 import ConsentPage from "../../page-objects/ConsentPage.js";
 import {
   DEFAULT_TIMEOUT,
