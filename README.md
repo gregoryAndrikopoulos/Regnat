@@ -36,6 +36,35 @@ For demonstration purposes, it is currently configured to run against
 ### Developer Tooling
 
 - **ESLint + Prettier** — Linting and formatting.
+- **asdf** — Runtime version manager (Node & pnpm pinned per-project).
+
+---
+
+### Runtime versions (Node & pnpm)
+
+This repo pins tool versions via **asdf** in `.tool-versions`:
+
+```
+nodejs 20.14.0
+pnpm 10.13.1
+```
+
+**Getting set up:**
+```bash
+asdf install
+asdf current
+node -v && pnpm -v
+```
+
+**Changing versions locally:**
+```bash
+asdf install nodejs <new> && asdf local nodejs <new>
+asdf install pnpm <new>   && asdf local pnpm <new>
+asdf reshim
+```
+
+**CI note:** GitHub Actions reads **`.nvmrc`** for Node. If you bump Node locally, update `.nvmrc` too to keep CI in sync.  
+**Note:** Corepack is disabled to avoid shim conflicts; `pnpm` comes from asdf.
 
 ---
 
@@ -78,62 +107,27 @@ This suite currently targets **automationexercise**, which shows a **display nam
 ## Installation and Setup
 
 ### Prerequisites
-
-- **Node.js v18+**
-- **pnpm v10+**
+- **asdf** (version manager)
 - **Docker Desktop** (with Compose)
 
-You can install Node.js directly from the [official
-website](https://nodejs.org/), or use a package manager like Homebrew
-(macOS), apt (Linux), or Chocolatey (Windows).
+> This repo pins tool versions in `.tool-versions` (Node 20.14.0, pnpm 10.13.1).
 
-**macOS (Homebrew):**
-
+### Install toolchain & deps (recommended)
 ```bash
-brew install node
+asdf install                 # installs node & pnpm from .tool-versions
+node -v && pnpm -v          # quick verify
+pnpm install                # project deps
 ```
 
-**Ubuntu/Debian:**
+### Without asdf (fallback)
+If you don’t use asdf, install matching versions manually:
 
-```bash
-sudo apt update
-sudo apt install -y nodejs npm
-```
-
-**Windows (Chocolatey):**
-
-```powershell
-choco install nodejs-lts
-```
-
-Verify installation:
-
-```bash
-node -v
-npm -v
-```
-
----
-
-### Install Dependencies
-
-First, install **pnpm** globally (our package manager):
-
-```bash
-npm install -g pnpm
-```
-
-Then install all project dependencies:
-
-```bash
-pnpm install
-```
-
-Verify pnpm:
-
-```bash
-pnpm -v
-```
+- **Node.js 20.x** (your choice of installer)
+- **pnpm 10.13.x**
+  ```bash
+  npm install -g pnpm@10.13.1
+  pnpm -v
+  ```
 
 ---
 
