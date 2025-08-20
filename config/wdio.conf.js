@@ -19,19 +19,23 @@ export const config = {
           const attempt = browser.deleteSession().catch((e) => {
             const msg = String(e?.message || e);
             if (!/UND_ERR_CLOSED|ECONNREFUSED|socket hang up/i.test(msg)) {
-              console.warn("⚠️ deleteSession failed:", msg);
+              console.warn("deleteSession failed:", msg);
             }
           });
           await Promise.race([attempt, timeout]);
-          console.log(`✅ Session closed on ${reason}`);
+          console.log(`Session closed on ${reason}`);
         }
       } catch (err) {
-        console.warn("⚠️ Cleanup error:", err?.message || err);
+        console.warn("Cleanup error:", err?.message || err);
       }
     };
 
-    process.on("SIGINT", () => { void closeSession("SIGINT"); });
-    process.on("SIGTERM", () => { void closeSession("SIGTERM"); });
+    process.on("SIGINT", () => {
+      void closeSession("SIGINT");
+    });
+    process.on("SIGTERM", () => {
+      void closeSession("SIGTERM");
+    });
   },
 
   hostname: "localhost",
