@@ -6,6 +6,38 @@ const ts = (d = new Date()) =>
   `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
 
 export const config = {
+  before: async () => {
+    let cleaned = false;
+
+    const closeSession = async (reason) => {
+      if (cleaned) return;
+      cleaned = true;
+      try {
+        if (browser?.sessionId) {
+          // Don’t hang forever if Grid/Node is already gone
+          const timeout = new Promise((res) => setTimeout(res, 3000));
+          const attempt = browser.deleteSession().catch((e) => {
+            const msg = String(e?.message || e);
+            if (!/UND_ERR_CLOSED|ECONNREFUSED|socket hang up/i.test(msg)) {
+              console.warn("deleteSession failed:", msg);
+            }
+          });
+          await Promise.race([attempt, timeout]);
+          console.log(`Session closed on ${reason}`);
+        }
+      } catch (err) {
+        console.warn("Cleanup error:", err?.message || err);
+      }
+    };
+
+    process.on("SIGINT", () => {
+      void closeSession("SIGINT");
+    });
+    process.on("SIGTERM", () => {
+      void closeSession("SIGTERM");
+    });
+  },
+
   hostname: "localhost",
   port: 4444,
   path: "/",
@@ -23,6 +55,7 @@ export const config = {
           "--window-size=1920,1080",
           ...(process.env.CI
             ? [
+                "--window-position=0,0",
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
                 "--no-default-browser-check",
