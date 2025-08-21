@@ -3,7 +3,7 @@
 > Structured WebdriverIO v9 test automation setup for reliable end-to-end testing.
 
 It provides a clean, maintainable foundation for scalable automation, with
-support for Selenium Grid, Docker, CI/CD pipelines, and Allure reporting.
+support for Selenium Grid, Docker, CI pipelines, and Allure reporting.
 
 ---
 
@@ -26,17 +26,16 @@ For demonstration purposes, it is currently configured to run against
 - **WebdriverIO v9** — Automation testing framework.
 - **Mocha** — Test framework for writing and executing tests.
 - **Node.js** — JavaScript runtime environment.
-- **Docker + Selenium Grid 4** — For browser execution in isolated containers.
-- **Allure** — Advanced reporting (captures failure screenshots & console logs).
-- **GitHub Actions** — For continuous integration and automated test
-  runs.
-- **dotenv** — Local environment variable management.
-- **GitHub Secrets** — Secure storage of CI credentials.
+- **Selenium Grid 4 (via Docker)** — Browser execution in isolated containers.
+- **Allure** — Advanced reporting (screenshots and console logs).
+- **GitHub Actions** — Continuous integration and automated test runs.
+- **dotenv** — Manage local environment variables.
+- **GitHub Secrets** — Store CI credentials securely.
 
 ### Developer Tooling
 
 - **ESLint + Prettier** — Linting and formatting.
-- **asdf** — Runtime version manager (Node & pnpm pinned per-project).
+- **asdf** — Runtime version manager (pins Node & pnpm versions per project).
 
 ---
 
@@ -138,20 +137,32 @@ If you don’t use asdf, install matching versions manually:
 
 ## Running Tests
 
-### Run Selenium Grid (Docker)
+### Run test infrastructure (Docker)
 
-Bring Grid up:
+Bring infra up:
 
 ```bash
-pnpm grid:up
+pnpm infra:up
 ```
 
 Check Grid UI: <http://localhost:4444/ui>
 
-Bring Grid down:
+View live logs (optional):
 
 ```bash
-pnpm grid:down
++pnpm infra:logs
+```
+
+Bring infra down:
+
+```bash
+pnpm infra:down
+```
+
+Infra status:
+
+```bash
+pnpm infra:status
 ```
 
 ---
