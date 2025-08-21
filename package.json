@@ -11,8 +11,8 @@
   "packageManager": "pnpm@10.13.1",
   "main": "index.js",
   "scripts": {
-    "test:local": "wdio run config/wdio.conf.js",
-    "test:ci": "wdio run config/wdio.conf.js",
+    "test:e2e": "wdio run config/wdio.e2e.conf.js",
+    "test:smoke": "wdio run config/wdio.smoke.conf.js",
     "infra:up": "docker compose -f infra/docker-compose.yml pull && docker compose -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker-compose.yml down -v",
     "infra:logs": "docker compose -f infra/docker-compose.yml logs -f",
@@ -30,6 +30,7 @@
     "webdriverio",
     "mocha",
     "e2e",
+    "smoke",
     "automation",
     "selenium-grid",
     "docker",

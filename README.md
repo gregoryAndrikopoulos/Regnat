@@ -10,14 +10,15 @@ support for Selenium Grid, Docker, CI pipelines, and Allure reporting.
 ### Website Under Test
 
 Regnat is designed to test any modern web application.  
-For demonstration purposes, it is currently configured to run against
-[automationexercise](https://www.automationexercise.com/).
+For demonstration purposes, it is configured to run against
+[Automation Exercise](https://www.automationexercise.com/).
 
 ---
 
 ## Workflow Status
 
-[![e2e Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
+[![E2E Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
+[![Smoke Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml)
 
 ---
 
@@ -34,7 +35,8 @@ For demonstration purposes, it is currently configured to run against
 
 ### Developer Tooling
 
-- **ESLint + Prettier** — Linting and formatting.
+- **ESLint** — Linting.
+- **Prettier** — Formatting.
 - **asdf** — Runtime version manager (pins Node & pnpm versions per project).
 
 ---
@@ -48,7 +50,7 @@ nodejs 20.14.0
 pnpm 10.13.1
 ```
 
-**Getting set up:**
+**Setup**
 
 ```bash
 asdf install
@@ -56,7 +58,7 @@ asdf current
 node -v && pnpm -v
 ```
 
-**Changing versions locally:**
+**Change versions locally:**
 
 ```bash
 asdf install nodejs <new> && asdf local nodejs <new>
@@ -64,8 +66,8 @@ asdf install pnpm <new>   && asdf local pnpm <new>
 asdf reshim
 ```
 
-**CI note:** GitHub Actions reads **`.nvmrc`** for Node. If you bump Node locally, update `.nvmrc` too to keep CI in sync.  
-**Note:** Corepack is disabled to avoid shim conflicts; `pnpm` comes from asdf.
+**CI note:** GitHub Actions reads **`.nvmrc`** for Node. When updating Node locally, update `.nvmrc` to keep CI in sync.
+Corepack is disabled to avoid shim conflicts; `pnpm` is provided by asdf.
 
 ---
 
@@ -94,9 +96,9 @@ Create repository **Secrets** with the same names used locally:
 
 ### Site-specific note (display name)
 
-This suite currently targets **automationexercise**, which shows a **display name** after login.
+The suite targets **Automation Exercise**, which shows a display name after login.
 
-> Sign-up flow detail: automationexercise first prompts for **Name** and **Email Address** before creating an account.
+> Sign-up flow detail: Automation Exercise first prompts for **Name** and **Email Address** before creating an account.
 
 ### Security
 
@@ -114,19 +116,19 @@ This suite currently targets **automationexercise**, which shows a **display nam
 
 > This repo pins tool versions in `.tool-versions` (Node 20.14.0, pnpm 10.13.1).
 
-### Install toolchain & deps (recommended)
+### Install toolchain & dependencies (recommended)
 
 ```bash
-asdf install                 # installs node & pnpm from .tool-versions
-node -v && pnpm -v          # quick verify
+asdf install                # installs node & pnpm from .tool-versions
+node -v && pnpm -v          # verify
 pnpm install                # project deps
 ```
 
-### Without asdf (fallback)
+### Without asdf
 
-If you don’t use asdf, install matching versions manually:
+Install matching versions manually:
 
-- **Node.js 20.x** (your choice of installer)
+- **Node.js 20.x** (any installer)
 - **pnpm 10.13.x**
   ```bash
   npm install -g pnpm@10.13.1
@@ -139,7 +141,7 @@ If you don’t use asdf, install matching versions manually:
 
 ### Run test infrastructure (Docker)
 
-Bring infra up:
+Start test infrastructure:
 
 ```bash
 pnpm infra:up
@@ -150,16 +152,16 @@ Check Grid UI: <http://localhost:4444/ui>
 View live logs (optional):
 
 ```bash
-+pnpm infra:logs
+pnpm infra:logs
 ```
 
-Bring infra down:
+Stop test infrastructure:
 
 ```bash
 pnpm infra:down
 ```
 
-Infra status:
+Infrastructure status:
 
 ```bash
 pnpm infra:status
@@ -169,35 +171,35 @@ pnpm infra:status
 
 ### Run tests locally
 
-To execute your test suite using the local WebdriverIO configuration,
-run:
+To run the test suites locally:
 
 ```bash
-pnpm test:local
+pnpm test:e2e
+pnpm test:smoke
 ```
 
 ### Run tests in CI (GitHub Actions)
 
-The workflow runs automatically on pushes/PRs, but can also be triggered
-manually:
+Workflows run automatically (on pull requests and on a schedule).
+Manual dispatch is available via **GitHub → Actions**:
 
-```bash
-pnpm test:ci
-```
+- Open **Actions**
+- Select the workflow (e.g., **E2E Test**, **Smoke**)
+- Choose a branch and click **Run workflow**
 
 ---
 
 ### View Allure Reports (Local)
 
-When you run tests locally, **raw results** are written to `allure-results/`.  
-Use this script to generate and open the corresponding HTML report:
+Local test runs write raw results to `allure-results/`.  
+Generate and open the HTML report:
 
 ```bash
 pnpm report:allure:open:local
 ```
 
-> By default this script looks for the report under `./allure-report`.  
-> You can override the path with `ALLURE_PATH` if needed:
+> The default report directory is `./allure-report`.
+> Override with `ALLURE_PATH` if needed:
 
 ```bash
 ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:local
@@ -219,8 +221,8 @@ To open the report locally (after downloading/unzipping the artifact):
 pnpm report:allure:open:ci
 ```
 
-> By default this script looks for the report under `~/Downloads/allure/allure-report`.  
-> If your report is in another directory, you can override the path:
+> The default path is `~/Downloads/allure/allure-report`.  
+> Override with `ALLURE_PATH` if needed:
 
 ```bash
 ALLURE_PATH="/path/to/allure-report" pnpm report:allure:open:ci
