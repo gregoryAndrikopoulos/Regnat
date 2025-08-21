@@ -41,22 +41,22 @@ jobs:
       - name: ⚙️ Install dependencies
         run: pnpm install
 
-      - name: 🐳 Grid up (Docker Compose)
-        run: pnpm grid:up
+      - name: 🐳 Infra up (Docker Compose)
+        run: pnpm infra:up
 
-      - name: ⏳ Wait for Grid readiness
+      - name: ⏳ Wait for Infra readiness
         shell: bash
         run: |
           for i in {1..30}; do
-            READY=$(pnpm -s grid:status || true)
+            READY=$(pnpm -s infra:status || true)
             if [[ "$READY" == "true" ]]; then
-              echo "Grid is ready"
+              echo "Infra is ready"
               exit 0
             fi
-            echo "Grid not ready yet... ($i/30)"
+            echo "Infra not ready yet... ($i/30)"
             sleep 2
           done
-          echo "Grid failed to become ready in time" >&2
+          echo "Infra failed to become ready in time" >&2
           exit 1
 
       - name: ✨ Ensure Allure CLI
@@ -92,6 +92,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      - name: 🧹 Grid down (cleanup)
+      - name: 🧹 Infra down (cleanup)
         if: always()
-        run: pnpm grid:down
+        run: pnpm infra:down
