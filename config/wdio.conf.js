@@ -42,7 +42,7 @@ export const config = {
   port: 4444,
   path: "/",
   specs: ["../specs/**/*.spec.js"],
-  maxInstances: 4,
+  maxInstances: 2,
 
   capabilities: [
     {
@@ -93,7 +93,7 @@ export const config = {
     ],
   ],
 
-  afterTest: async (test, context, { passed }) => {
+  afterTest: async function (test, context, { passed }) {
     if (passed) return;
 
     const stamp = ts();
@@ -173,6 +173,5 @@ export const config = {
   mochaOpts: {
     ui: "bdd",
     timeout: 120000,
-    retries: 2,
   },
 };
