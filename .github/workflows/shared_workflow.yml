@@ -1,0 +1,112 @@
+name: Reusable Runner
+
+on:
+  workflow_call:
+    inputs:
+      npm_script:
+        description: "Command to run tests"
+        required: true
+        type: string
+      node_version_file:
+        description: "Path to .nvmrc"
+        required: false
+        default: ".nvmrc"
+        type: string
+      infra_enabled:
+        description: "Bring infra up/down around the run"
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  run-suite:
+    runs-on: ubuntu-latest
+
+    # Make all credential sets available to the job
+    env:
+      TEST_USER_EMAIL_1: ${{ secrets.TEST_USER_EMAIL_1 }}
+      TEST_USER_PASSWORD_1: ${{ secrets.TEST_USER_PASSWORD_1 }}
+      TEST_USER_EMAIL_2: ${{ secrets.TEST_USER_EMAIL_2 }}
+      TEST_USER_PASSWORD_2: ${{ secrets.TEST_USER_PASSWORD_2 }}
+      TEST_USER_EMAIL_3: ${{ secrets.TEST_USER_EMAIL_3 }}
+      TEST_USER_PASSWORD_3: ${{ secrets.TEST_USER_PASSWORD_3 }}
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ inputs.node_version_file }}
+
+      - name: 🧰 Setup pnpm
+        run: npm install -g pnpm@10.13.1
+
+      - name: 🗃️ Cache pnpm package store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: ⚙️ Install dependencies
+        run: pnpm install
+
+      - name: 🐳 Infra up (Docker Compose)
+        if: ${{ inputs.infra_enabled }}
+        run: pnpm infra:up
+
+      - name: ⏳ Wait for Infra readiness
+        if: ${{ inputs.infra_enabled }}
+        shell: bash
+        run: |
+          for i in {1..30}; do
+            READY=$(pnpm -s infra:status || true)
+            if [[ "$READY" == "true" ]]; then
+              echo "Infra is ready"
+              exit 0
+            fi
+            echo "Infra not ready yet... ($i/30)"
+            sleep 2
+          done
+          echo "Infra failed to become ready in time" >&2
+          exit 1
+
+      - name: ✨ Ensure Allure CLI
+        run: pnpm exec allure --version || true
+
+      - name: 🧪 Run Tests
+        env:
+          CI: true
+          FORCE_COLOR: "3"
+        run: ${{ inputs.npm_script }}
+
+      - name: 📊 Generate Allure HTML
+        if: always()
+        run: pnpm exec allure generate allure-results --clean -o allure-report || echo "No allure results"
+
+      - name: 📎 Upload Allure artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure
+          path: |
+            allure-results/**
+            allure-report/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: 📎 Upload JUnit (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-xml
+          path: reports/junit/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: 🧹 Infra down (cleanup)
+        if: ${{ always() && inputs.infra_enabled }}
+        run: pnpm infra:down
