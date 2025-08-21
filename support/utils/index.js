@@ -30,9 +30,30 @@ async function goHomeAcceptConsent() {
   if (consentVisible) await ConsentPage.acceptConsent();
 }
 
+function createTimestamp() {
+  const now = new Date();
+  const padLeft = (num, width = 2) => String(num).padStart(width, "0");
+
+  const timestamp =
+    `${now.getFullYear()}` +
+    `${padLeft(now.getMonth() + 1)}` +
+    `${padLeft(now.getDate())}` +
+    `${padLeft(now.getHours())}` +
+    `${padLeft(now.getMinutes())}` +
+    `${padLeft(now.getSeconds())}`;
+
+  const randomSuffix = Math.random().toString(36).slice(2, 6);
+  return `${timestamp}${randomSuffix}`;
+}
+
+function uniqueEmail(prefix = "auto", domain = "example.com") {
+  return `${prefix}+${createTimestamp()}@${domain}`;
+}
+
 export {
   clickElem,
   expectIsDisplayed,
   expectIsNotDisplayed,
   goHomeAcceptConsent,
+  uniqueEmail,
 };

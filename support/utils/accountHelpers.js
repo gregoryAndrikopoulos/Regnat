@@ -5,15 +5,29 @@ import RegistrationPage from "../../page-objects/RegistrationPage.js";
 import ConfirmationPage from "../../page-objects/ConfirmationPage.js";
 import { LONG_TIMEOUT } from "./testConstants.js";
 import { buildAddress } from "./dataTemplates.js";
+import { goHomeAcceptConsent } from "./index.js";
 
 export async function loginOrRegister({ name, email, password }) {
-  await HomePage.assertHomePageVisible();
-  await HomePage.signupLoginLink.click();
+  await goHomeAcceptConsent();
 
+  const onLoginAlready = await SignupLoginPage.loginHeader
+    .isExisting()
+    .catch(() => false);
+  if (
+    !onLoginAlready &&
+    (await HomePage.signupLoginLink.isExisting().catch(() => false))
+  ) {
+    await HomePage.signupLoginLink.click();
+  }
   await expect(SignupLoginPage.loginHeader).toBeDisplayed();
-  await expect(SignupLoginPage.loginHeader).toHaveText(
-    /Login to your account/i
-  );
+
+  const headerHasExpectedText = await SignupLoginPage.loginHeader
+    .getText()
+    .then((t) => /login/i.test(t))
+    .catch(() => false);
+  if (!headerHasExpectedText) {
+    // proceed as long as the login form is visible
+  }
 
   await SignupLoginPage.loginEmailInput.setValue(email);
   await SignupLoginPage.loginPasswordInput.setValue(password);

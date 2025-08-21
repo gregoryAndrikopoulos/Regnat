@@ -1,12 +1,12 @@
-name: E2E Test
+name: Smoke Test
 on:
-  pull_request:
-    branches: [main]
+  schedule:
+    - cron: "39 4 * * *"
   workflow_dispatch:
 
 jobs:
-  e2e:
+  smoke:
     uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
     secrets: inherit
     with:
-      npm_script: "pnpm test:e2e"
+      npm_script: "pnpm test:smoke"
