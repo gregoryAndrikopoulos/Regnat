@@ -50,19 +50,16 @@ export function makeConfig({ specsGlob }) {
         browserName: "chrome",
         acceptInsecureCerts: true,
         "wdio:enforceWebDriverClassic": true,
-        "goog:loggingPrefs": { browser: "ALL" },
+        "goog:loggingPrefs": { browser: "ALL", performance: "ALL" },
         "goog:chromeOptions": {
           args: [
             "--window-size=1920,1080",
-            ...(process.env.CI
-              ? [
-                  "--window-position=0,0",
-                  "--no-sandbox",
-                  "--disable-dev-shm-usage",
-                  "--no-default-browser-check",
-                ]
-              : []),
+            "--window-position=0,0",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--no-default-browser-check",
           ],
+          perfLoggingPrefs: { enableNetwork: true, enablePage: true },
         },
       },
     ],
@@ -80,7 +77,7 @@ export function makeConfig({ specsGlob }) {
       [
         "allure",
         {
-          outputDir: "allure-results",
+          outputDir: "reports/allure/allure-results",
           disableWebdriverStepsReporting: true,
           disableWebdriverScreenshotsReporting: true,
         },
@@ -108,7 +105,7 @@ export function makeConfig({ specsGlob }) {
       }
 
       if (b64) {
-        const dir = "./reports/html-reports/screenshots";
+        const dir = "./reports/screenshots";
         const file = join(dir, `${stamp}.png`);
         try {
           await fs.mkdir(dir, { recursive: true });
@@ -140,9 +137,10 @@ export function makeConfig({ specsGlob }) {
 
       // 2) Console logs (Chrome & classic driver)
       try {
-        const [url, logs] = await Promise.all([
+        const [url, logs, perf] = await Promise.all([
           browser.getUrl().catch(() => undefined),
           browser.getLogs?.("browser").catch(() => []),
+          browser.getLogs?.("performance").catch(() => []),
         ]);
         if (Array.isArray(logs) && logs.length) {
           const interesting = logs.filter((e) =>
@@ -166,8 +164,23 @@ export function makeConfig({ specsGlob }) {
             "application/json"
           );
         }
+
+        // Attach DevTools Performance log (network/page) if available
+        if (Array.isArray(perf) && perf.length) {
+          const payload = {
+            test: test.fullTitle ?? test.title,
+            url,
+            entries: perf.slice(-500), // keep attachment small
+          };
+          const allure = (await import("@wdio/allure-reporter")).default;
+          allure.addAttachment(
+            "performance.log",
+            JSON.stringify(payload, null, 2),
+            "application/json"
+          );
+        }
       } catch {
-        /* non-fatal: some grids/browsers don't support 'browser' logs */
+        /* non-fatal: some grids/browsers don't support 'browser' or 'performance' logs */
       }
     },
 

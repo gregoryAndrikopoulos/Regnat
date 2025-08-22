@@ -202,7 +202,7 @@ pnpm report:allure:open:local
 > Override with `ALLURE_PATH` if needed:
 
 ```bash
-ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:local
+ALLURE_PATH="/custom/path/reports/allure-report" pnpm report:allure:open:local
 ```
 
 ---
@@ -212,8 +212,8 @@ ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:local
 After the CI run completes, download the **`allure`** artifact from the GitHub Actions run.  
 It contains both:
 
-- `allure-results/` → raw JSON output.
-- `allure-report/` → generated HTML report.
+- `reports/allure-results/` → raw JSON output.
+- `reports/allure-report/` → generated HTML report.
 
 To open the report locally (after downloading/unzipping the artifact):
 
@@ -225,7 +225,7 @@ pnpm report:allure:open:ci
 > Override with `ALLURE_PATH` if needed:
 
 ```bash
-ALLURE_PATH="/path/to/allure-report" pnpm report:allure:open:ci
+ALLURE_PATH="/path/to/reports/allure-report" pnpm report:allure:open:ci
 ```
 
 ---

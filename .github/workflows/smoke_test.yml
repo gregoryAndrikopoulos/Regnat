@@ -6,6 +6,11 @@ on:
 
 jobs:
   smoke:
+    # Ensure only one scheduled run is active at a time
+    concurrency:
+      group: smoke-schedule
+      cancel-in-progress: true
+
     uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
     secrets: inherit
     with:
