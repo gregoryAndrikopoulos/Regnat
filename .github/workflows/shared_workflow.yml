@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    # Make all credential sets available to the job
     env:
       TEST_USER_EMAIL_1: ${{ secrets.TEST_USER_EMAIL_1 }}
       TEST_USER_PASSWORD_1: ${{ secrets.TEST_USER_PASSWORD_1 }}
@@ -86,15 +85,17 @@ jobs:
 
       - name: 📊 Generate Allure HTML
         if: always()
-        run: pnpm exec allure generate reports/allure/allure-results --clean -o reports/allure/allure-report || echo "No allure results"
+        run: pnpm exec allure generate allure-results --clean -o allure-report || echo "No allure results"
 
       - name: 📎 Upload Allure artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure
-          path: reports/allure/**
-          if-no-files-found: ignore
+          path: |
+            allure-results/**
+            allure-report/**
+          if-no-files-found: warn
           retention-days: 14
 
       - name: 📎 Upload JUnit (on failure)

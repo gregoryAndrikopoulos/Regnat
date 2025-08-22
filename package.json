@@ -18,7 +18,7 @@
     "infra:logs": "docker compose -f infra/docker-compose.yml logs -f",
     "infra:status": "curl -s http://localhost:4444/status | jq '.value.ready'",
     "report:allure:generate": "allure generate reports/allure/allure-results --clean -o reports/allure/allure-report",
-    "report:allure:open:ci": "bash -lc 'allure open \"${ALLURE_PATH:-$HOME/Downloads/allure/reports/allure/report}\"''",
+    "report:allure:open:ci": "bash -lc 'allure open \"${ALLURE_PATH:-$HOME/Downloads/allure/allure-report}\"'",
     "report:allure:open:local": "bash -lc 'pnpm exec allure generate reports/allure/allure-results --clean -o reports/allure/allure-report && pnpm exec allure open reports/allure/allure-report'",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
