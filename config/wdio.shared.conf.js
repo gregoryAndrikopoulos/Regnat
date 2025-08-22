@@ -5,6 +5,17 @@ const pad = (n, l = 2) => String(n).padStart(l, "0");
 const ts = (d = new Date()) =>
   `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
 
+// Pick output paths based on environment
+const IS_CI = !!process.env.CI;
+const PATHS = {
+  // Allure (results + HTML)
+  allureResults: IS_CI ? "allure-results" : "reports/allure/allure-results",
+  allureReport: IS_CI ? "allure-report" : "reports/allure/allure-report",
+  // JUnit and screenshots (kept under reports/ for both)
+  junitDir: "reports/junit",
+  screenshotsDir: "reports/screenshots",
+};
+
 export function makeConfig({ specsGlob }) {
   return {
     before: async () => {
@@ -50,19 +61,17 @@ export function makeConfig({ specsGlob }) {
         browserName: "chrome",
         acceptInsecureCerts: true,
         "wdio:enforceWebDriverClassic": true,
-        "goog:loggingPrefs": { browser: "ALL" },
+        "goog:loggingPrefs": { browser: "ALL", performance: "ALL" },
         "goog:chromeOptions": {
           args: [
             "--window-size=1920,1080",
-            ...(process.env.CI
-              ? [
-                  "--window-position=0,0",
-                  "--no-sandbox",
-                  "--disable-dev-shm-usage",
-                  "--no-default-browser-check",
-                ]
-              : []),
+            "--window-position=0,0",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--no-default-browser-check",
           ],
+          // Enable DevTools perf log capture
+          perfLoggingPrefs: { enableNetwork: true, enablePage: true },
         },
       },
     ],
@@ -80,7 +89,7 @@ export function makeConfig({ specsGlob }) {
       [
         "allure",
         {
-          outputDir: "allure-results",
+          outputDir: PATHS.allureResults,
           disableWebdriverStepsReporting: true,
           disableWebdriverScreenshotsReporting: true,
         },
@@ -88,7 +97,7 @@ export function makeConfig({ specsGlob }) {
       [
         "junit",
         {
-          outputDir: "reports/junit",
+          outputDir: PATHS.junitDir,
           outputFileFormat: (opts) => `junit-${opts.cid}.xml`,
         },
       ],
@@ -104,11 +113,11 @@ export function makeConfig({ specsGlob }) {
       try {
         b64 = await browser.takeScreenshot();
       } catch {
-        /* non-fatal: screenshot capture is best-effort and must not fail teardown */
+        /* best-effort */
       }
 
       if (b64) {
-        const dir = "./reports/html-reports/screenshots";
+        const dir = PATHS.screenshotsDir;
         const file = join(dir, `${stamp}.png`);
         try {
           await fs.mkdir(dir, { recursive: true });
@@ -119,8 +128,9 @@ export function makeConfig({ specsGlob }) {
           );
           process.emit?.("test:screenshot", file);
         } catch {
-          /* non-fatal: file system write issues shouldn't fail the test run */
+          /* ignore fs issues */
         }
+
         try {
           const allure = (await import("@wdio/allure-reporter")).default;
           allure.addAttachment(
@@ -138,12 +148,14 @@ export function makeConfig({ specsGlob }) {
         }
       }
 
-      // 2) Console logs (Chrome & classic driver)
+      // 2) Console + DevTools Performance logs (if available)
       try {
-        const [url, logs] = await Promise.all([
+        const [url, logs, perf] = await Promise.all([
           browser.getUrl().catch(() => undefined),
           browser.getLogs?.("browser").catch(() => []),
+          browser.getLogs?.("performance").catch(() => []),
         ]);
+
         if (Array.isArray(logs) && logs.length) {
           const interesting = logs.filter((e) =>
             ["SEVERE", "ERROR", "WARNING"].includes(e.level)
@@ -166,8 +178,22 @@ export function makeConfig({ specsGlob }) {
             "application/json"
           );
         }
+
+        if (Array.isArray(perf) && perf.length) {
+          const payload = {
+            test: test.fullTitle ?? test.title,
+            url,
+            entries: perf.slice(-500),
+          };
+          const allure = (await import("@wdio/allure-reporter")).default;
+          allure.addAttachment(
+            "performance.log",
+            JSON.stringify(payload, null, 2),
+            "application/json"
+          );
+        }
       } catch {
-        /* non-fatal: some grids/browsers don't support 'browser' logs */
+        /* some grids/browsers don't support 'browser' or 'performance' logs */
       }
     },
 

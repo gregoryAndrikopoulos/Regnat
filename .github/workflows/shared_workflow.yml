@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    # Make all credential sets available to the job
     env:
       TEST_USER_EMAIL_1: ${{ secrets.TEST_USER_EMAIL_1 }}
       TEST_USER_PASSWORD_1: ${{ secrets.TEST_USER_PASSWORD_1 }}
@@ -96,7 +95,7 @@ jobs:
           path: |
             allure-results/**
             allure-report/**
-          if-no-files-found: ignore
+          if-no-files-found: warn
           retention-days: 14
 
       - name: 📎 Upload JUnit (on failure)
