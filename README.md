@@ -191,42 +191,36 @@ Manual dispatch is available via **GitHub → Actions**:
 
 ### View Allure Reports (Local)
 
-Local test runs write raw results to `allure-results/`.  
+Local test runs write raw results to `reports/allure/allure-results/`.  
 Generate and open the HTML report:
 
 ```bash
 pnpm report:allure:open:local
 ```
 
-> The default report directory is `./allure-report`.
-> Override with `ALLURE_PATH` if needed:
-
-```bash
-ALLURE_PATH="/custom/path/reports/allure-report" pnpm report:allure:open:local
-```
+This command generates HTML into `reports/allure/allure-report/` and opens it.
 
 ---
 
 ### View Allure Reports (CI)
 
 After the CI run completes, download the **`allure`** artifact from the GitHub Actions run.  
-It contains both:
+When unzipped to `~/Downloads/allure/`, it contains:
 
-- `reports/allure-results/` → raw JSON output.
-- `reports/allure-report/` → generated HTML report.
+- `allure-report/` → generated HTML report (standalone)
 
-To open the report locally (after downloading/unzipping the artifact):
+Open the report locally:
 
 ```bash
 pnpm report:allure:open:ci
 ```
 
-> The default path is `~/Downloads/allure/allure-report`.  
+> Default path is `~/Downloads/allure/allure-report`.  
 > Override with `ALLURE_PATH` if needed:
-
-```bash
-ALLURE_PATH="/path/to/reports/allure-report" pnpm report:allure:open:ci
-```
+>
+> ```bash
+> ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
+> ```
 
 ---
 
