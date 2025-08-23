@@ -6,6 +6,11 @@ on:
 
 jobs:
   e2e:
+    # Ensure only one run is active at a time
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+
     uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
     secrets: inherit
     with:
