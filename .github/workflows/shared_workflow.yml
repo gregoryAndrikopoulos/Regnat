@@ -98,6 +98,15 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+      - name: 📸 Upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: reports/screenshots/**
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: 📎 Upload JUnit (on failure)
         if: failure()
         uses: actions/upload-artifact@v4

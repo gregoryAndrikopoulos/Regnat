@@ -6,7 +6,7 @@ on:
 
 jobs:
   smoke:
-    # Ensure only one scheduled run is active at a time
+    # Ensure only one run is active at a time
     concurrency:
       group: smoke-schedule
       cancel-in-progress: true
