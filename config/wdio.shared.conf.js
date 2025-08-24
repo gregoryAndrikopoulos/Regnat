@@ -29,6 +29,13 @@ function suiteFromFile(filePath) {
   return parts.length > 1 ? parts[parts.length - 2] : "unknown";
 }
 
+// Infer base spec filename without extension
+function specBaseFromFile(filePath) {
+  if (!filePath) return "unknown";
+  const base = filePath.split(/[\\/]/).pop() || "";
+  return base.replace(/\.[^.]+$/, "");
+}
+
 export function makeConfig({ specsGlob }) {
   return {
     before: async () => {
@@ -78,6 +85,13 @@ export function makeConfig({ specsGlob }) {
           ).toLowerCase();
           const { width, height } = await browser.getWindowSize();
           const suiteSeg = browser.__suiteSegment || "unknown";
+          const specBase = browser.__specBase || "unknown";
+
+          // Build final tag:
+          const provided = typeof tag === "string" ? tag.trim() : "";
+          const finalTag = provided
+            ? `${specBase}-${provided}-screenshot`
+            : `${specBase}-screenshot`;
 
           const baseDir = join(
             process.cwd(),
@@ -96,9 +110,9 @@ export function makeConfig({ specsGlob }) {
           await fs.mkdir(baseDir, { recursive: true });
           await fs.mkdir(outDir, { recursive: true });
 
-          const baselineFile = join(baseDir, `${tag}.png`);
-          const actualFile = join(outDir, `${tag}.actual.png`);
-          const diffFile = join(outDir, `${tag}.diff.png`);
+          const baselineFile = join(baseDir, `${finalTag}.png`);
+          const actualFile = join(outDir, `${finalTag}.actual.png`);
+          const diffFile = join(outDir, `${finalTag}.diff.png`);
 
           await browser.saveScreenshot(actualFile);
 
@@ -115,7 +129,7 @@ export function makeConfig({ specsGlob }) {
                 "image/png"
               );
               throw new Error(
-                `Baseline missing for "${tag}" → ${baselineFile}`
+                `Baseline missing for "${finalTag}" → ${baselineFile}`
               );
             } else {
               // Local: seed baseline automatically
@@ -144,7 +158,7 @@ export function makeConfig({ specsGlob }) {
               "image/png"
             );
             throw new Error(
-              `Size mismatch (${basePng.width}x${basePng.height} vs ${actPng.width}x${actPng.height}) for "${tag}"`
+              `Size mismatch (${basePng.width}x${basePng.height} vs ${actPng.width}x${actPng.height}) for "${finalTag}"`
             );
           }
 
@@ -176,7 +190,7 @@ export function makeConfig({ specsGlob }) {
               "image/png"
             );
             throw new Error(
-              `Visual diff for "${tag}" → ${(ratio * 100).toFixed(2)}% > ${tolerance * 100}%`
+              `Visual diff for "${finalTag}" → ${(ratio * 100).toFixed(2)}% > ${tolerance * 100}%`
             );
           }
 
@@ -185,9 +199,10 @@ export function makeConfig({ specsGlob }) {
       );
     },
 
-    // Capture the suite segment from the spec path before each test
+    // Capture the suite segment and spec base from the spec path before each test
     beforeTest: function (test /*, context */) {
       browser.__suiteSegment = suiteFromFile(test?.file);
+      browser.__specBase = specBaseFromFile(test?.file);
     },
 
     hostname: "localhost",

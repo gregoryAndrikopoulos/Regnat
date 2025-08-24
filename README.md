@@ -228,7 +228,6 @@ pnpm report:allure:open:ci
 - The suite takes visual snapshots and compares them to committed baselines.
 - On differences, the test fails and Allure shows baseline / actual / diff.
 - Locally, missing baselines are auto-seeded; in CI, baselines must already exist.
-- On failure, CI also uploads the visual artifacts for quick inspection.
 
 ---
 
