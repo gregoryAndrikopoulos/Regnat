@@ -84,11 +84,11 @@ jobs:
         run: ${{ inputs.npm_script }}
 
       - name: 📊 Generate Allure HTML
-        if: always()
+        if: ${{ always() }}
         run: pnpm exec allure generate allure-results --clean -o allure-report || echo "No allure results"
 
       - name: 📎 Upload Allure artifacts
-        if: always()
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: allure
@@ -98,8 +98,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: 📸 Upload screenshots
-        if: failure()
+      - name: 📸 Upload screenshots (on failure)
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
@@ -108,7 +108,7 @@ jobs:
           retention-days: 7
 
       - name: 📎 Upload JUnit (on failure)
-        if: failure()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: junit-xml

@@ -3,11 +3,11 @@
 > Structured WebdriverIO v9 test automation setup for reliable end-to-end testing.
 
 It provides a clean, maintainable foundation for scalable automation, with
-support for Selenium Grid, Docker, CI pipelines, and Allure reporting.
+support for Selenium Grid, Docker, CI pipelines, **Allure reporting**, and **visual regression checks**.
 
 ---
 
-### Website Under Test
+## Website Under Test
 
 Regnat is designed to test any modern web application.  
 For demonstration purposes, it is configured to run against
@@ -29,6 +29,7 @@ For demonstration purposes, it is configured to run against
 - **Node.js** — JavaScript runtime environment.
 - **Selenium Grid 4 (via Docker)** — Browser execution in isolated containers.
 - **Allure** — Advanced reporting (screenshots and console logs).
+- **Pixelmatch + pngjs** — Image diffing stack used for visual regression.
 - **GitHub Actions** — Continuous integration and automated test runs.
 - **dotenv** — Manage local environment variables.
 - **GitHub Secrets** — Store CI credentials securely.
@@ -41,7 +42,7 @@ For demonstration purposes, it is configured to run against
 
 ---
 
-### Runtime versions (Node & pnpm)
+## Runtime Versions (Node & pnpm)
 
 This repo pins tool versions via **asdf** in `.tool-versions`:
 
@@ -94,7 +95,7 @@ Create repository **Secrets** with the same names used locally:
 - `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`
 - `TEST_USER_EMAIL_3`, `TEST_USER_PASSWORD_3`
 
-### Site-specific note (display name)
+### Site-Specific Note (display name)
 
 The suite targets **Automation Exercise**, which shows a display name after login.
 
@@ -171,8 +172,6 @@ pnpm infra:status
 
 ### Run tests locally
 
-To run the test suites locally:
-
 ```bash
 pnpm test:e2e
 pnpm test:smoke
@@ -189,7 +188,9 @@ Manual dispatch is available via **GitHub → Actions**:
 
 ---
 
-### View Allure Reports (Local)
+## Reports
+
+### Allure (Local)
 
 Local test runs write raw results to `reports/allure/allure-results/`.  
 Generate and open the HTML report:
@@ -198,13 +199,11 @@ Generate and open the HTML report:
 pnpm report:allure:open:local
 ```
 
-This command generates HTML into `reports/allure/allure-report/` and opens it.
+This generates HTML in `reports/allure/allure-report/` and opens it.
 
----
+### Allure (CI)
 
-### View Allure Reports (CI)
-
-After the CI run completes, download the **`allure`** artifact from the GitHub Actions run.  
+After a CI run, download the **`allure`** artifact.  
 When unzipped to `~/Downloads/allure/`, it contains:
 
 - `allure-report/` → generated HTML report (standalone)
@@ -221,6 +220,14 @@ pnpm report:allure:open:ci
 > ```bash
 > ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
 > ```
+
+---
+
+## Visual Regression (Overview)
+
+- The suite takes visual snapshots and compares them to committed baselines.
+- On differences, the test fails and Allure shows baseline / actual / diff.
+- Locally, missing baselines are auto-seeded; in CI, baselines must already exist.
 
 ---
 
