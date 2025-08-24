@@ -37,7 +37,9 @@
     "ci",
     "github-actions",
     "allure",
+    "junit",
     "testing",
+    "visual-regression",
     "dotenv"
   ],
   "author": "",
@@ -58,6 +60,8 @@
     "eslint-plugin-prettier": "^5.5.4",
     "expect-webdriverio": "^5",
     "globals": "^16.3.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
     "prettier": "^3.6.2"
   },
   "dependencies": {

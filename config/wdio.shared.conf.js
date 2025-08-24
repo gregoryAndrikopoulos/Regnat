@@ -14,7 +14,20 @@ const PATHS = {
   // JUnit and screenshots (kept under reports/ for both)
   junitDir: "reports/junit",
   screenshotsDir: "reports/screenshots",
+  // Visual testing
+  visualBaseline: "visual-baseline",
+  visualOutput: "reports/visual",
 };
+
+// Infer "suite" from the spec file path
+function suiteFromFile(filePath) {
+  if (!filePath) return "unknown";
+  const parts = filePath.split(/[\\/]/);
+  const idx = parts.lastIndexOf("specs");
+  if (idx !== -1 && parts[idx + 1]) return parts[idx + 1];
+  // Fallback: use parent directory name
+  return parts.length > 1 ? parts[parts.length - 2] : "unknown";
+}
 
 export function makeConfig({ specsGlob }) {
   return {
@@ -48,6 +61,133 @@ export function makeConfig({ specsGlob }) {
       process.on("SIGTERM", () => {
         void closeSession("SIGTERM");
       });
+
+      // Visual compare command (uses pixelmatch + pngjs)
+      const pngjsMod = await import("pngjs");
+      const PNG =
+        pngjsMod.PNG ||
+        (pngjsMod.default && (pngjsMod.default.PNG || pngjsMod.default));
+      const pixelmatchMod = await import("pixelmatch");
+      const pixelmatch = pixelmatchMod.default || pixelmatchMod;
+
+      browser.addCommand(
+        "compareViewport",
+        async function compareViewport(tag, { tolerance = 0.01 } = {}) {
+          const bName = (
+            browser.capabilities.browserName || "browser"
+          ).toLowerCase();
+          const { width, height } = await browser.getWindowSize();
+          const suiteSeg = browser.__suiteSegment || "unknown";
+
+          const baseDir = join(
+            process.cwd(),
+            PATHS.visualBaseline,
+            suiteSeg,
+            bName,
+            `${width}x${height}`
+          );
+          const outDir = join(
+            process.cwd(),
+            PATHS.visualOutput,
+            suiteSeg,
+            bName,
+            `${width}x${height}`
+          );
+          await fs.mkdir(baseDir, { recursive: true });
+          await fs.mkdir(outDir, { recursive: true });
+
+          const baselineFile = join(baseDir, `${tag}.png`);
+          const actualFile = join(outDir, `${tag}.actual.png`);
+          const diffFile = join(outDir, `${tag}.diff.png`);
+
+          await browser.saveScreenshot(actualFile);
+
+          const allure = (await import("@wdio/allure-reporter")).default;
+          const baselineBuf = await fs.readFile(baselineFile).catch(() => null);
+
+          // First run behavior
+          if (!baselineBuf) {
+            if (IS_CI) {
+              // CI requires committed baselines
+              allure.addAttachment(
+                "visual:actual",
+                await fs.readFile(actualFile),
+                "image/png"
+              );
+              throw new Error(
+                `Baseline missing for "${tag}" → ${baselineFile}`
+              );
+            } else {
+              // Local: seed baseline automatically
+              await fs.copyFile(actualFile, baselineFile);
+              allure.addAttachment(
+                "visual:seeded-baseline",
+                await fs.readFile(actualFile),
+                "image/png"
+              );
+              return { seeded: true, ratio: 0 };
+            }
+          }
+
+          // Compare baseline vs actual
+          const basePng = PNG.sync.read(baselineBuf);
+          const actPng = PNG.sync.read(await fs.readFile(actualFile));
+
+          if (
+            basePng.width !== actPng.width ||
+            basePng.height !== actPng.height
+          ) {
+            allure.addAttachment("visual:baseline", baselineBuf, "image/png");
+            allure.addAttachment(
+              "visual:actual",
+              await fs.readFile(actualFile),
+              "image/png"
+            );
+            throw new Error(
+              `Size mismatch (${basePng.width}x${basePng.height} vs ${actPng.width}x${actPng.height}) for "${tag}"`
+            );
+          }
+
+          const diff = new PNG({
+            width: basePng.width,
+            height: basePng.height,
+          });
+          const mismatched = pixelmatch(
+            basePng.data,
+            actPng.data,
+            diff.data,
+            basePng.width,
+            basePng.height,
+            { threshold: 0.1 }
+          );
+          const ratio = mismatched / (basePng.width * basePng.height);
+
+          if (ratio > tolerance) {
+            await fs.writeFile(diffFile, PNG.sync.write(diff));
+            allure.addAttachment("visual:baseline", baselineBuf, "image/png");
+            allure.addAttachment(
+              "visual:actual",
+              await fs.readFile(actualFile),
+              "image/png"
+            );
+            allure.addAttachment(
+              "visual:diff",
+              await fs.readFile(diffFile),
+              "image/png"
+            );
+            throw new Error(
+              `Visual diff for "${tag}" → ${(ratio * 100).toFixed(2)}% > ${tolerance * 100}%`
+            );
+          }
+
+          return { seeded: false, ratio };
+        }
+      );
+    },
+
+    // Capture the suite segment from the spec path before each test
+    beforeTest: function (test /*, context */) {
+      browser.__suiteSegment = suiteFromFile(test?.file);
     },
 
     hostname: "localhost",
