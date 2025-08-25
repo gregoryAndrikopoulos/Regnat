@@ -4,22 +4,23 @@ on:
     - cron: "39 4 * * *"
   workflow_dispatch:
 
+# Avoid overlapping runs from cron/manual
+concurrency:
+  group: smoke-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke:
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome, firefox, edge]
-
-    # Ensure only one run is active at a time
-    concurrency:
-      group: smoke-schedule-${{ matrix.browser }}
-      cancel-in-progress: true
-
     uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@cross-browser
     secrets: inherit
     with:
-      npm_script: "BROWSERS=${{ matrix.browser }} pnpm test:smoke"
-      artifact_suffix: "-${{ matrix.browser }}"
-      compose_profiles: ${{ matrix.browser }}
-      grid_browsers: ${{ matrix.browser }}
+      # Run smoke suite sequentially across browsers in one job
+      npm_script: >
+        BROWSERS=chrome pnpm test:smoke &&
+        BROWSERS=firefox pnpm test:smoke &&
+        BROWSERS=edge pnpm test:smoke
+      artifact_suffix: ""
+      # Bring up both cross-browser nodes once
+      compose_profiles: smoke
+      # Wait for both nodes to register with the Grid before running
+      grid_browsers: firefox,edge
