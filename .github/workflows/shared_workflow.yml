@@ -17,6 +17,21 @@ on:
         required: false
         default: true
         type: boolean
+      artifact_suffix:
+        description: "Suffix to append to artifact names"
+        required: false
+        default: ""
+        type: string
+      compose_profiles:
+        description: "Docker Compose profiles to enable (e.g. firefox, edge, smoke)"
+        required: false
+        default: ""
+        type: string
+      grid_browsers:
+        description: "Comma-separated browsers to wait for in Grid (chrome,firefox,edge)"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   run-suite:
@@ -56,23 +71,83 @@ jobs:
 
       - name: 🐳 Infra up (Docker Compose)
         if: ${{ inputs.infra_enabled }}
+        env:
+          COMPOSE_PROFILES: ${{ inputs.compose_profiles }}
         run: pnpm infra:up
 
       - name: ⏳ Wait for Infra readiness
         if: ${{ inputs.infra_enabled }}
         shell: bash
         run: |
-          for i in {1..30}; do
+          set -euo pipefail
+
+          # Make sure jq is available (it usually is, but be safe)
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y jq
+          fi
+
+          # 1) Wait for hub ready (max ~120s)
+          for i in {1..60}; do
             READY=$(pnpm -s infra:status || true)
             if [[ "$READY" == "true" ]]; then
-              echo "Infra is ready"
-              exit 0
+              echo "Hub is ready"
+              break
             fi
-            echo "Infra not ready yet... ($i/30)"
+            echo "Hub not ready yet... ($i/60)"
             sleep 2
           done
-          echo "Infra failed to become ready in time" >&2
-          exit 1
+
+          if [[ "$READY" != "true" ]]; then
+            echo "Hub failed to become ready in time" >&2
+            exit 1
+          fi
+
+          # 2) Optionally wait for requested browsers (max ~120s each)
+          if [[ -n "${{ inputs.grid_browsers }}" ]]; then
+            IFS=',' read -ra REQ <<< "${{ inputs.grid_browsers }}"
+            map_to_selenium() {
+              local b="$(echo "$1" | tr '[:upper:]' '[:lower:]' | xargs)"
+              case "$b" in
+                edge|microsoftedge|msedge) echo "MicrosoftEdge" ;;
+                firefox|ff)                echo "firefox" ;;
+                chrome|chromium)           echo "chrome" ;;
+                *)                         echo "" ;;
+              esac
+            }
+            for b in "${REQ[@]}"; do
+              want="$(map_to_selenium "$b")"
+              if [[ -z "$want" ]]; then
+                echo "Skipping unknown browser token: '$b'"
+                continue
+              fi
+              echo "Waiting for Grid node(s) for: $want"
+              for i in {1..60}; do
+                # Look for any slot with this browserName
+                found=$(
+                  curl -s http://localhost:4444/se/grid/distributor/status \
+                  | jq -r --arg W "$want" '
+                      [ .nodes[].slots[].stereotype.browserName
+                        | select(. != null)
+                        | ascii_downcase
+                      ]
+                      | map(. == ($W | ascii_downcase))
+                      | any
+                    '
+                )
+                if [[ "$found" == "true" ]]; then
+                  echo "Found node for $want"
+                  break
+                fi
+                echo "Node for $want not registered yet... ($i/60)"
+                sleep 2
+              done
+              if [[ "$found" != "true" ]]; then
+                echo "Timed out waiting for $want node registration" >&2
+                exit 1
+              fi
+            done
+          fi
 
       - name: ✨ Ensure Allure CLI
         run: pnpm exec allure --version || true
@@ -91,7 +166,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: allure
+          name: allure${{ inputs.artifact_suffix }}
           path: |
             allure-results/**
             allure-report/**
@@ -102,7 +177,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots
+          name: screenshots${{ inputs.artifact_suffix }}
           path: reports/screenshots/**
           if-no-files-found: ignore
           retention-days: 7
@@ -111,7 +186,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: junit-xml
+          name: junit-xml${{ inputs.artifact_suffix }}
           path: reports/junit/**
           if-no-files-found: ignore
           retention-days: 14

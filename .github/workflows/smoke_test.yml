@@ -6,12 +6,20 @@ on:
 
 jobs:
   smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, edge]
+
     # Ensure only one run is active at a time
     concurrency:
-      group: smoke-schedule
+      group: smoke-schedule-${{ matrix.browser }}
       cancel-in-progress: true
 
-    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
+    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@cross-browser
     secrets: inherit
     with:
-      npm_script: "pnpm test:smoke"
+      npm_script: "BROWSERS=${{ matrix.browser }} pnpm test:smoke"
+      artifact_suffix: "-${{ matrix.browser }}"
+      compose_profiles: ${{ matrix.browser }}
+      grid_browsers: ${{ matrix.browser }}
