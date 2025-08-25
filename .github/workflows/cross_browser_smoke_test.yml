@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   smoke:
-    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@cross-browser
+    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
     secrets: inherit
     with:
       npm_script: "BROWSERS=chrome,firefox,edge pnpm test:smoke"
