@@ -76,60 +76,52 @@ jobs:
         run: |
           set -euo pipefail
           
-          start_ts=$(date +%s)
-          
-          # --- Hub ready (early-exit) ---
-          for i in {1..30}; do   # ~30s max
+          # --- Hub ready ---
+          ready=false
+          for i in {1..30}; do
             if [[ "$(pnpm -s infra:status || true)" == "true" ]]; then
-              took=$(($(date +%s) - start_ts))
-              echo "Infra is ready (hub) in ${took}s"
+              ready=true
+              echo "Infra is ready."
               break
             fi
-            sleep 1
+            echo "Infra not ready yet... ($i/30)"
+            sleep 2
           done
-          if [[ "$(pnpm -s infra:status || true)" != "true" ]]; then
+          if [[ "$ready" != "true" ]]; then
             echo "Infra failed to become ready in time" >&2
             exit 1
           fi
           
-          # --- Brief node wait for smoke profiles (early-exit) ---
-          want_ff=false
-          want_edge=false
+          # --- Silent brief node wait (only if profiles request them) ---
+          need_nodes=false; want_ff=false; want_edge=false
           case ",${{ inputs.compose_profiles }}," in
-            *,smoke,*)   want_ff=true; want_edge=true ;;
-            *,firefox,*) want_ff=true ;;
-            *,edge,*)    want_edge=true ;;
+            *,smoke,*)   need_nodes=true; want_ff=true; want_edge=true ;;
+            *,firefox,*) need_nodes=true; want_ff=true ;;
+            *,edge,*)    need_nodes=true; want_edge=true ;;
           esac
           
-          if $want_ff || $want_edge; then
-            echo "Waiting for requested nodes to register..."
-            node_start_ts=$(date +%s)
-            for i in {1..30}; do  # ~30s max, exits as soon as both present
+          if $need_nodes; then
+            for _ in {1..30}; do
               payload="$(curl -sf http://localhost:4444/se/grid/distributor/status || curl -sf http://localhost:4444/se/grid/status || echo '{}')"
           
               have_ff=false
               have_edge=false
-          
-              # firefox
-              echo "$payload" | grep -Eqi '"browserName"\s*:\s*"firefox"' && have_ff=true
-          
-              # edge can appear as MicrosoftEdge, msedge, or edge
-              echo "$payload" | grep -Eqi '"browserName"\s*:\s*"(MicrosoftEdge|msedge|edge)"' && have_edge=true
-          
-              ok=true
-              $want_ff && $have_ff || ok=false
-              $want_edge && $have_edge || ok=false
-          
-              if $ok; then
-                took=$(($(date +%s) - node_start_ts))
-                echo "Requested nodes are registered in ${took}s"
-                break
+              if grep -Eqi '"browserName"\s*:\s*"firefox"' <<<"$payload"; then
+                have_ff=true
+              fi
+              # Edge may appear as MicrosoftEdge, msedge, or edge depending on image
+              if grep -Eqi '"browserName"\s*:\s*"(MicrosoftEdge|msedge|edge)"' <<<"$payload"; then
+                have_edge=true
               fi
           
+              ok=true
+              if $want_ff && ! $have_ff; then ok=false; fi
+              if $want_edge && ! $have_edge; then ok=false; fi
+          
+              $ok && break
               sleep 1
             done
-            # If they weren't detected within ~30s, proceed anyway; WDIO will try to create sessions.
-            # This avoids unnecessary blocking when nodes are just behind by a few seconds.
+            # We keep this silent to match E2E log style.
           fi
 
       - name: ✨ Ensure Allure CLI

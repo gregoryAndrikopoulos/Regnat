@@ -14,12 +14,6 @@ jobs:
     uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@cross-browser
     secrets: inherit
     with:
-      # Run smoke suite sequentially across browsers in one job
-      npm_script: >
-        BROWSERS=chrome pnpm test:smoke &&
-        BROWSERS=firefox pnpm test:smoke &&
-        BROWSERS=edge pnpm test:smoke
+      npm_script: "BROWSERS=chrome,firefox,edge pnpm test:smoke"
       artifact_suffix: ""
-      # Bring up both cross-browser nodes once
       compose_profiles: smoke
-      # Wait for both nodes to register with the Grid before running
