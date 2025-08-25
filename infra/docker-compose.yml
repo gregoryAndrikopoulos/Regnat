@@ -1,9 +1,8 @@
 services:
   chrome:
-    image: seleniarm/node-chromium:latest
+    image: seleniarm/node-chromium:${CHROMIUM_TAG:-latest}
     shm_size: 2gb
-    depends_on:
-      - selenium-hub
+    depends_on: [selenium-hub]
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
@@ -13,39 +12,43 @@ services:
       - SE_SCREEN_WIDTH=1920
       - SE_SCREEN_HEIGHT=1080
       - SE_SCREEN_DEPTH=24
+      - SE_NODE_SESSION_TIMEOUT=60
 
-  # edge:
-  #   image: seleniarm/node-chromium:latest
-  #   shm_size: 2gb
-  #   depends_on:
-  #     - selenium-hub
-  #   environment:
-  #     - SE_EVENT_BUS_HOST=selenium-hub
-  #     - SE_EVENT_BUS_PUBLISH_PORT=4442
-  #     - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-  #     - VNC_NO_PASSWORD=1
-  #     - SE_NODE_MAX_SESSIONS=2
-  #     - SE_SCREEN_WIDTH=1920
-  #     - SE_SCREEN_HEIGHT=1080
-  #     - SE_SCREEN_DEPTH=24
+  firefox:
+    image: selenium/node-firefox:${FIREFOX_TAG:-latest}
+    profiles: ["smoke", "firefox"]
+    shm_size: 2gb
+    depends_on: [selenium-hub]
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - VNC_NO_PASSWORD=1
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_SCREEN_WIDTH=1920
+      - SE_SCREEN_HEIGHT=1080
+      - SE_SCREEN_DEPTH=24
+      - SE_NODE_SESSION_TIMEOUT=60
 
-  # firefox:
-  #   image: seleniarm/node-chromium:latest
-  #   shm_size: 2gb
-  #   depends_on:
-  #     - selenium-hub
-  #   environment:
-  #     - SE_EVENT_BUS_HOST=selenium-hub
-  #     - SE_EVENT_BUS_PUBLISH_PORT=4442
-  #     - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-  #     - VNC_NO_PASSWORD=1
-  #     - SE_NODE_MAX_SESSIONS=2
-  #     - SE_SCREEN_WIDTH=1920
-  #     - SE_SCREEN_HEIGHT=1080
-  #     - SE_SCREEN_DEPTH=24
+  edge:
+    image: selenium/node-edge:${SELENIUM_VERSION:-latest}
+    platform: linux/amd64
+    profiles: ["smoke", "edge"]
+    shm_size: 2gb
+    depends_on: [selenium-hub]
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - VNC_NO_PASSWORD=1
+      - SE_NODE_MAX_SESSIONS=1
+      - SE_SCREEN_WIDTH=1920
+      - SE_SCREEN_HEIGHT=1080
+      - SE_SCREEN_DEPTH=24
+      - SE_NODE_SESSION_TIMEOUT=60
 
   selenium-hub:
-    image: selenium/hub:latest
+    image: selenium/hub:${SELENIUM_VERSION:-latest}
     container_name: selenium-hub
     ports:
       - "4442:4442"

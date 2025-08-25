@@ -2,8 +2,9 @@
 
 > Structured WebdriverIO v9 test automation setup for reliable end-to-end testing.
 
-It provides a clean, maintainable foundation for scalable automation, with
-support for Selenium Grid, Docker, CI pipelines, **Allure reporting**, and **visual regression checks**.
+Provides a clean, maintainable foundation for scalable automation, with support
+for Selenium Grid, Docker, CI pipelines, **Allure reporting**, and **visual
+regression checks**.
 
 ---
 
@@ -18,33 +19,33 @@ For demonstration purposes, it is configured to run against
 ## Workflow Status
 
 [![E2E Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
-[![Smoke Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml)
+[![Cross-browser Smoke Test](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/cross_browser_smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/cross_browser_smoke_test.yml)
 
 ---
 
 ## Technologies Used
 
-- **WebdriverIO v9** — Automation testing framework.
-- **Mocha** — Test framework for writing and executing tests.
-- **Node.js** — JavaScript runtime environment.
-- **Selenium Grid 4 (via Docker)** — Browser execution in isolated containers.
-- **Allure** — Advanced reporting (screenshots and console logs).
-- **Pixelmatch + pngjs** — Image diffing stack used for visual regression.
-- **GitHub Actions** — Continuous integration and automated test runs.
-- **dotenv** — Manage local environment variables.
-- **GitHub Secrets** — Store CI credentials securely.
+- **WebdriverIO v9** — automation testing framework
+- **Mocha** — test framework for writing and executing tests
+- **Node.js** — JavaScript runtime environment
+- **Selenium Grid 4 (via Docker)** — browser execution in isolated containers
+- **Allure** — advanced reporting (screenshots and console logs)
+- **Pixelmatch + pngjs** — image diffing stack used for visual regression
+- **GitHub Actions** — continuous integration and automated test runs
+- **dotenv** — local environment variable management
+- **GitHub Secrets** — secure storage for CI credentials
 
 ### Developer Tooling
 
-- **ESLint** — Linting.
-- **Prettier** — Formatting.
-- **asdf** — Runtime version manager (pins Node & pnpm versions per project).
+- **ESLint** — linting
+- **Prettier** — formatting
+- **asdf** — runtime version manager (pins Node & pnpm versions per project)
 
 ---
 
 ## Runtime Versions (Node & pnpm)
 
-This repo pins tool versions via **asdf** in `.tool-versions`:
+This repository pins tool versions via **asdf** in `.tool-versions`:
 
 ```
 nodejs 20.14.0
@@ -59,7 +60,7 @@ asdf current
 node -v && pnpm -v
 ```
 
-**Change versions locally:**
+**Change versions locally**
 
 ```bash
 asdf install nodejs <new> && asdf local nodejs <new>
@@ -67,8 +68,9 @@ asdf install pnpm <new>   && asdf local pnpm <new>
 asdf reshim
 ```
 
-**CI note:** GitHub Actions reads **`.nvmrc`** for Node. When updating Node locally, update `.nvmrc` to keep CI in sync.
-Corepack is disabled to avoid shim conflicts; `pnpm` is provided by asdf.
+**CI note:** GitHub Actions reads **`.nvmrc`** for Node. When updating Node
+locally, update `.nvmrc` to keep CI in sync. Corepack is disabled to avoid shim
+conflicts; `pnpm` is provided by asdf.
 
 ---
 
@@ -76,7 +78,7 @@ Corepack is disabled to avoid shim conflicts; `pnpm` is provided by asdf.
 
 ### Local (.env)
 
-Create a `.env` at the repo root (do **not** commit it). Example:
+Create a `.env` at the repository root (do **not** commit it). Example:
 
 ```ini
 TEST_USER_EMAIL_1=
@@ -97,9 +99,11 @@ Create repository **Secrets** with the same names used locally:
 
 ### Site-Specific Note (display name)
 
-The suite targets **Automation Exercise**, which shows a display name after login.
+The suite targets **Automation Exercise**, which shows a display name after
+login.
 
-> Sign-up flow detail: Automation Exercise first prompts for **Name** and **Email Address** before creating an account.
+> Sign-up flow detail: Automation Exercise first prompts for **Name** and
+> **Email Address** before creating an account.
 
 ### Security
 
@@ -115,7 +119,8 @@ The suite targets **Automation Exercise**, which shows a display name after logi
 - **asdf** (version manager)
 - **Docker Desktop** (with Compose)
 
-> This repo pins tool versions in `.tool-versions` (Node 20.14.0, pnpm 10.13.1).
+> This repository pins tool versions in `.tool-versions` (Node 20.14.0,
+> pnpm 10.13.1).
 
 ### Install toolchain & dependencies (recommended)
 
@@ -142,58 +147,86 @@ Install matching versions manually:
 
 ### Run test infrastructure (Docker)
 
-Start test infrastructure:
+Start Selenium Grid + nodes:
 
 ```bash
+# Chrome-only (default; fastest)
 pnpm infra:up
+
+# Cross-browser nodes (Firefox + Edge + Chrome)
+pnpm infra:up:cross    # equivalent to: COMPOSE_PROFILES=smoke pnpm infra:up
 ```
 
-Check Grid UI: <http://localhost:4444/ui>
+Grid UI: <http://localhost:4444/ui>
 
-View live logs (optional):
+Live logs (optional):
 
 ```bash
 pnpm infra:logs
 ```
 
-Stop test infrastructure:
+Stop infrastructure:
 
 ```bash
-pnpm infra:down
+pnpm infra:down         # or: pnpm infra:down:cross
 ```
 
-Infrastructure status:
+Infrastructure status (hub ready?):
 
 ```bash
 pnpm infra:status
 ```
 
+> **Compose profiles**
+>
+> - The `chrome` node is always available.
+> - `firefox` and `edge` nodes start only when the **`smoke`** profile is
+>   enabled (via `infra:up:cross`) or when `COMPOSE_PROFILES` is provided.
+
 ---
 
 ### Run tests locally
 
+**E2E (Chrome-only):**
+
 ```bash
 pnpm test:e2e
+```
+
+**Smoke (cross-browser):**
+
+```bash
+# Run all browsers in one invocation (default: chrome,firefox,edge)
+pnpm infra:up:cross
 pnpm test:smoke
 ```
 
 ### Run tests in CI (GitHub Actions)
 
-Workflows run automatically (on pull requests and on a schedule).
-Manual dispatch is available via **GitHub → Actions**:
+- **E2E Test**: Chrome-only, parallelized across specs for speed.
+- **Cross-browser Smoke Test**: One job brings up Grid with the `smoke` profile
+  and runs the smoke suite **sequentially across browsers in a single
+  invocation** (to keep artifacts and reporting consolidated).
 
-- Open **Actions**
-- Select the workflow (e.g., **E2E Test**, **Smoke**)
-- Choose a branch and click **Run workflow**
+Manual dispatch:
+
+- Open **Actions**.
+- Select **E2E Test** or **Cross-browser Smoke Test**.
+- Choose a branch and click **Run workflow**.
 
 ---
 
 ## Reports
 
-### Allure (Local)
+### Allure (local)
 
-Local test runs write raw results to `reports/allure/allure-results/`.  
-Generate and open the HTML report:
+Local test runs write raw results to:
+
+- `reports/allure/allure-results/` (local)
+- In CI, results are at repo root: `allure-results/` (so the runner can upload
+  them).
+
+Generate and open locally:
 
 ```bash
 pnpm report:allure:open:local
@@ -203,8 +236,8 @@ This generates HTML in `reports/allure/allure-report/` and opens it.
 
 ### Allure (CI)
 
-After a CI run, download the **`allure`** artifact.  
-When unzipped to `~/Downloads/allure/`, it contains:
+After a CI run, download the **`allure`** artifact. When unzipped to
+`~/Downloads/allure/`, it contains:
 
 - `allure-report/` → generated HTML report (standalone)
 
@@ -214,23 +247,25 @@ Open the report locally:
 pnpm report:allure:open:ci
 ```
 
-> Default path is `~/Downloads/allure/allure-report`.  
-> Override with `ALLURE_PATH` if needed:
->
-> ```bash
-> ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
-> ```
+Default path is `~/Downloads/allure/allure-report`. Override with `ALLURE_PATH`
+if needed:
+
+```bash
+ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
+```
 
 ---
 
-## Visual Regression (Overview)
+## Visual Regression (overview)
 
-- The suite takes visual snapshots and compares them to committed baselines.
+- The suite captures visual snapshots and compares them to committed baselines.
 - On differences, the test fails and Allure shows baseline / actual / diff.
-- Locally, missing baselines are auto-seeded; in CI, baselines must already exist.
+- Locally, missing baselines are auto-seeded; in CI, baselines must already
+  exist.
 
 ---
 
 ## License
 
-This project is licensed under the ISC License – see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the ISC License — see the
+[LICENSE](./LICENSE) file for details.

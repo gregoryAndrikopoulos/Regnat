@@ -17,11 +17,21 @@ on:
         required: false
         default: true
         type: boolean
+      artifact_suffix:
+        description: "Suffix to append to artifact names"
+        required: false
+        default: ""
+        type: string
+      compose_profiles:
+        description: "Docker Compose profiles to enable (e.g. firefox, edge, smoke)"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   run-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       TEST_USER_EMAIL_1: ${{ secrets.TEST_USER_EMAIL_1 }}
@@ -56,23 +66,63 @@ jobs:
 
       - name: 🐳 Infra up (Docker Compose)
         if: ${{ inputs.infra_enabled }}
+        env:
+          COMPOSE_PROFILES: ${{ inputs.compose_profiles }}
         run: pnpm infra:up
 
       - name: ⏳ Wait for Infra readiness
         if: ${{ inputs.infra_enabled }}
         shell: bash
         run: |
+          set -euo pipefail
+
+          # --- Hub ready ---
+          ready=false
           for i in {1..30}; do
-            READY=$(pnpm -s infra:status || true)
-            if [[ "$READY" == "true" ]]; then
-              echo "Infra is ready"
-              exit 0
+            if [[ "$(pnpm -s infra:status || true)" == "true" ]]; then
+              ready=true
+              echo "Infra is ready."
+              break
             fi
             echo "Infra not ready yet... ($i/30)"
             sleep 2
           done
-          echo "Infra failed to become ready in time" >&2
-          exit 1
+          if [[ "$ready" != "true" ]]; then
+            echo "Infra failed to become ready in time" >&2
+            exit 1
+          fi
+
+          # --- Silent brief node wait (only if profiles request them) ---
+          need_nodes=false; want_ff=false; want_edge=false
+          case ",${{ inputs.compose_profiles }}," in
+            *,smoke,*)   need_nodes=true; want_ff=true; want_edge=true ;;
+            *,firefox,*) need_nodes=true; want_ff=true ;;
+            *,edge,*)    need_nodes=true; want_edge=true ;;
+          esac
+
+          if $need_nodes; then
+            for _ in {1..30}; do
+              payload="$(curl -sf http://localhost:4444/se/grid/distributor/status || curl -sf http://localhost:4444/se/grid/status || echo '{}')"
+
+              have_ff=false
+              have_edge=false
+              if grep -Eqi '"browserName"\s*:\s*"firefox"' <<<"$payload"; then
+                have_ff=true
+              fi
+              # Edge may appear as MicrosoftEdge, msedge, or edge depending on image
+              if grep -Eqi '"browserName"\s*:\s*"(MicrosoftEdge|msedge|edge)"' <<<"$payload"; then
+                have_edge=true
+              fi
+
+              ok=true
+              if $want_ff && ! $have_ff; then ok=false; fi
+              if $want_edge && ! $have_edge; then ok=false; fi
+
+              $ok && break
+              sleep 1
+            done
+            # We keep this silent to match E2E log style.
+          fi
 
       - name: ✨ Ensure Allure CLI
         run: pnpm exec allure --version || true
@@ -91,7 +141,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: allure
+          name: allure${{ inputs.artifact_suffix }}
           path: |
             allure-results/**
             allure-report/**
@@ -102,7 +152,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots
+          name: screenshots${{ inputs.artifact_suffix }}
           path: reports/screenshots/**
           if-no-files-found: ignore
           retention-days: 7
@@ -111,7 +161,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: junit-xml
+          name: junit-xml${{ inputs.artifact_suffix }}
           path: reports/junit/**
           if-no-files-found: ignore
           retention-days: 14

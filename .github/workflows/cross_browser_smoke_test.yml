@@ -1,0 +1,19 @@
+name: Cross-browser Smoke Test
+on:
+  schedule:
+    - cron: "39 4 * * *"
+  workflow_dispatch:
+
+# Avoid overlapping runs
+concurrency:
+  group: smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
+    secrets: inherit
+    with:
+      npm_script: "BROWSERS=chrome,firefox,edge pnpm test:smoke"
+      artifact_suffix: ""
+      compose_profiles: smoke
