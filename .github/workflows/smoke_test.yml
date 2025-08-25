@@ -23,4 +23,3 @@ jobs:
       # Bring up both cross-browser nodes once
       compose_profiles: smoke
       # Wait for both nodes to register with the Grid before running
-      grid_browsers: firefox,edge
