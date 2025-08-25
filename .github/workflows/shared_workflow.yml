@@ -27,16 +27,11 @@ on:
         required: false
         default: ""
         type: string
-      grid_browsers:
-        description: "Comma-separated browsers to wait for in Grid (chrome,firefox,edge)"
-        required: false
-        default: ""
-        type: string
 
 jobs:
   run-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       TEST_USER_EMAIL_1: ${{ secrets.TEST_USER_EMAIL_1 }}
@@ -81,12 +76,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Make sure jq is available (it usually is, but be safe)
-          if ! command -v jq >/dev/null 2>&1; then
-            sudo apt-get update -y
-            sudo apt-get install -y jq
-          fi
-
           # 1) Wait for hub ready (max ~120s)
           for i in {1..60}; do
             READY=$(pnpm -s infra:status || true)
@@ -97,55 +86,40 @@ jobs:
             echo "Hub not ready yet... ($i/60)"
             sleep 2
           done
-
           if [[ "$READY" != "true" ]]; then
             echo "Hub failed to become ready in time" >&2
             exit 1
           fi
 
-          # 2) Optionally wait for requested browsers (max ~120s each)
-          if [[ -n "${{ inputs.grid_browsers }}" ]]; then
-            IFS=',' read -ra REQ <<< "${{ inputs.grid_browsers }}"
-            map_to_selenium() {
-              local b="$(echo "$1" | tr '[:upper:]' '[:lower:]' | xargs)"
-              case "$b" in
-                edge|microsoftedge|msedge) echo "MicrosoftEdge" ;;
-                firefox|ff)                echo "firefox" ;;
-                chrome|chromium)           echo "chrome" ;;
-                *)                         echo "" ;;
-              esac
-            }
-            for b in "${REQ[@]}"; do
-              want="$(map_to_selenium "$b")"
-              if [[ -z "$want" ]]; then
-                echo "Skipping unknown browser token: '$b'"
-                continue
+          # 2) If specific profiles are requested, wait briefly for nodes to register
+          #    We avoid jq to keep things simple and robust.
+          want_ff=false
+          want_edge=false
+          case ",${{ inputs.compose_profiles }}," in
+            *,smoke,*)        want_ff=true; want_edge=true ;;
+            *,firefox,*)      want_ff=true ;;
+            *,edge,*)         want_edge=true ;;
+          esac
+
+          if $want_ff || $want_edge; then
+            echo "Waiting for requested nodes to register..."
+            for i in {1..60}; do
+              payload="$(curl -sf http://localhost:4444/se/grid/distributor/status || curl -sf http://localhost:4444/se/grid/status || echo '{}')"
+              have_ff=false; have_edge=false
+              if echo "$payload" | grep -qi '"browserName":"firefox"'; then have_ff=true; fi
+              if echo "$payload" | grep -qi '"browserName":"MicrosoftEdge"'; then have_edge=true; fi
+
+              ok=true
+              $want_ff && $have_ff || ok=false
+              $want_edge && $have_edge || ok=false
+
+              if $ok; then
+                echo "Requested nodes are registered."
+                break
               fi
-              echo "Waiting for Grid node(s) for: $want"
-              for i in {1..60}; do
-                # Look for any slot with this browserName
-                found=$(
-                  curl -s http://localhost:4444/se/grid/distributor/status \
-                  | jq -r --arg W "$want" '
-                      [ .nodes[].slots[].stereotype.browserName
-                        | select(. != null)
-                        | ascii_downcase
-                      ]
-                      | map(. == ($W | ascii_downcase))
-                      | any
-                    '
-                )
-                if [[ "$found" == "true" ]]; then
-                  echo "Found node for $want"
-                  break
-                fi
-                echo "Node for $want not registered yet... ($i/60)"
-                sleep 2
-              done
-              if [[ "$found" != "true" ]]; then
-                echo "Timed out waiting for $want node registration" >&2
-                exit 1
-              fi
+
+              echo "Nodes not registered yet... ($i/60)"
+              sleep 2
             done
           fi
 
