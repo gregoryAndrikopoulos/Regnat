@@ -1,5 +1,4 @@
 import { expect } from "@wdio/globals";
-import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ProductDetailsPage {
   get container() {
@@ -13,12 +12,11 @@ class ProductDetailsPage {
   }
 
   async assertOnDetailsPage() {
-    await this.container.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.container.waitForDisplayed();
 
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes("/product_details"),
       {
-        timeout: SHORT_TIMEOUT,
         timeoutMsg: "URL did not include /product_details",
       }
     );

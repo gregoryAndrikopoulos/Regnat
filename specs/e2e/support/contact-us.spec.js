@@ -1,7 +1,6 @@
 import { expect } from "@wdio/globals";
 import HomePage from "../../../page-objects/HomePage.js";
 import ContactUsPage from "../../../page-objects/ContactUsPage.js";
-import { SHORT_TIMEOUT } from "../../../support/utils/testConstants.js";
 import { goHomeAcceptConsent } from "../../../support/utils/index.js";
 import { fixturePath } from "../../../support/fixtures/fixtures.js";
 
@@ -29,9 +28,7 @@ describe("Test Case 6: Contact Us Form", function () {
       await browser.acceptAlert();
     }
 
-    await ContactUsPage.successAlert.waitForDisplayed({
-      timeout: SHORT_TIMEOUT,
-    });
+    await ContactUsPage.successAlert.waitForDisplayed();
     await expect(ContactUsPage.successAlert).toBeDisplayed();
     await expect(ContactUsPage.successAlert).toHaveText(/Success!/i);
 

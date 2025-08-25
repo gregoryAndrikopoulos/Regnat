@@ -1,8 +1,5 @@
 import { browser, $ } from "@wdio/globals";
-import {
-  SHORT_TIMEOUT,
-  VISUAL_TOLERANCE,
-} from "../../support/utils/testConstants.js";
+import { VISUAL_TOLERANCE } from "../../support/utils/testConstants.js";
 import { goHomeAcceptConsent } from "../../support/utils/index.js";
 import HomePage from "../../page-objects/HomePage.js";
 
@@ -16,12 +13,12 @@ describe("[@smoke] Visual check of Contact Us page", () => {
     await browser.waitUntil(
       async () =>
         (await browser.execute(() => document.readyState)) === "complete",
-      { timeout: SHORT_TIMEOUT, timeoutMsg: "document not ready" }
+      { timeoutMsg: "document not ready" }
     );
 
     // wait for a stable element
     await $("header")
-      .waitForDisplayed({ timeout: SHORT_TIMEOUT })
+      .waitForDisplayed()
       .catch(() => {});
 
     // Compare full viewport; first local run seeds baseline automatically

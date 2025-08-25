@@ -1,5 +1,4 @@
 import { expect } from "@wdio/globals";
-import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ContactUsPage {
   get getInTouchHeader() {
@@ -40,13 +39,13 @@ class ContactUsPage {
 
   async attachFile(localPath) {
     const el = await this.uploadInput;
-    await el.waitForExist({ timeout: SHORT_TIMEOUT });
+    await el.waitForExist();
     const remotePath = await browser.uploadFile(localPath);
     await el.setValue(remotePath);
   }
 
   async assertGetInTouchVisible() {
-    await this.getInTouchHeader.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.getInTouchHeader.waitForDisplayed();
     await expect(this.getInTouchHeader).toBeDisplayed();
   }
 }
