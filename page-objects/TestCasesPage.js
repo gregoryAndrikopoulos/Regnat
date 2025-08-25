@@ -1,5 +1,4 @@
 import { expect } from "@wdio/globals";
-import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class TestCasesPage {
   get header() {
@@ -13,15 +12,15 @@ class TestCasesPage {
   }
 
   async assertLanded() {
-    await this.header.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.header.waitForDisplayed();
     await expect(this.header).toBeDisplayed();
-    await this.practiceNote.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.practiceNote.waitForDisplayed();
 
-    await this.panelGroup.waitForExist({ timeout: SHORT_TIMEOUT });
+    await this.panelGroup.waitForExist();
 
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes("/test_cases"),
-      { timeout: SHORT_TIMEOUT, timeoutMsg: "URL did not include /test_cases" }
+      { timeoutMsg: "URL did not include /test_cases" }
     );
   }
 }

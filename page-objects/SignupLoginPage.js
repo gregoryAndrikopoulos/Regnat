@@ -25,9 +25,6 @@ class SignupLoginPage {
   get loginButton() {
     return $('[data-qa="login-button"]');
   }
-  get loginError() {
-    return $("p=Your email or password is incorrect!");
-  }
   get signupEmailExistsError() {
     return $("p=Email Address already exist!");
   }

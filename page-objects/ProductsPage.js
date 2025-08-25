@@ -1,5 +1,4 @@
 import { expect } from "@wdio/globals";
-import { SHORT_TIMEOUT } from "../support/utils/testConstants.js";
 
 class ProductsPage {
   get allProductsHeader() {
@@ -27,14 +26,14 @@ class ProductsPage {
   }
 
   async assertAllProductsVisible() {
-    await this.allProductsHeader.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.allProductsHeader.waitForDisplayed();
     await expect(this.allProductsHeader).toHaveText(/All Products/i);
     await expect(this.productCards).toBeElementsArrayOfSize({ gte: 1 });
     await expect(this.productCards[0]).toBeDisplayed();
 
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes("/products"),
-      { timeout: SHORT_TIMEOUT, timeoutMsg: "URL did not include /products" }
+      { timeoutMsg: "URL did not include /products" }
     );
   }
 
@@ -46,14 +45,13 @@ class ProductsPage {
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes("/product_details"),
       {
-        timeout: SHORT_TIMEOUT,
         timeoutMsg: "Did not navigate to product details",
       }
     );
   }
 
   async searchFor(term) {
-    await this.searchInput.waitForDisplayed({ timeout: SHORT_TIMEOUT });
+    await this.searchInput.waitForDisplayed();
     await this.searchInput.setValue(term);
     await this.searchButton.click();
 
@@ -61,20 +59,16 @@ class ProductsPage {
       async () =>
         (await this.resultsHeader.getText()).match(/Searched Products/i),
       {
-        timeout: SHORT_TIMEOUT,
         timeoutMsg: 'Results header did not change to "Searched Products"',
       }
     );
   }
 
   async assertSearchedProductsVisible() {
-    await this.searchedProductsHeader.waitForDisplayed({
-      timeout: SHORT_TIMEOUT,
-    });
+    await this.searchedProductsHeader.waitForDisplayed();
     await expect(this.searchedProductsHeader).toHaveText(/Searched Products/i);
 
     await browser.waitUntil(async () => (await this.productCards).length > 0, {
-      timeout: SHORT_TIMEOUT,
       timeoutMsg: "No product cards found after search",
     });
     await expect((await this.productCards)[0]).toBeDisplayed();
@@ -154,7 +148,6 @@ class ProductsPage {
     await browser.waitUntil(
       async () => (await this.productCards).length === expected,
       {
-        timeout: SHORT_TIMEOUT,
         timeoutMsg: `Expected ${expected} search results, got ${(await this.productCards).length}`,
       }
     );

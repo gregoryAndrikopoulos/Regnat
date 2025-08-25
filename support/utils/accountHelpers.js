@@ -3,7 +3,6 @@ import HomePage from "../../page-objects/HomePage.js";
 import SignupLoginPage from "../../page-objects/SignupLoginPage.js";
 import RegistrationPage from "../../page-objects/RegistrationPage.js";
 import ConfirmationPage from "../../page-objects/ConfirmationPage.js";
-import { LONG_TIMEOUT } from "./testConstants.js";
 import { buildAddress } from "./dataTemplates.js";
 import { goHomeAcceptConsent } from "./index.js";
 
@@ -36,9 +35,11 @@ export async function loginOrRegister({ name, email, password }) {
   await browser.waitUntil(
     async () =>
       (await HomePage.loggedInBanner.isDisplayed().catch(() => false)) ||
-      (await SignupLoginPage.loginError?.isDisplayed().catch(() => false)) ||
+      (await SignupLoginPage.loginErrorMessage
+        ?.isDisplayed()
+        .catch(() => false)) ||
       (await SignupLoginPage.signupNameInput.isDisplayed().catch(() => false)),
-    { timeout: LONG_TIMEOUT, interval: 200 }
+    { interval: 200 }
   );
 
   const loggedIn = await HomePage.loggedInBanner

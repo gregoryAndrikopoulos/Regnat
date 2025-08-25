@@ -1,24 +1,20 @@
 import { expect } from "@wdio/globals";
 import ConsentPage from "../../page-objects/ConsentPage.js";
-import {
-  DEFAULT_TIMEOUT,
-  SHORT_TIMEOUT,
-  HOMEPAGE_LINK,
-} from "./testConstants.js";
+import { HOMEPAGE_LINK } from "./testConstants.js";
 
 async function clickElem(elem) {
-  await elem.waitForExist({ timeout: DEFAULT_TIMEOUT });
-  await elem.waitForDisplayed({ timeout: DEFAULT_TIMEOUT });
+  await elem.waitForExist();
+  await elem.waitForDisplayed();
   await elem.click();
 }
 
-async function expectIsDisplayed(element, timeout = DEFAULT_TIMEOUT) {
-  await element.waitForDisplayed({ timeout });
+async function expectIsDisplayed(element) {
+  await element.waitForDisplayed();
   await expect(element).toBeDisplayed();
 }
 
-async function expectIsNotDisplayed(element, timeout = SHORT_TIMEOUT) {
-  await element.waitForDisplayed({ timeout, reverse: true });
+async function expectIsNotDisplayed(element) {
+  await element.waitForDisplayed({ reverse: true });
   await expect(element).not.toBeDisplayed();
 }
 

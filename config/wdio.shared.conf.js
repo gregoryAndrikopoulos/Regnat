@@ -232,9 +232,9 @@ export function makeConfig({ specsGlob }) {
     ],
 
     logLevel: "error",
-    waitforTimeout: 20000,
+    waitforTimeout: IS_CI ? 20000 : 10000,
     connectionRetryCount: 2,
-    specFileRetries: 1,
+    specFileRetries: IS_CI ? 1 : 0,
     specFileRetriesDelay: 0,
     specFileRetriesDeferred: false,
 
@@ -273,7 +273,18 @@ export function makeConfig({ specsGlob }) {
 
       if (b64) {
         const dir = PATHS.screenshotsDir;
-        const file = join(dir, `${stamp}.png`);
+
+        const safe = (s) =>
+          (s || "")
+            .trim()
+            .replace(/[^\w.-]+/g, "_")
+            .replace(/^_+|_+$/g, "")
+            .slice(0, 120);
+
+        const specBase = safe(browser.__specBase || "unknown");
+        const name = `Failed-${specBase}-${stamp}`;
+        const file = join(dir, `${name}.png`);
+
         try {
           await fs.mkdir(dir, { recursive: true });
           await fs.writeFile(file, Buffer.from(b64, "base64"));
@@ -289,7 +300,7 @@ export function makeConfig({ specsGlob }) {
         try {
           const allure = (await import("@wdio/allure-reporter")).default;
           allure.addAttachment(
-            `screenshot ${stamp}`,
+            `screenshot ${name}`,
             Buffer.from(b64, "base64"),
             "image/png"
           );
@@ -354,7 +365,7 @@ export function makeConfig({ specsGlob }) {
 
     mochaOpts: {
       ui: "bdd",
-      timeout: 120000,
+      timeout: IS_CI ? 120000 : 60000,
     },
   };
 }
