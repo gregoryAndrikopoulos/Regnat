@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          
+
           # --- Hub ready ---
           ready=false
           for i in {1..30}; do
@@ -91,7 +91,7 @@ jobs:
             echo "Infra failed to become ready in time" >&2
             exit 1
           fi
-          
+
           # --- Silent brief node wait (only if profiles request them) ---
           need_nodes=false; want_ff=false; want_edge=false
           case ",${{ inputs.compose_profiles }}," in
@@ -99,11 +99,11 @@ jobs:
             *,firefox,*) need_nodes=true; want_ff=true ;;
             *,edge,*)    need_nodes=true; want_edge=true ;;
           esac
-          
+
           if $need_nodes; then
             for _ in {1..30}; do
               payload="$(curl -sf http://localhost:4444/se/grid/distributor/status || curl -sf http://localhost:4444/se/grid/status || echo '{}')"
-          
+
               have_ff=false
               have_edge=false
               if grep -Eqi '"browserName"\s*:\s*"firefox"' <<<"$payload"; then
@@ -113,11 +113,11 @@ jobs:
               if grep -Eqi '"browserName"\s*:\s*"(MicrosoftEdge|msedge|edge)"' <<<"$payload"; then
                 have_edge=true
               fi
-          
+
               ok=true
               if $want_ff && ! $have_ff; then ok=false; fi
               if $want_edge && ! $have_edge; then ok=false; fi
-          
+
               $ok && break
               sleep 1
             done

@@ -1,10 +1,10 @@
-name: Smoke Test
+name: Cross-browser Smoke Test
 on:
   schedule:
     - cron: "39 4 * * *"
   workflow_dispatch:
 
-# Avoid overlapping runs from cron/manual
+# Avoid overlapping runs
 concurrency:
   group: smoke-${{ github.ref }}
   cancel-in-progress: true

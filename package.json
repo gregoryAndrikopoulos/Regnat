@@ -12,11 +12,11 @@
   "main": "index.js",
   "scripts": {
     "test:e2e": "wdio run config/wdio.e2e.conf.js",
-    "test:smoke": "wdio run config/wdio.smoke.cross.browser.conf.js",
+    "test:smoke": "wdio run config/wdio.cross.browser.smoke.conf.js",
     "infra:up": "docker compose -f infra/docker-compose.yml pull && docker compose -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker-compose.yml down -v",
-    "infra:up:cross": "COMPOSE_PROFILES=smoke pnpm infra:up",
-    "infra:down:cross": "COMPOSE_PROFILES=smoke pnpm infra:down",
+    "infra:cross:up": "COMPOSE_PROFILES=smoke pnpm infra:up",
+    "infra:cross:down": "COMPOSE_PROFILES=smoke pnpm infra:down",
     "infra:logs": "docker compose -f infra/docker-compose.yml logs -f",
     "infra:status": "bash -lc 'curl -s http://localhost:4444/status | grep -q \"\\\"ready\\\": true\" && echo true || echo false'",
     "report:allure:generate": "pnpm exec allure generate reports/allure/allure-results --clean -o reports/allure/allure-report",
@@ -42,7 +42,8 @@
     "junit",
     "testing",
     "visual-regression",
-    "dotenv"
+    "dotenv",
+    "cross-browser"
   ],
   "author": "",
   "license": "ISC",
