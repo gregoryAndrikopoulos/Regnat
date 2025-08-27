@@ -18,18 +18,11 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
-  // Reuse Chrome args from the base caps when available; fall back to a sane default
-  const chromeArgs = baseChromeCaps?.["goog:chromeOptions"]?.args ?? [
-    "--window-size=1920,1080",
-    "--window-position=0,0",
-    "--no-sandbox",
-    "--disable-dev-shm-usage",
-    "--no-default-browser-check",
-  ];
+  const edgeArgs = baseChromeCaps["goog:chromeOptions"].args;
 
   const caps = [];
   // Chrome (inherits everything from the shared base)
-  if (pick.includes("chrome")) caps.push(baseChromeCaps);
+  if (pick.includes("chrome")) caps.push(structuredClone(baseChromeCaps));
 
   // Firefox (minimal set for smoke)
   if (pick.includes("firefox")) {
@@ -37,7 +30,16 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
       browserName: "firefox",
       acceptInsecureCerts: true,
       "wdio:enforceWebDriverClassic": true,
-      "moz:firefoxOptions": { args: ["-width=1920", "-height=1080"] },
+      "moz:firefoxOptions": {
+        args: ["-width=1920", "-height=1080"],
+        prefs: {
+          "browser.contentblocking.category": "strict",
+          "privacy.trackingprotection.enabled": true,
+          "privacy.trackingprotection.pbmode.enabled": true,
+          "dom.webnotifications.enabled": false, // no “allow notifications” bars
+          "dom.disable_open_during_load": true, // kill JS popups
+        },
+      },
     });
   }
 
@@ -47,7 +49,18 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
       browserName: "MicrosoftEdge",
       acceptInsecureCerts: true,
       "wdio:enforceWebDriverClassic": true,
-      "ms:edgeOptions": { args: chromeArgs },
+      "ms:edgeOptions": {
+        args: edgeArgs,
+        prefs: {
+          "profile.default_content_setting_values.notifications": 2,
+          "profile.default_content_setting_values.geolocation": 2,
+          "profile.default_content_setting_values.mouselock": 2,
+          "profile.default_content_setting_values.media_stream_mic": 2,
+          "profile.default_content_setting_values.media_stream_camera": 2,
+          "profile.password_manager_enabled": false,
+          credentials_enable_service: false,
+        },
+      },
     });
   }
 
@@ -61,27 +74,21 @@ export const config = makeConfig({
   specsGlob: "../specs/smoke/**/*.spec.js",
 });
 
-// Swap capabilities only
+// Swap capabilities only (use Chrome from shared config as the base)
 {
   const baseChromeCaps =
     Array.isArray(config.capabilities) && config.capabilities.length
       ? config.capabilities[0]
-      : {
-          browserName: "chrome",
-          acceptInsecureCerts: true,
-          "wdio:enforceWebDriverClassic": true,
-          "goog:loggingPrefs": { browser: "ALL", performance: "ALL" },
-          "goog:chromeOptions": {
-            args: [
-              "--window-size=1920,1080",
-              "--window-position=0,0",
-              "--no-sandbox",
-              "--disable-dev-shm-usage",
-              "--no-default-browser-check",
-            ],
-            perfLoggingPrefs: { enableNetwork: true, enablePage: true },
-          },
-        };
+      : null;
+
+  if (
+    !baseChromeCaps ||
+    String(baseChromeCaps.browserName).toLowerCase() !== "chrome"
+  ) {
+    throw new Error(
+      "Shared config must provide a Chrome capability as the first item."
+    );
+  }
 
   config.capabilities = buildCapabilitiesFromEnv(baseChromeCaps);
 }
