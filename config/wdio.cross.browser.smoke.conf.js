@@ -1,15 +1,24 @@
 import { makeConfig } from "./wdio.shared.conf.js";
 
 /**
- * BROWSERS control which to include (default: chrome,firefox,edge).
- * No hooks here — shared config handles lifecycle/cleanup.
+ * Cross-browser smoke config
+ *
+ * Browser selection:
+ * - Controlled via the BROWSERS env var
+ * - Default: "chrome,firefox,edge"
+
+ * Notes:
+ * - No additional hooks here. Lifecycle and cleanup are owned by the shared config
+ * - Capabilities are derived from the shared Chrome base and expanded per browser
  */
 function buildCapabilitiesFromEnv(baseChromeCaps) {
+  // Parse the env var into a normalized list of browser names
   const pick = (process.env.BROWSERS || "chrome,firefox,edge")
     .split(",")
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
+  // Reuse Chrome args from the base caps when available; fall back to a sane default
   const chromeArgs = baseChromeCaps?.["goog:chromeOptions"]?.args ?? [
     "--window-size=1920,1080",
     "--window-position=0,0",
@@ -19,8 +28,10 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
   ];
 
   const caps = [];
+  // Chrome (inherits everything from the shared base)
   if (pick.includes("chrome")) caps.push(baseChromeCaps);
 
+  // Firefox (minimal set for smoke)
   if (pick.includes("firefox")) {
     caps.push({
       browserName: "firefox",
@@ -30,6 +41,7 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
     });
   }
 
+  // Edge (accepts "edge" or "microsoftedge")
   if (pick.includes("edge") || pick.includes("microsoftedge")) {
     caps.push({
       browserName: "MicrosoftEdge",
@@ -39,6 +51,7 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
     });
   }
 
+  // If nothing matched, default to Chrome
   if (!caps.length) caps.push(baseChromeCaps);
   return caps;
 }
@@ -49,7 +62,7 @@ export const config = makeConfig({
 });
 
 // Swap capabilities only
-(() => {
+{
   const baseChromeCaps =
     Array.isArray(config.capabilities) && config.capabilities.length
       ? config.capabilities[0]
@@ -71,4 +84,4 @@ export const config = makeConfig({
         };
 
   config.capabilities = buildCapabilitiesFromEnv(baseChromeCaps);
-})();
+}
