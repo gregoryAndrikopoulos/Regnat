@@ -5,7 +5,7 @@ import { join } from "node:path";
 // In CI we keep paths short for easy artifact collection
 // Locally we write under reports/ so developers can browse outputs
 const isCI = !!process.env.CI;
-const paths = {
+const paths = Object.freeze({
   // Allure results directory (raw JSON used by the reporter)
   allureResults: isCI ? "allure-results" : "reports/allure/allure-results",
   // JUnit XML and failure screenshots
@@ -14,7 +14,7 @@ const paths = {
   // Visual testing baselines and run outputs
   visualBaseline: "visual-baseline",
   visualOutput: "reports/visual",
-};
+});
 
 export function makeConfig({ specsGlob }) {
   return {
@@ -51,6 +51,15 @@ export function makeConfig({ specsGlob }) {
             "--disable-dev-shm-usage",
             "--no-default-browser-check",
           ],
+          prefs: {
+            "profile.default_content_setting_values.notifications": 2,
+            "profile.default_content_setting_values.geolocation": 2,
+            "profile.default_content_setting_values.mouselock": 2,
+            "profile.default_content_setting_values.media_stream_mic": 2,
+            "profile.default_content_setting_values.media_stream_camera": 2,
+            "profile.password_manager_enabled": false,
+            credentials_enable_service: false,
+          },
           // Enable DevTools “performance” log stream for network/page events
           perfLoggingPrefs: { enableNetwork: true, enablePage: true },
         },
