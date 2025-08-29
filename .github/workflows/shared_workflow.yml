@@ -7,11 +7,6 @@ on:
         description: "Command to run tests"
         required: true
         type: string
-      node_version_file:
-        description: "Path to .nvmrc"
-        required: false
-        default: ".tool-versions"
-        type: string
       infra_enabled:
         description: "Bring infra up/down around the run"
         required: false
@@ -44,9 +39,6 @@ jobs:
     steps:
       - name: 📦 Checkout code
         uses: actions/checkout@v5
-
-      - name: 🔧 Install tools from .tool-versions (node & pnpm)
-        uses: asdf-vm/actions/install@v4
 
       - name: 🗃️ Cache pnpm package store
         uses: actions/cache@v4
@@ -119,14 +111,14 @@ jobs:
             # We keep this silent to match E2E log style.
           fi
 
-      - name: ✨ Ensure Allure CLI
-        run: pnpm exec allure --version || true
-
       - name: 🧪 Run Tests
         env:
           CI: true
           FORCE_COLOR: "3"
         run: ${{ inputs.npm_script }}
+
+      - name: ✨ Ensure Allure CLI
+        run: pnpm exec allure --version || true
 
       - name: 📊 Generate Allure HTML
         if: ${{ always() }}
