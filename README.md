@@ -49,7 +49,7 @@ This repository pins tool versions via **asdf** in `.tool-versions`:
 
 ```
 nodejs 20.14.0
-pnpm 10.13.1
+pnpm 10.15.0
 ```
 
 **Setup**
@@ -71,6 +71,8 @@ asdf reshim
 **CI note:** GitHub Actions reads **`.nvmrc`** for Node. When updating Node
 locally, update `.nvmrc` to keep CI in sync. Corepack is disabled to avoid shim
 conflicts; `pnpm` is provided by asdf.
+
+**Version sync:** `package.json` sets `"packageManager": "pnpm@10.15.0"`. Keep this in sync with `.tool-versions` and the versions listed above.
 
 ---
 
@@ -120,7 +122,7 @@ login.
 - **Docker Desktop** (with Compose)
 
 > This repository pins tool versions in `.tool-versions` (Node 20.14.0,
-> pnpm 10.13.1).
+> pnpm 10.15.0).
 
 ### Install toolchain & dependencies (recommended)
 
@@ -135,9 +137,9 @@ pnpm install                # project deps
 Install matching versions manually:
 
 - **Node.js 20.x** (any installer)
-- **pnpm 10.13.x**
+- **pnpm 10.15.x**
   ```bash
-  npm install -g pnpm@10.13.1
+  npm install -g pnpm@10.15.0
   pnpm -v
   ```
 
@@ -181,7 +183,7 @@ pnpm infra:status
 >
 > - The `chrome` node is always available.
 > - `firefox` and `edge` nodes start only when the **`smoke`** profile is
->   enabled (via `infra:up:cross`) or when `COMPOSE_PROFILES` is provided.
+    >   enabled (via `infra:up:cross`) or when `COMPOSE_PROFILES` is provided.
 
 ---
 
