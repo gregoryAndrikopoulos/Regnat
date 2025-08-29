@@ -42,8 +42,6 @@ jobs:
 
       - name: 🔧 Install tools from .tool-versions (node & pnpm)
         uses: asdf-vm/actions/install@v4
-        with:
-          tool_versions: .tool-versions
 
       - name: 🗃️ Cache pnpm package store
         uses: actions/cache@v4
