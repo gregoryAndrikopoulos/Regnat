@@ -5,7 +5,7 @@
   "description": "Regnat is a structured WebdriverIO v9 test automation framework for scalable end-to-end testing.",
   "type": "module",
   "engines": {
-    "node": ">=20 <21",
+    "node": ">=24 <25",
     "pnpm": ">=10 <11"
   },
   "packageManager": "pnpm@10.15.0",

@@ -47,8 +47,8 @@ For demonstration purposes, it is configured to run against
 
 This repository pins tool versions via **asdf** in `.tool-versions`:
 
-```
-nodejs 20.14.0
+```txt
+nodejs 24.7.0
 pnpm 10.15.0
 ```
 
@@ -68,11 +68,11 @@ asdf install pnpm <new>   && asdf local pnpm <new>
 asdf reshim
 ```
 
-**CI note:** GitHub Actions reads **`.nvmrc`** for Node. When updating Node
-locally, update `.nvmrc` to keep CI in sync. Corepack is disabled to avoid shim
-conflicts; `pnpm` is provided by asdf.
+**CI note:** GitHub Actions uses **asdf** and reads **`.tool-versions`** for both **Node** and **pnpm**. Keep **`.tool-versions`** in sync with
+`package.json`’s `"packageManager"` (e.g., `pnpm@10.15.0`). Corepack isn’t used in CI.
 
-**Version sync:** `package.json` sets `"packageManager": "pnpm@10.15.0"`. Keep this in sync with `.tool-versions` and the versions listed above.
+**Version sync:** `package.json` sets `"packageManager": "pnpm@10.15.0"`. Keep this in sync with **`.tool-versions`** and the
+versions listed above.
 
 ---
 
@@ -121,8 +121,8 @@ login.
 - **asdf** (version manager)
 - **Docker Desktop** (with Compose)
 
-> This repository pins tool versions in `.tool-versions` (Node 20.14.0,
-> pnpm 10.15.0).
+> This repository pins tool versions in **`.tool-versions`** (Node **24.7.0**,
+> pnpm **10.15.0**).
 
 ### Install toolchain & dependencies (recommended)
 
@@ -136,7 +136,7 @@ pnpm install                # project deps
 
 Install matching versions manually:
 
-- **Node.js 20.x** (any installer)
+- **Node.js 24.x** (any installer)
 - **pnpm 10.15.x**
   ```bash
   npm install -g pnpm@10.15.0
@@ -156,7 +156,7 @@ Start Selenium Grid + nodes:
 pnpm infra:up
 
 # Cross-browser nodes (Firefox + Edge + Chrome)
-pnpm infra:up:cross    # equivalent to: COMPOSE_PROFILES=smoke pnpm infra:up
+pnpm infra:cross:up    # equivalent to: COMPOSE_PROFILES=smoke pnpm infra:up
 ```
 
 Grid UI: <http://localhost:4444/ui>
@@ -170,7 +170,7 @@ pnpm infra:logs
 Stop infrastructure:
 
 ```bash
-pnpm infra:down         # or: pnpm infra:down:cross
+pnpm infra:down         # or: pnpm infra:cross:down
 ```
 
 Infrastructure status (hub ready?):
@@ -183,7 +183,7 @@ pnpm infra:status
 >
 > - The `chrome` node is always available.
 > - `firefox` and `edge` nodes start only when the **`smoke`** profile is
-    >   enabled (via `infra:up:cross`) or when `COMPOSE_PROFILES` is provided.
+>   enabled (via `infra:cross:up`) or when `COMPOSE_PROFILES` is provided.
 
 ---
 
@@ -199,7 +199,7 @@ pnpm test:e2e
 
 ```bash
 # Run all browsers in one invocation (default: chrome,firefox,edge)
-pnpm infra:up:cross
+pnpm infra:cross:up
 pnpm test:smoke
 ```
 
