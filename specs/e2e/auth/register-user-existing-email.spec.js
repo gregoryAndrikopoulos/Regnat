@@ -8,8 +8,8 @@ import {
 import { goHomeAcceptConsent } from "../../../support/utils/index.js";
 import { BAD_CREDENTIALS } from "../../../support/utils/testConstants.js";
 
-// Use the email from set 3 (already registered scenario)
-const { email: TEST_USER_EMAIL } = getCredentials(3);
+// Pick the credential set explicitly for this spec (set 2)
+const { email: TEST_USER_EMAIL } = getCredentials(2);
 
 before(function () {
   if (!TEST_USER_EMAIL) throw new Error(BAD_CREDENTIALS);

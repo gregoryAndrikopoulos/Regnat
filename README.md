@@ -34,6 +34,7 @@ For demonstration purposes, it is configured to run against
 - **GitHub Actions** — continuous integration and automated test runs
 - **dotenv** — local environment variable management
 - **GitHub Secrets** — secure storage for CI credentials
+- **faker.js** — random but reproducible test data generation
 
 ### Developer Tooling
 
@@ -87,8 +88,6 @@ TEST_USER_EMAIL_1=
 TEST_USER_PASSWORD_1=
 TEST_USER_EMAIL_2=
 TEST_USER_PASSWORD_2=
-TEST_USER_EMAIL_3=
-TEST_USER_PASSWORD_3=
 ```
 
 ### CI (GitHub Actions)
@@ -97,7 +96,6 @@ Create repository **Secrets** with the same names used locally:
 
 - `TEST_USER_EMAIL_1`, `TEST_USER_PASSWORD_1`
 - `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`
-- `TEST_USER_EMAIL_3`, `TEST_USER_PASSWORD_3`
 
 ### Site-Specific Note (display name)
 
@@ -106,6 +104,23 @@ login.
 
 > Sign-up flow detail: Automation Exercise first prompts for **Name** and
 > **Email Address** before creating an account.
+
+### Faker-based test data
+
+For specs that create **throwaway accounts or inputs** the suite uses **[faker.js](https://fakerjs.dev/)**.  
+This ensures:
+
+- Each run generates unique, realistic values (emails, names, addresses, passwords).
+- CI runs remain deterministic when seeded via `FAKER_SEED`.
+
+Example seeding:
+
+```bash
+export FAKER_SEED=12345
+pnpm test:e2e
+```
+
+This guarantees the same fake data across reruns, useful for debugging failures.
 
 ### Security
 

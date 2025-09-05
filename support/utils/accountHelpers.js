@@ -3,49 +3,57 @@ import HomePage from "../../page-objects/HomePage.js";
 import SignupLoginPage from "../../page-objects/SignupLoginPage.js";
 import RegistrationPage from "../../page-objects/RegistrationPage.js";
 import ConfirmationPage from "../../page-objects/ConfirmationPage.js";
-import { buildAddress } from "./dataTemplates.js";
-import { goHomeAcceptConsent } from "./index.js";
+import { fakeName, fakePassword, fakeAddress, fakeDOB } from "./fakers.js";
 
-export async function loginOrRegister({ name, email, password }) {
-  await goHomeAcceptConsent();
-
-  const onLoginAlready = await SignupLoginPage.loginHeader
+/**
+ * Log in with provided credentials.
+ * Throws with a helpful message if login fails.
+ */
+async function loginOnly({ email, password }) {
+  const onLogin = await SignupLoginPage.loginHeader
     .isExisting()
     .catch(() => false);
   if (
-    !onLoginAlready &&
+    !onLogin &&
     (await HomePage.signupLoginLink.isExisting().catch(() => false))
   ) {
     await HomePage.signupLoginLink.click();
   }
   await expect(SignupLoginPage.loginHeader).toBeDisplayed();
 
-  const headerHasExpectedText = await SignupLoginPage.loginHeader
-    .getText()
-    .then((t) => /login/i.test(t))
-    .catch(() => false);
-  if (!headerHasExpectedText) {
-    // proceed as long as the login form is visible
-  }
-
   await SignupLoginPage.loginEmailInput.setValue(email);
   await SignupLoginPage.loginPasswordInput.setValue(password);
   await SignupLoginPage.loginButton.click();
 
-  await browser.waitUntil(
-    async () =>
-      (await HomePage.loggedInBanner.isDisplayed().catch(() => false)) ||
-      (await SignupLoginPage.loginErrorMessage
-        ?.isDisplayed()
-        .catch(() => false)) ||
-      (await SignupLoginPage.signupNameInput.isDisplayed().catch(() => false)),
-    { interval: 200 }
-  );
+  await HomePage.loggedInBanner.waitForDisplayed().catch(() => {
+    throw new Error(
+      `Login failed for "${email}". Ensure TEST_USER_EMAIL/TEST_USER_PASSWORD are valid.`
+    );
+  });
+}
 
-  const loggedIn = await HomePage.loggedInBanner
-    .isDisplayed()
+/**
+ * Register a brand-new account.
+ */
+async function registerNewAccount({
+  name = fakeName(),
+  email,
+  password = fakePassword(),
+  title = "Mr",
+  dob = fakeDOB(),
+  address = fakeAddress(),
+  toggles = { newsletter: true, offers: true },
+} = {}) {
+  const onLogin = await SignupLoginPage.loginHeader
+    .isExisting()
     .catch(() => false);
-  if (loggedIn) return;
+  if (
+    !onLogin &&
+    (await HomePage.signupLoginLink.isExisting().catch(() => false))
+  ) {
+    await HomePage.signupLoginLink.click();
+  }
+  await expect(SignupLoginPage.newUserSignupHeader).toBeDisplayed();
 
   await SignupLoginPage.signupNameInput.setValue(name);
   await SignupLoginPage.signupEmailInput.setValue(email);
@@ -55,23 +63,18 @@ export async function loginOrRegister({ name, email, password }) {
     ?.isDisplayed()
     .catch(() => false);
   if (emailExists) {
-    throw new Error(
-      `Cannot register: email "${email}" already exists and login failed. Check password or use a different test account.`
-    );
+    throw new Error(`Registration failed: email "${email}" already exists.`);
   }
 
-  await RegistrationPage.selectTitle("Mr");
-  await RegistrationPage.setPasswordAndDob({
-    password,
-    day: "10",
-    month: "May",
-    year: "1990",
-  });
-  await RegistrationPage.setPreferenceToggles({
-    newsletter: true,
-    offers: true,
-  });
-  await RegistrationPage.fillAddressInfo(buildAddress());
+  await expect(RegistrationPage.formRoot).toBeDisplayed();
+  await expect(RegistrationPage.enterAccountInfoHeader).toHaveText(
+    /Enter Account Information/i
+  );
+
+  await RegistrationPage.selectTitle(title);
+  await RegistrationPage.setPasswordAndDob({ password, ...dob });
+  await RegistrationPage.setPreferenceToggles(toggles);
+  await RegistrationPage.fillAddressInfo(address);
   await RegistrationPage.submit();
 
   await expect(ConfirmationPage.accountCreatedHeader).toBeDisplayed();
@@ -79,6 +82,30 @@ export async function loginOrRegister({ name, email, password }) {
     /Account Created!/i
   );
   await ConfirmationPage.continueButton.click();
-
   await expect(HomePage.loggedInBanner).toBeDisplayed();
 }
+
+/**
+ * Delete the current logged-in account (no-op if link isn’t present).
+ */
+async function deleteIfLoggedIn() {
+  const canDelete = await HomePage.deleteAccountMenuLink
+    .waitForDisplayed()
+    .then(
+      () => true,
+      () => false
+    );
+  if (!canDelete) return false;
+
+  await HomePage.deleteAccountMenuLink.click();
+  await ConfirmationPage.accountDeletedHeader.waitForDisplayed();
+  await expect(ConfirmationPage.accountDeletedHeader).toHaveText(
+    /Account Deleted!/i
+  );
+
+  await HomePage.continueButton.waitForClickable();
+  await HomePage.continueButton.click();
+  return true;
+}
+
+export { loginOnly, registerNewAccount, deleteIfLoggedIn };
