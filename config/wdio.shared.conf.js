@@ -19,6 +19,10 @@ const paths = Object.freeze({
 export function makeConfig({ specsGlob }) {
   return {
     before: async () => {
+      // Seed faker (deterministic across CI runs if FAKER_SEED is set)
+      const { initFakerSeed } = await import("./../support/utils/fakers.js");
+      initFakerSeed();
+
       // Register signal handlers for graceful shutdown and add the visual
       // comparison command to the browser instance
       await beforeHook(paths, isCI);
