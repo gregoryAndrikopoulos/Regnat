@@ -282,6 +282,56 @@ ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
 
 ---
 
+## Integration Steps
+
+Regnat can be used as a starting point for test automation in any project.  
+To integrate into an existing repository:
+
+1. **Separate application and test logic**
+   - Place application code under `your_repo/src/` (or equivalent).
+   - Create a dedicated test directory `your_repo/test/`.
+
+2. **Copy framework directories**  
+   Move the following from Regnat into `your_repo/test/`:
+   - `config/`
+   - `page-objects/`
+   - `specs/`
+   - `support/`
+   - `visual-baseline/`
+
+3. **Delete Automation Exercise–specific components**
+   - Remove all example **page-object files**.
+   - Delete provided **spec files**.
+   - Clean out **utils** tied to the demo app:
+     - `accountHelpers.js`
+     - `testConstants.js`
+   - Keep only the **generic utilities** (`fakers.js`, `envCredentials.js`, `index.js`).
+
+   This creates a clean slate for building page objects and specs specific to the target application.
+
+4. **Align dependencies and scripts**
+   - Copy relevant `devDependencies` and `scripts` from Regnat’s `package.json` into the repository’s `package.json`.
+   - Ensure Node.js and pnpm versions are aligned.  
+     Regnat uses `.tool-versions` (asdf) together with `packageManager` in `package.json` to enforce this, but any equivalent mechanism can be used (e.g., `engines`, nvm, Volta, or Corepack).
+   - Adjust version pinning to match the conventions of the host repository.
+
+5. **Tailor configurations**
+   - Update paths if the test directory differs from `Regnat/`.
+   - Adjust workflow YAML files under `.github/workflows/` to match branch names and CI requirements.
+   - Rename environment variables as needed (see `.env` / `envCredentials.js`).
+
+6. **Validate infrastructure**
+   - Run `pnpm infra:up` to confirm Selenium Grid is operational.
+   - Execute `pnpm test:e2e` to verify specs run end-to-end.
+
+Once integrated, the suite can be expanded with:
+
+- **App-specific page objects and specs**
+- **Custom utilities** in `support/utils/`
+- **New workflows** calling the reusable runner
+
+---
+
 ## License
 
 This project is licensed under the ISC License — see the
