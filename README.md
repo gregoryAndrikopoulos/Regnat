@@ -93,7 +93,6 @@ TEST_USER_PASSWORD_2=
 TEST_USER_EMAIL_3=
 TEST_USER_PASSWORD_3=
 
-# (optional: dedicated API creds can be mapped to TEST_USER_EMAIL_3/TEST_USER_PASSWORD_3)
 ```
 
 ### CI (GitHub Actions)
