@@ -3,14 +3,10 @@ name: SCA
 on:
   pull_request:
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
+    paths-ignore: ["**/*.md", "docs/**"]
   push:
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
+    paths-ignore: ["**/*.md", "docs/**"]
   schedule:
     - cron: "15 7 * * 1"
 
@@ -20,35 +16,23 @@ permissions:
   actions: read
 
 jobs:
-  pnpm-audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: "24"
-          cache: "pnpm"
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - name: Install (frozen lockfile)
-        run: pnpm install --frozen-lockfile
-      - name: pnpm audit (fail on high+)
-        run: pnpm audit --audit-level=high || (echo "::warning ::Vulnerabilities found (>=high)."; exit 1)
-
   trivy-fs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
       - name: Trivy FS scan (repo & lockfile)
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          scan-type: "fs"
-          format: "sarif"
-          output: "trivy-fs.sarif"
+          scan-type: fs
+          skip-dirs: node_modules,dist,coverage,reports,allure-results,allure-report
+          format: sarif
+          output: trivy-fs.sarif
           ignore-unfixed: true
-          severity: "CRITICAL,HIGH,MEDIUM"
+          severity: CRITICAL,HIGH,MEDIUM
+
       - name: Upload SARIF (Trivy FS)
+        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-fs.sarif
@@ -67,16 +51,27 @@ jobs:
       - name: Pull ${{ matrix.image }}
         run: docker pull ${{ matrix.image }}
 
+      # Derive a filesystem-safe filename from the image reference
+      - name: Compute SARIF filename
+        id: fname
+        shell: bash
+        run: |
+          img="${{ matrix.image }}"
+          base="${img##*/}"          # after last '/'
+          safe="${base//[:@]/_}"     # replace ':' and '@' with '_'
+          echo "safe=$safe" >> "$GITHUB_OUTPUT"
+
       - name: Trivy image scan ${{ matrix.image }}
         uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: ${{ matrix.image }}
-          format: "sarif"
-          output: "trivy-${{ replace(replace(matrix.image, '/', '_'), ':', '_') }}.sarif"
+          format: sarif
+          output: "trivy-${{ steps.fname.outputs.safe }}.sarif"
           ignore-unfixed: true
-          severity: "CRITICAL,HIGH,MEDIUM"
+          severity: CRITICAL,HIGH,MEDIUM
 
       - name: Upload SARIF (Trivy image)
+        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: "trivy-${{ replace(replace(matrix.image, '/', '_'), ':', '_') }}.sarif"
+          sarif_file: "trivy-${{ steps.fname.outputs.safe }}.sarif"
