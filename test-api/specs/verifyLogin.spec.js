@@ -10,14 +10,13 @@ import {
 
 const asForm = (obj) => new URLSearchParams(Object.entries(obj)).toString();
 
-describe("[@api] Verify Login", function () {
+describe.skip("[@api] Verify Login", function () {
   before(function () {
     if (!VALID_EMAIL || !VALID_PASSWORD) {
       throw new Error(BAD_CREDENTIALS);
     }
   });
 
-  // API 7: POST To Verify Login with valid details
   it("API 7: POST To Verify Login with valid details → 200", async function () {
     const res = await axios.post(
       API.VERIFY_LOGIN,

@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   api:
-    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@integrate-api-testing
+    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
     secrets: inherit
     with:
       npm_script: "pnpm test:api"
