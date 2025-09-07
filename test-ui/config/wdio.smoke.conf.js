@@ -1,7 +1,7 @@
 import { makeConfig } from "./wdio.shared.conf.js";
 
 /**
- * Cross-browser smoke config
+ * Smoke config
  *
  * Browser selection:
  * - Controlled via the BROWSERS env var

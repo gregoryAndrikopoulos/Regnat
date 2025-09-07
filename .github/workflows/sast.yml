@@ -1,0 +1,41 @@
+name: SAST
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore: ["**/*.md", "docs/**"]
+  push:
+    branches: [main]
+    paths-ignore: ["**/*.md", "docs/**"]
+  schedule:
+    - cron: "45 7 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Install Semgrep (no App Token needed for community rules)
+      - name: Install Semgrep
+        run: pip3 install --upgrade semgrep
+
+      # Run with community rule packs and produce SARIF
+      - name: Semgrep scan (JS/TS + OWASP) → SARIF
+        run: |
+          semgrep \
+            --config p/javascript \
+            --config p/owasp-top-ten \
+            --exclude node_modules \
+            --exclude dist \
+            --exclude coverage \
+            --sarif --output semgrep.sarif
+
+      - name: Upload SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

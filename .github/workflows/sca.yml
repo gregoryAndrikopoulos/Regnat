@@ -1,0 +1,82 @@
+name: SCA
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+  schedule:
+    - cron: "15 7 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  pnpm-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Install (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+      - name: pnpm audit (fail on high+)
+        run: pnpm audit --audit-level=high || (echo "::warning ::Vulnerabilities found (>=high)."; exit 1)
+
+  trivy-fs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Trivy FS scan (repo & lockfile)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: "fs"
+          format: "sarif"
+          output: "trivy-fs.sarif"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH,MEDIUM"
+      - name: Upload SARIF (Trivy FS)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-fs.sarif
+
+  trivy-images:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - selenium/hub:4.35.0-20250808
+          - selenium/node-chromium:139.0.7258.66-chromedriver-139.0.7258.66-grid-4.35.0-20250808
+          - selenium/node-firefox:141.0.3-geckodriver-0.36.0-grid-4.35.0-20250808
+          - selenium/node-edge:4.35.0-20250808
+    steps:
+      - name: Pull ${{ matrix.image }}
+        run: docker pull ${{ matrix.image }}
+
+      - name: Trivy image scan ${{ matrix.image }}
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ${{ matrix.image }}
+          format: "sarif"
+          output: "trivy-${{ replace(replace(matrix.image, '/', '_'), ':', '_') }}.sarif"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH,MEDIUM"
+
+      - name: Upload SARIF (Trivy image)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-${{ replace(replace(matrix.image, '/', '_'), ':', '_') }}.sarif"

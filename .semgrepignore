@@ -1,0 +1,8 @@
+node_modules/
+coverage/
+dist/
+allure-results/
+allure-report/
+reports/
+test-e2e/fixtures/
+test-api/fixtures/

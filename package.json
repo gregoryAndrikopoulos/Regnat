@@ -14,7 +14,7 @@
   "license": "ISC",
   "scripts": {
     "test:e2e": "wdio run test-ui/config/wdio.e2e.conf.js",
-    "test:smoke": "wdio run test-ui/config/wdio.cross.browser.smoke.conf.js",
+    "test:smoke": "wdio run test-ui/config/wdio.smoke.conf.js",
     "test:api": "cross-env NODE_ENV=test mocha --config ./test-api/.mocharc.json",
     "infra:up": "docker compose -f infra/docker-compose.yml pull && docker compose -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker-compose.yml down -v",
