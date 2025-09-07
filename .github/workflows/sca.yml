@@ -1,14 +1,9 @@
 name: SCA
 
 on:
-  pull_request:
-    branches: [main]
-    paths-ignore: ["**/*.md", "docs/**"]
-  push:
-    branches: [main]
-    paths-ignore: ["**/*.md", "docs/**"]
   schedule:
     - cron: "15 7 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
