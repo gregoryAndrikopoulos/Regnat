@@ -1,0 +1,21 @@
+name: API Test
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Avoid overlapping runs
+concurrency:
+  group: api-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@integrate-api-testing
+    secrets: inherit
+    with:
+      npm_script: "pnpm test:api"
+      infra_enabled: false
+      artifact_suffix: "-api"
+      compose_profiles: ""

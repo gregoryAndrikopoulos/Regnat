@@ -72,6 +72,7 @@ function buildCapabilitiesFromEnv(baseChromeCaps) {
 // Reuse shared config
 export const config = makeConfig({
   specsGlob: "../specs/smoke/**/*.spec.js",
+  junitLabel: "smoke",
 });
 
 // Swap capabilities only (use Chrome from shared config as the base)
