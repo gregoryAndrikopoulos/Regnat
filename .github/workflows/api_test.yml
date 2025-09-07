@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   api:
-    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
+    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@reactivate-verify-login-spec
     secrets: inherit
     with:
       npm_script: "pnpm test:api"
