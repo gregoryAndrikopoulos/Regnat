@@ -1,6 +1,6 @@
 services:
   chrome:
-    image: seleniarm/node-chromium:${CHROMIUM_TAG:-latest}
+    image: selenium/node-chromium:${CHROMIUM_TAG:-139.0.7258.66-chromedriver-139.0.7258.66-grid-4.35.0-20250808}
     shm_size: 2gb
     depends_on: [selenium-hub]
     environment:
@@ -15,7 +15,7 @@ services:
       - SE_NODE_SESSION_TIMEOUT=60
 
   firefox:
-    image: selenium/node-firefox:${FIREFOX_TAG:-latest}
+    image: selenium/node-firefox:${FIREFOX_TAG:-141.0.3-geckodriver-0.36.0-grid-4.35.0-20250808}
     profiles: ["smoke", "firefox"]
     shm_size: 2gb
     depends_on: [selenium-hub]
@@ -31,7 +31,7 @@ services:
       - SE_NODE_SESSION_TIMEOUT=60
 
   edge:
-    image: selenium/node-edge:${SELENIUM_VERSION:-latest}
+    image: selenium/node-edge:${SELENIUM_VERSION:-4.35.0-20250808}
     platform: linux/amd64
     profiles: ["smoke", "edge"]
     shm_size: 2gb
@@ -48,7 +48,7 @@ services:
       - SE_NODE_SESSION_TIMEOUT=60
 
   selenium-hub:
-    image: selenium/hub:${SELENIUM_VERSION:-latest}
+    image: selenium/hub:${SELENIUM_VERSION:-4.35.0-20250808}
     container_name: selenium-hub
     ports:
       - "4442:4442"

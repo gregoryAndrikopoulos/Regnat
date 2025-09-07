@@ -9,7 +9,7 @@ Regnat/
 │  ├─ config/                               # WebdriverIO configurations
 │  │  ├─ wdio.shared.conf.js
 │  │  ├─ wdio.e2e.conf.js
-│  │  └─ wdio.cross.browser.smoke.conf.js
+│  │  └─ wdio.smoke.conf.js
 │  ├─ page-objects/                         # Page Object Model classes
 │  ├─ specs/                                # Test specs
 │  │  ├─ e2e/
@@ -29,6 +29,7 @@ Regnat/
 │  ├─ junit/
 │  ├─ screenshots/
 │  └─ visual/
+├─ .semgrepignore                           # Optional: ignore noisy paths for SAST
 ├─ .env                                     # Local environment variables (ignored in git)
 ├─ .gitignore                               # Git ignore rules
 ├─ .prettierignore                          # Prettier ignore rules

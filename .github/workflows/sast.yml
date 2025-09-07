@@ -1,0 +1,37 @@
+name: SAST
+
+on:
+  schedule:
+    - cron: "45 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Semgrep
+        run: pip3 install --upgrade semgrep
+
+      - name: Semgrep scan (JS/TS + OWASP) → SARIF
+        run: |
+          semgrep \
+            --config p/javascript \
+            --config p/owasp-top-ten \
+            --exclude node_modules \
+            --exclude dist \
+            --exclude coverage \
+            --exclude reports \
+            --exclude allure-results \
+            --exclude allure-report \
+            --sarif --output semgrep.sarif
+
+      - name: Upload SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

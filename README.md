@@ -20,7 +20,9 @@ For demonstration purposes, it is configured to run against
 
 [![E2E Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
 [![API Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/api_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/api_test.yml)
-[![Cross-browser Smoke Test](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/cross_browser_smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/cross_browser_smoke_test.yml)
+[![Smoke Test](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml)
+[![SCA](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sca.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sca.yml)
+[![SAST](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sast.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sast.yml)
 
 ---
 
@@ -37,6 +39,9 @@ For demonstration purposes, it is configured to run against
 - **dotenv** — local environment variable management
 - **GitHub Secrets** — secure storage for CI credentials
 - **faker.js** — random but reproducible test data generation
+- **Dependabot** — automated dependency update PRs (weekly)
+- **Trivy** — SCA for filesystem/dependencies and Docker images
+- **Semgrep** — SAST for JS/TS with OWASP Top 10 rules
 
 ### Developer Tooling
 
@@ -92,7 +97,6 @@ TEST_USER_EMAIL_2=
 TEST_USER_PASSWORD_2=
 TEST_USER_EMAIL_3=
 TEST_USER_PASSWORD_3=
-
 ```
 
 ### CI (GitHub Actions)
