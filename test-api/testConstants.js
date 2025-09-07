@@ -9,8 +9,8 @@ export const API = {
   GET_USER_BY_EMAIL: "https://automationexercise.com/api/getUserDetailByEmail",
 };
 
-export const VALID_EMAIL = process.env.API_VALID_EMAIL || "";
-export const VALID_PASSWORD = process.env.API_VALID_PASSWORD || "";
+export const API_TEST_EMAIL = process.env.TEST_USER_EMAIL_3 || "";
+export const API_TEST_PASSWORD = process.env.TEST_USER_PASSWORD_3 || "";
 export const BAD_CREDENTIALS = "Bad credentials in .env or CI secrets.";
 export const SHORT_TIMEOUT = 10000;
 export const STANDARD_TIMEOUT = 15000;

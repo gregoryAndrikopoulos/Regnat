@@ -36,9 +36,6 @@ jobs:
       TEST_USER_EMAIL_3: ${{ secrets.TEST_USER_EMAIL_3 }}
       TEST_USER_PASSWORD_3: ${{ secrets.TEST_USER_PASSWORD_3 }}
 
-      API_BASE_URL: ${{ secrets.API_BASE_URL }}
-      API_TOKEN: ${{ secrets.API_TOKEN }}
-
     steps:
       - name: 📦 Checkout code
         uses: actions/checkout@v5
