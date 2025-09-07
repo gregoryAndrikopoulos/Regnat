@@ -1,6 +1,6 @@
 # Regnat
 
-> Structured WebdriverIO v9 test automation setup for reliable end-to-end testing.
+> Structured WebdriverIO v9 + Axios setup for reliable **UI** and **API** testing.
 
 Provides a clean, maintainable foundation for scalable automation, with support
 for Selenium Grid, Docker, CI pipelines, **Allure reporting**, and **visual
@@ -19,6 +19,7 @@ For demonstration purposes, it is configured to run against
 ## Workflow Status
 
 [![E2E Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
+[![API Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/api_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/api_test.yml)
 [![Cross-browser Smoke Test](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/cross_browser_smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/cross_browser_smoke_test.yml)
 
 ---
@@ -27,6 +28,7 @@ For demonstration purposes, it is configured to run against
 
 - **WebdriverIO v9** — automation testing framework
 - **Mocha** — test framework for writing and executing tests
+- **Axios** — HTTP client for API testing
 - **Node.js** — JavaScript runtime environment
 - **Selenium Grid 4 (via Docker)** — browser execution in isolated containers
 - **Allure** — advanced reporting (screenshots and console logs)
@@ -88,6 +90,10 @@ TEST_USER_EMAIL_1=
 TEST_USER_PASSWORD_1=
 TEST_USER_EMAIL_2=
 TEST_USER_PASSWORD_2=
+TEST_USER_EMAIL_3=
+TEST_USER_PASSWORD_3=
+
+# (optional: dedicated API creds can be mapped to TEST_USER_EMAIL_3/TEST_USER_PASSWORD_3)
 ```
 
 ### CI (GitHub Actions)
@@ -96,6 +102,7 @@ Create repository **Secrets** with the same names used locally:
 
 - `TEST_USER_EMAIL_1`, `TEST_USER_PASSWORD_1`
 - `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`
+- `TEST_USER_EMAIL_3`, `TEST_USER_PASSWORD_3`
 
 ### Site-Specific Note (display name)
 
@@ -218,9 +225,29 @@ pnpm infra:cross:up
 pnpm test:smoke
 ```
 
+**API Tests (Axios + Mocha):**
+
+API specs live under `test-api/specs/` and target the public  
+[Automation Exercise APIs](https://automationexercise.com/api).
+
+Run locally:
+
+```bash
+pnpm test:api
+```
+
+JUnit results are written to:
+
+```
+reports/junit/api/api-junit.xml
+```
+
+---
+
 ### Run tests in CI (GitHub Actions)
 
-- **E2E Test**: Chrome-only, parallelized across specs for speed.
+- **E2E Test**: Chrome-only, parallelized across specs for speed on pull requests.
+- **API Test**: Axios-based API tests on pull requests.
 - **Cross-browser Smoke Test**: One job brings up Grid with the `smoke` profile
   and runs the smoke suite **sequentially across browsers in a single
   invocation** (to keep artifacts and reporting consolidated).
@@ -228,14 +255,14 @@ pnpm test:smoke
 Manual dispatch:
 
 - Open **Actions**.
-- Select **E2E Test** or **Cross-browser Smoke Test**.
+- Select **E2E Test**, **API Test**, or **Cross-browser Smoke Test**.
 - Choose a branch and click **Run workflow**.
 
 ---
 
 ## Reports
 
-### Allure (local)
+### Allure (local, UI only)
 
 Local test runs write raw results to:
 
@@ -251,7 +278,7 @@ pnpm report:allure:open:local
 
 This generates HTML in `reports/allure/allure-report/` and opens it.
 
-### Allure (CI)
+### Allure (CI, UI only)
 
 After a CI run, download the **`allure`** artifact. When unzipped to
 `~/Downloads/allure/`, it contains:
@@ -271,9 +298,17 @@ if needed:
 ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
 ```
 
+### JUnit
+
+- **UI Tests (E2E/Smoke)**  
+  JUnit XML stored under `reports/junit/e2e/` or `reports/junit/smoke/`.
+
+- **API Tests**  
+  JUnit XML stored under `reports/junit/api/api-junit.xml`.
+
 ---
 
-## Visual Regression (overview)
+## Visual Regression (UI only)
 
 - The suite captures visual snapshots and compares them to committed baselines.
 - On differences, the test fails and Allure shows baseline / actual / diff.
@@ -293,19 +328,17 @@ To integrate into an existing repository:
 
 2. **Copy framework directories**  
    Move the following from Regnat into `your_repo/test/`:
-   - `config/`
-   - `page-objects/`
-   - `specs/`
-   - `support/`
-   - `visual-baseline/`
+   - `test-api/`
+   - `test-ui/`
 
 3. **Delete Automation Exercise–specific components**
-   - Remove all example **page-object files**.
-   - Delete provided **spec files**.
-   - Clean out **utils** tied to the demo app:
+   - Remove all example **page-object files** (UI).
+   - Delete provided **spec files** (UI and API).
+   - Clean out **utils** tied to the demo app such as:
      - `accountHelpers.js`
-     - `testConstants.js`
-   - Keep only the **generic utilities** (`fakers.js`, `envCredentials.js`, `index.js`).
+     - `testConstants.js` (UI)
+     - `test-api/testConstants.js` (API)
+   - Remove provided **Axios API specs** in `test-api/specs/`.
 
    This creates a clean slate for building page objects and specs specific to the target application.
 

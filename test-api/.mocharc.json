@@ -1,0 +1,7 @@
+{
+  "spec": ["test-api/specs/**/*.spec.js"],
+  "timeout": 20000,
+  "reporter": "mocha-junit-reporter",
+  "reporter-option": ["mochaFile=reports/junit/api/api-junit.xml"],
+  "require": ["dotenv/config"]
+}
