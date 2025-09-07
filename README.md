@@ -90,10 +90,9 @@ TEST_USER_EMAIL_1=
 TEST_USER_PASSWORD_1=
 TEST_USER_EMAIL_2=
 TEST_USER_PASSWORD_2=
-TEST_USER_EMAIL_3=
-TEST_USER_PASSWORD_3=
+API_VALID_EMAIL=
+API_VALID_PASSWORD=
 
-# (optional: dedicated API creds can be mapped to TEST_USER_EMAIL_3/TEST_USER_PASSWORD_3)
 ```
 
 ### CI (GitHub Actions)
@@ -102,7 +101,7 @@ Create repository **Secrets** with the same names used locally:
 
 - `TEST_USER_EMAIL_1`, `TEST_USER_PASSWORD_1`
 - `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`
-- `TEST_USER_EMAIL_3`, `TEST_USER_PASSWORD_3`
+- `API_VALID_EMAIL`, `API_VALID_PASSWORD`
 
 ### Site-Specific Note (display name)
 

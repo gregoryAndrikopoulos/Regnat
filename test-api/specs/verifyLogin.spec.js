@@ -10,7 +10,7 @@ import {
 
 const asForm = (obj) => new URLSearchParams(Object.entries(obj)).toString();
 
-describe.skip("[@api] Verify Login", function () {
+describe("[@api] Verify Login", function () {
   before(function () {
     if (!VALID_EMAIL || !VALID_PASSWORD) {
       throw new Error(BAD_CREDENTIALS);
