@@ -1,6 +1,6 @@
 import { browser } from "@wdio/globals";
-import { VISUAL_TOLERANCE } from "../../support/utils/testConstants.js";
-import { goHomeAcceptConsent } from "../../support/utils/index.js";
+import { VISUAL_TOLERANCE } from "../../../test-support/utils/testConstants.js";
+import { goHomeAcceptConsent } from "../../../test-support/utils/index.js";
 import HomePage from "../../page-objects/HomePage.js";
 import ContactUsPage from "../../page-objects/ContactUsPage.js";
 

@@ -1,6 +1,6 @@
 import HomePage from "../../../page-objects/HomePage.js";
 import TestCasesPage from "../../../page-objects/TestCasesPage.js";
-import { goHomeAcceptConsent } from "../../../support/utils/index.js";
+import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
 describe("Test Case 7: Verify Test Cases Page", function () {
   it("should navigate to Test Cases and verify page is visible", async function () {

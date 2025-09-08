@@ -1,6 +1,7 @@
 import { strict as assert } from "node:assert";
 import axios from "axios";
-import { API, SHORT_TIMEOUT } from "../testConstants.js";
+import { API } from "../testConstants.js";
+import { SHORT_TIMEOUT } from "../../test-support/utils/testConstants.js";
 
 describe("[@api] Brands", function () {
   it("API 3: Get All Brands List → 200", async function () {

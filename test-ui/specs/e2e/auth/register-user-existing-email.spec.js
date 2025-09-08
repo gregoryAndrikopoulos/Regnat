@@ -1,18 +1,16 @@
 import { expect } from "@wdio/globals";
 import HomePage from "../../../page-objects/HomePage.js";
 import SignupLoginPage from "../../../page-objects/SignupLoginPage.js";
+import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 import {
-  TEST_USER_NAME,
-  getCredentials,
-} from "../../../support/utils/envCredentials.js";
-import { goHomeAcceptConsent } from "../../../support/utils/index.js";
-import { BAD_CREDENTIALS } from "../../../support/utils/testConstants.js";
+  cleanupSeededAccount,
+  seedUiAccount,
+} from "../../../../test-support/utils/accountHelpers.js";
 
-// Pick the credential set explicitly for this spec (set 2)
-const { email: TEST_USER_EMAIL } = getCredentials(2);
+let credentials;
 
-before(function () {
-  if (!TEST_USER_EMAIL) throw new Error(BAD_CREDENTIALS);
+before(async function () {
+  credentials = await seedUiAccount();
 });
 
 describe("Test Case 5: Register User with existing email", function () {
@@ -20,20 +18,27 @@ describe("Test Case 5: Register User with existing email", function () {
     await goHomeAcceptConsent();
 
     await HomePage.assertHomePageVisible();
-    await HomePage.signupLoginLink.click();
 
+    await HomePage.signupLoginLink.click();
     await expect(SignupLoginPage.newUserSignupHeader).toBeDisplayed();
     await expect(SignupLoginPage.newUserSignupHeader).toHaveText(
       /New User Signup!/i
     );
 
-    await SignupLoginPage.signupNameInput.setValue(TEST_USER_NAME);
-    await SignupLoginPage.signupEmailInput.setValue(TEST_USER_EMAIL);
+    await SignupLoginPage.signupNameInput.setValue(credentials.name);
+    await SignupLoginPage.signupEmailInput.setValue(credentials.email);
     await SignupLoginPage.signupButton.click();
 
     await expect(SignupLoginPage.signupEmailExistsError).toBeDisplayed();
     await expect(SignupLoginPage.signupEmailExistsError).toHaveText(
       "Email Address already exist!"
     );
+  });
+});
+
+after(async () => {
+  await cleanupSeededAccount({
+    email: credentials.email,
+    password: credentials.password,
   });
 });

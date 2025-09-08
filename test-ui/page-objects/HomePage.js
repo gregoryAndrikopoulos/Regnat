@@ -1,5 +1,5 @@
 import { $, expect } from "@wdio/globals";
-import { HOMEPAGE_LINK } from "../support/utils/testConstants.js";
+import { HOMEPAGE_LINK } from "../../test-support/utils/testConstants.js";
 
 class HomePage {
   get homeMarker() {

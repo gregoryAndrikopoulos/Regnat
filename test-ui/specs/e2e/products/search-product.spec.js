@@ -1,6 +1,6 @@
 import HomePage from "../../../page-objects/HomePage.js";
 import ProductsPage from "../../../page-objects/ProductsPage.js";
-import { goHomeAcceptConsent } from "../../../support/utils/index.js";
+import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
 const term = "sleeveless";
 const expectedTitles = [

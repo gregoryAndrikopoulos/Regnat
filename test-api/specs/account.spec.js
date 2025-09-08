@@ -1,7 +1,11 @@
 import { strict as assert } from "node:assert";
 import axios from "axios";
 import { faker } from "@faker-js/faker";
-import { API, SHORT_TIMEOUT, STANDARD_TIMEOUT } from "../testConstants.js";
+import { API } from "../testConstants.js";
+import {
+  SHORT_TIMEOUT,
+  STANDARD_TIMEOUT,
+} from "../../test-support/utils/testConstants.js";
 
 const asForm = (obj) => new URLSearchParams(Object.entries(obj)).toString();
 
