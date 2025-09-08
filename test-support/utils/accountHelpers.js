@@ -1,9 +1,35 @@
 import { expect } from "@wdio/globals";
-import HomePage from "../../page-objects/HomePage.js";
-import SignupLoginPage from "../../page-objects/SignupLoginPage.js";
-import RegistrationPage from "../../page-objects/RegistrationPage.js";
-import ConfirmationPage from "../../page-objects/ConfirmationPage.js";
-import { fakeName, fakePassword, fakeAddress, fakeDOB } from "./fakers.js";
+import HomePage from "../../test-ui/page-objects/HomePage.js";
+import SignupLoginPage from "../../test-ui/page-objects/SignupLoginPage.js";
+import RegistrationPage from "../../test-ui/page-objects/RegistrationPage.js";
+import ConfirmationPage from "../../test-ui/page-objects/ConfirmationPage.js";
+import {
+  fakeName,
+  fakePassword,
+  fakeAddress,
+  fakeDOB,
+  fakeEmail,
+} from "./fakers.js";
+import { getCredentials } from "./envCredentials.js";
+import { goHomeAcceptConsent } from "./index.js";
+
+// unified creds for all tests
+function getTestCreds(setNumber) {
+  if (process.env.USE_REAL_CREDS === "true") {
+    const { name, email, password } = getCredentials(setNumber);
+    if (!email || !password) {
+      throw new Error(
+        "USE_REAL_CREDS=true but TEST_USER_EMAIL/TEST_USER_PASSWORD are missing"
+      );
+    }
+    return { name: name || "Scheduled Smoke User", email, password };
+  }
+  return {
+    name: fakeName(),
+    email: fakeEmail("automation", "example.com"),
+    password: fakePassword(),
+  };
+}
 
 /**
  * Log in with provided credentials.
@@ -108,4 +134,38 @@ async function deleteIfLoggedIn() {
   return true;
 }
 
-export { loginOnly, registerNewAccount, deleteIfLoggedIn };
+// one-call seeding for UI specs
+async function seedUiAccount(setNumber) {
+  const creds = getTestCreds(setNumber);
+
+  await goHomeAcceptConsent();
+  await HomePage.assertHomePageVisible();
+  await registerNewAccount({
+    name: creds.name,
+    email: creds.email,
+    password: creds.password,
+  });
+
+  await browser.reloadSession(); // fresh start for the actual test flow
+  return creds;
+}
+
+async function cleanupSeededAccount({ email, password }) {
+  try {
+    await goHomeAcceptConsent();
+    await HomePage.assertHomePageVisible();
+    await loginOnly({ email, password });
+    await deleteIfLoggedIn();
+  } catch {
+    // swallow errors so cleanup never fails the suite
+  }
+}
+
+export {
+  getTestCreds,
+  loginOnly,
+  registerNewAccount,
+  deleteIfLoggedIn,
+  seedUiAccount,
+  cleanupSeededAccount,
+};

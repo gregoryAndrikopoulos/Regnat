@@ -1,39 +1,44 @@
 import { expect, browser } from "@wdio/globals";
 import HomePage from "../../../page-objects/HomePage.js";
 import SignupLoginPage from "../../../page-objects/SignupLoginPage.js";
+import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 import {
-  TEST_USER_NAME,
-  getCredentials,
-} from "../../../support/utils/envCredentials.js";
-import { loginOnly } from "../../../support/utils/accountHelpers.js";
-import { BAD_CREDENTIALS } from "../../../support/utils/testConstants.js";
-import { goHomeAcceptConsent } from "../../../support/utils/index.js";
+  seedUiAccount,
+  loginOnly,
+  cleanupSeededAccount,
+} from "../../../../test-support/utils/accountHelpers.js";
 
-// Pick the credential set explicitly for this spec (set 1)
-const { email: TEST_USER_EMAIL, password: TEST_USER_PASSWORD } =
-  getCredentials(1);
+let credentials;
 
-before(function () {
-  if (!TEST_USER_EMAIL || !TEST_USER_PASSWORD) throw new Error(BAD_CREDENTIALS);
+before(async function () {
+  credentials = await seedUiAccount();
 });
 
 describe("Test Case 4: Logout User", function () {
   it("should login and then logout, returning to login page", async function () {
     await goHomeAcceptConsent();
+
     await HomePage.assertHomePageVisible();
 
     await loginOnly({
-      email: TEST_USER_EMAIL,
-      password: TEST_USER_PASSWORD,
+      email: credentials.email,
+      password: credentials.password,
     });
 
     await expect(HomePage.loggedInBanner).toBeDisplayed();
-    await expect(HomePage.loggedInUsername).toHaveText(TEST_USER_NAME);
+    await expect(HomePage.loggedInUsername).toHaveText(credentials.name);
 
     await expect(HomePage.logoutMenuLink).toBeDisplayed();
     await HomePage.logoutMenuLink.click();
 
     await expect(SignupLoginPage.loginHeader).toBeDisplayed();
     await expect(browser).toHaveUrl(/\/login/);
+  });
+});
+
+after(async () => {
+  await cleanupSeededAccount({
+    email: credentials.email,
+    password: credentials.password,
   });
 });

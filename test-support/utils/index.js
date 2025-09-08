@@ -1,5 +1,5 @@
 import { expect } from "@wdio/globals";
-import ConsentPage from "../../page-objects/ConsentPage.js";
+import ConsentPage from "../../test-ui/page-objects/ConsentPage.js";
 import { HOMEPAGE_LINK } from "./testConstants.js";
 
 async function clickElem(elem) {

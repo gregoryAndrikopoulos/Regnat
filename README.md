@@ -93,10 +93,6 @@ Create a `.env` at the repository root (do **not** commit it). Example:
 ```ini
 TEST_USER_EMAIL_1=
 TEST_USER_PASSWORD_1=
-TEST_USER_EMAIL_2=
-TEST_USER_PASSWORD_2=
-TEST_USER_EMAIL_3=
-TEST_USER_PASSWORD_3=
 ```
 
 ### CI (GitHub Actions)
@@ -104,8 +100,14 @@ TEST_USER_PASSWORD_3=
 Create repository **Secrets** with the same names used locally:
 
 - `TEST_USER_EMAIL_1`, `TEST_USER_PASSWORD_1`
-- `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`
-- `TEST_USER_EMAIL_3`, `TEST_USER_PASSWORD_3`
+
+### Additional credential sets
+
+The codebase supports extra sets (`_2`, `_3`, …) via `getCredentials(setNumber)`. To add more:
+
+1. Add the new variables to `.env` (e.g., `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`).
+2. Create matching **GitHub Secrets**.
+3. Update the relevant workflow(s) to pass those secrets into the job environment.
 
 ### Site-Specific Note (display name)
 
@@ -332,6 +334,7 @@ To integrate into an existing repository:
 2. **Copy framework directories**  
    Move the following from Regnat into `your_repo/test/`:
    - `test-api/`
+   - `test-support/`
    - `test-ui/`
 
 3. **Delete Automation Exercise–specific components**

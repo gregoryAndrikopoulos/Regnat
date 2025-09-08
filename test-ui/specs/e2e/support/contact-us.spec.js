@@ -1,8 +1,8 @@
 import { expect } from "@wdio/globals";
 import HomePage from "../../../page-objects/HomePage.js";
 import ContactUsPage from "../../../page-objects/ContactUsPage.js";
-import { goHomeAcceptConsent } from "../../../support/utils/index.js";
-import { fixturePath } from "../../../support/fixtures/fixtures.js";
+import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
+import { fixturePath } from "../../../../test-support/fixtures/fixtures.js";
 
 const filePath = fixturePath("contact-attachment.txt");
 

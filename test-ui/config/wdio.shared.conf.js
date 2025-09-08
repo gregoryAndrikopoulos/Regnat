@@ -20,7 +20,9 @@ export function makeConfig({ specsGlob, junitLabel = "e2e" }) {
   return {
     before: async () => {
       // Seed faker (deterministic across CI runs if FAKER_SEED is set)
-      const { initFakerSeed } = await import("../support/utils/fakers.js");
+      const { initFakerSeed } = await import(
+        "../../test-support/utils/fakers.js"
+      );
       initFakerSeed();
 
       // Register signal handlers for graceful shutdown and add the visual

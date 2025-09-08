@@ -14,12 +14,12 @@ Regnat/
 │  ├─ specs/                                # Test specs
 │  │  ├─ e2e/
 │  │  └─ smoke/
-│  ├─ support/                              # Test utilities and fixtures
-│  │  ├─ fixtures/text/                     # Static text fixtures
-│  │  ├─ fixtures.js                        # Central fixture loader
-│  │  └─ utils/                             # Reusable helpers
 │  └─ visual-baseline/                      # Committed visual baselines
 │     └─ smoke/
+├─ test-support/                            # Shared across UI / Smoke / API
+│  ├─ fixtures/text/                        # Static text fixtures
+│  ├─ fixtures.js                           # Central fixture loader
+│  ├─ utils/                                # Reusable helpers
 ├─ test-api/                                # All Axios/Mocha-based API testing
 │  ├─ specs/                                # API test specs
 │  ├─ testConstants.js                      # API endpoints & config constants

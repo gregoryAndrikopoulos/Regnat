@@ -1,11 +1,13 @@
 import { expect } from "@wdio/globals";
-import { faker } from "@faker-js/faker";
 import HomePage from "../../../page-objects/HomePage.js";
 import SignupLoginPage from "../../../page-objects/SignupLoginPage.js";
-import { goHomeAcceptConsent } from "../../../support/utils/index.js";
-import { fakePassword } from "../../../support/utils/fakers.js";
+import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
+import {
+  fakeEmail,
+  fakePassword,
+} from "../../../../test-support/utils/fakers.js";
 
-const INVALID_EMAIL = faker.internet.email({ provider: "example.com" });
+const INVALID_EMAIL = fakeEmail("invalid");
 const INVALID_PASSWORD = fakePassword();
 
 describe("Test Case 3: Login User with incorrect email and password", function () {
@@ -13,8 +15,8 @@ describe("Test Case 3: Login User with incorrect email and password", function (
     await goHomeAcceptConsent();
 
     await HomePage.assertHomePageVisible();
-    await HomePage.signupLoginLink.click();
 
+    await HomePage.signupLoginLink.click();
     await expect(SignupLoginPage.loginHeader).toBeDisplayed();
     await expect(SignupLoginPage.loginHeader).toHaveText(
       /Login to your account/i
