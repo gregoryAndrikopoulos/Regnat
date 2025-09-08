@@ -1,9 +1,16 @@
 name: SAST
 
 on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "**/*.js"
+      - "**/*.ts"
+      - "!**/*.d.ts"
+      - "!docs/**"
+      - "!**/*.md"
   schedule:
     - cron: "45 7 * * 1"
-  workflow_dispatch:
 
 permissions:
   contents: read
