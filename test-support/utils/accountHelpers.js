@@ -12,9 +12,10 @@ import {
 } from "./fakers.js";
 import { getCredentials } from "./envCredentials.js";
 import { goHomeAcceptConsent } from "./index.js";
+import { HOMEPAGE_LINK } from "./testConstants.js";
 
-// unified creds for all tests
-function getTestCreds(setNumber) {
+// unified credentials for all tests
+function getTestCredentials(setNumber) {
   if (process.env.USE_REAL_CREDS === "true") {
     const { name, email, password } = getCredentials(setNumber);
     if (!email || !password) {
@@ -136,18 +137,28 @@ async function deleteIfLoggedIn() {
 
 // one-call seeding for UI specs
 async function seedUiAccount(setNumber) {
-  const creds = getTestCreds(setNumber);
+  const credentials = getTestCredentials(setNumber);
 
   await goHomeAcceptConsent();
   await HomePage.assertHomePageVisible();
   await registerNewAccount({
-    name: creds.name,
-    email: creds.email,
-    password: creds.password,
+    name: credentials.name,
+    email: credentials.email,
+    password: credentials.password,
   });
 
-  await browser.reloadSession(); // fresh start for the actual test flow
-  return creds;
+  // hard reset for a clean test flow (grid-safe)
+  try {
+    await browser.reloadSession();
+    await browser.pause(200);
+  } catch {
+    // rare race: try once more
+    await browser.reloadSession();
+    await browser.pause(200);
+  }
+
+  await browser.url(HOMEPAGE_LINK);
+  return credentials;
 }
 
 async function cleanupSeededAccount({ email, password }) {
@@ -162,7 +173,7 @@ async function cleanupSeededAccount({ email, password }) {
 }
 
 export {
-  getTestCreds,
+  getTestCredentials,
   loginOnly,
   registerNewAccount,
   deleteIfLoggedIn,
