@@ -57,7 +57,7 @@ This repository pins tool versions via **asdf** in `.tool-versions`:
 
 ```txt
 nodejs 24.7.0
-pnpm 10.15.0
+pnpm 10.15.1
 ```
 
 **Setup**
@@ -77,9 +77,9 @@ asdf reshim
 ```
 
 **CI note:** GitHub Actions uses **asdf** and reads **`.tool-versions`** for both **Node** and **pnpm**. Keep **`.tool-versions`** in sync with
-`package.json`’s `"packageManager"` (e.g., `pnpm@10.15.0`). Corepack isn’t used in CI.
+`package.json`’s `"packageManager"` (e.g., `pnpm@10.15.1`). Corepack isn’t used in CI.
 
-**Version sync:** `package.json` sets `"packageManager": "pnpm@10.15.0"`. Keep this in sync with **`.tool-versions`** and the
+**Version sync:** `package.json` sets `"packageManager": "pnpm@10.15.1"`. Keep this in sync with **`.tool-versions`** and the
 versions listed above.
 
 ---
@@ -149,7 +149,7 @@ This guarantees the same fake data across reruns, useful for debugging failures.
 - **Docker Desktop** (with Compose)
 
 > This repository pins tool versions in **`.tool-versions`** (Node **24.7.0**,
-> pnpm **10.15.0**).
+> pnpm **10.15.1**).
 
 ### Install toolchain & dependencies (recommended)
 
@@ -166,7 +166,7 @@ Install matching versions manually:
 - **Node.js 24.x** (any installer)
 - **pnpm 10.15.x**
   ```bash
-  npm install -g pnpm@10.15.0
+  npm install -g pnpm@10.15.1
   pnpm -v
   ```
 

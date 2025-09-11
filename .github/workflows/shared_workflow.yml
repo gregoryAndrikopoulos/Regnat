@@ -48,7 +48,7 @@ jobs:
             pnpm-store-${{ runner.os }}-
 
       - name: ⚙️ Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: 🐳 Infra up (Docker Compose)
         if: ${{ inputs.infra_enabled }}
