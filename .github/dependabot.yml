@@ -4,8 +4,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
+      day: "friday"
       time: "09:00"
       timezone: "Europe/Athens"
     groups:
