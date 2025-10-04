@@ -32,7 +32,7 @@
     "lint:fix:format": "pnpm lint:fix && pnpm format"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.37.0",
     "@eslint/json": "^0.13.2",
     "@faker-js/faker": "^10.0.0",
     "@wdio/allure-reporter": "^9.20.0",
@@ -45,19 +45,19 @@
     "ajv": "^8.17.1",
     "allure-commandline": "^2.34.1",
     "axios": "^1.12.2",
-    "cross-env": "^10.0.0",
-    "eslint": "^9.36.0",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "expect-webdriverio": "^5",
     "globals": "^16.4.0",
-    "mocha": "^11.7.2",
+    "mocha": "^11.7.4",
     "mocha-junit-reporter": "^2.2.1",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
     "prettier": "^3.6.2"
   },
   "dependencies": {
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.3"
   }
 }
