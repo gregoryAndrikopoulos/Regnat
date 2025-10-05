@@ -40,6 +40,42 @@ class ProductDetailsPage {
     expect(texts.some((t) => /Condition:/i.test(t))).toBe(true);
     expect(texts.some((t) => /Brand:/i.test(t))).toBe(true);
   }
+
+  async #quantityInput() {
+    return this.container.$("#quantity");
+  }
+
+  async #addToCartButton() {
+    return this.container.$(".product-information button.btn.btn-default.cart");
+  }
+
+  async setQuantity(qty) {
+    const input = await this.#quantityInput();
+    await input.scrollIntoView();
+    await input.waitForDisplayed();
+    await input.click();
+    await input.clearValue();
+    await input.setValue(String(qty));
+  }
+
+  async clickAddToCart() {
+    const btn = await this.#addToCartButton();
+    await btn.scrollIntoView();
+    await btn.waitForClickable();
+    await btn.click();
+
+    const modal = await $(".modal-content");
+    await modal.waitForDisplayed();
+  }
+
+  async clickViewCartInModal() {
+    const modal = await $(".modal-content");
+    await modal.waitForDisplayed();
+    const viewCartLink = await modal.$('a[href="/view_cart"]');
+    await viewCartLink.waitForClickable();
+    await viewCartLink.click();
+    await modal.waitForDisplayed({ reverse: true });
+  }
 }
 
 export default new ProductDetailsPage();
