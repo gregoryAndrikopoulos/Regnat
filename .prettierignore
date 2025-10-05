@@ -3,3 +3,4 @@ allure-results/
 allure-report/
 reports/
 .idea/
+pnpm-lock.yaml

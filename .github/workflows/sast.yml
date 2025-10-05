@@ -2,7 +2,7 @@ name: SAST
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "**/*.js"
       - "**/*.ts"

@@ -59,18 +59,26 @@ async function loginOnly({ email, password }) {
   });
 }
 
+function buildRegistrationParams(overrides = {}) {
+  return {
+    name: fakeName(),
+    email: overrides.email ?? fakeEmail("automation", "example.com"),
+    password: fakePassword(),
+    title: "Mr",
+    dob: fakeDOB(),
+    address: fakeAddress(),
+    toggles: { newsletter: true, offers: true },
+    ...overrides,
+  };
+}
+
 /**
  * Register a brand-new account.
  */
-async function registerNewAccount({
-  name = fakeName(),
-  email,
-  password = fakePassword(),
-  title = "Mr",
-  dob = fakeDOB(),
-  address = fakeAddress(),
-  toggles = { newsletter: true, offers: true },
-} = {}) {
+async function registerNewAccount(opts = {}) {
+  const { name, email, password, title, dob, address, toggles } =
+    buildRegistrationParams(opts);
+
   const onLogin = await SignupLoginPage.loginHeader
     .isExisting()
     .catch(() => false);
@@ -110,6 +118,16 @@ async function registerNewAccount({
   );
   await ConfirmationPage.continueButton.click();
   await expect(HomePage.loggedInBanner).toBeDisplayed();
+}
+
+async function registerNewAccountFromCheckoutModal(opts = {}) {
+  const modalRoot = $("#checkoutModal .modal-content");
+  const modalLoginLink = await modalRoot.$('a[href="/login"]');
+  await modalLoginLink.waitForClickable({ timeout: 10000 });
+  await modalLoginLink.click();
+
+  await expect(browser).toHaveUrl("https://www.automationexercise.com/login");
+  await registerNewAccount(opts);
 }
 
 /**
@@ -179,4 +197,5 @@ export {
   deleteIfLoggedIn,
   seedUiAccount,
   cleanupSeededAccount,
+  registerNewAccountFromCheckoutModal,
 };

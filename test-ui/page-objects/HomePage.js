@@ -2,9 +2,6 @@ import { $, expect } from "@wdio/globals";
 import { HOMEPAGE_LINK } from "../../test-support/utils/testConstants.js";
 
 class HomePage {
-  get homeMarker() {
-    return $(".features_items .title.text-center");
-  }
   get logo() {
     return $('header .logo img[alt="Website for automation practice"]');
   }
@@ -35,20 +32,23 @@ class HomePage {
   get deleteAccountMenuLink() {
     return $('header .nav a[href="/delete_account"]');
   }
+  get logoutMenuLink() {
+    return $('header .nav a[href="/logout"]');
+  }
   get loggedInBanner() {
     return $("header*=Logged in as");
   }
   get loggedInUsername() {
     return this.loggedInBanner.$("b");
   }
-  get logoutMenuLink() {
-    return $('header .nav a[href="/logout"]');
-  }
   get homeNavActive() {
     return $('header .shop-menu a[href="/"][style*="color: orange"]');
   }
   get heroCarousel() {
     return $("#slider-carousel");
+  }
+  get homeMarker() {
+    return $(".features_items .title.text-center");
   }
   get featuresTitle() {
     return $(".features_items h2.title");
@@ -62,11 +62,31 @@ class HomePage {
   get recommendedItemsTitle() {
     return $(".recommended_items h2.title");
   }
-  get statusHeader() {
-    return $("h2.title.text-center");
-  }
   get continueButton() {
     return $('[data-qa="continue-button"]');
+  }
+  get firstHomeViewProductLink() {
+    return $('.features_items .choose a[href^="/product_details/"]');
+  }
+  get blueTopAddToCartBtn() {
+    return $('a.add-to-cart[data-product-id="1"]');
+  }
+  get addedModalRoot() {
+    return $(".modal-content");
+  }
+  get viewCartInAddedModalLink() {
+    return $('.modal-content a[href="/view_cart"]');
+  }
+
+  async viewFirstProductFromHome() {
+    const link = await this.firstHomeViewProductLink;
+    await link.scrollIntoView();
+    await link.click();
+
+    await browser.waitUntil(
+      async () => (await browser.getUrl()).includes("/product_details"),
+      { timeoutMsg: "Did not navigate to product details from home" }
+    );
   }
 
   async commonHomePageAssertions() {
@@ -99,6 +119,23 @@ class HomePage {
 
   async assertHomePageVisiblePostLogin() {
     await this.commonHomePageAssertions();
+  }
+
+  async addBlueTopFromHome() {
+    await this.blueTopAddToCartBtn.scrollIntoView();
+    await this.blueTopAddToCartBtn.click();
+  }
+
+  async clickViewCartInAddedModal() {
+    await this.addedModalRoot.waitForDisplayed({ timeout: 10000 });
+    await this.viewCartInAddedModalLink.click();
+    await browser.waitUntil(
+      async () => (await browser.getUrl()).includes("/view_cart"),
+      {
+        timeout: 10000,
+        timeoutMsg: "Did not navigate to /view_cart from modal",
+      }
+    );
   }
 }
 

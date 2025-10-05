@@ -170,6 +170,52 @@ class ProductsPage {
     }
     await expect(missing.length === 0).toBe(true);
   }
+
+  async addProductToCartByIndex(index) {
+    const cards = await this.productCards;
+    if (!cards || cards.length <= index) {
+      throw new Error(
+        `No product card at index ${index}. Found: ${cards?.length ?? 0}`
+      );
+    }
+
+    const card = cards[index];
+    await card.scrollIntoView();
+    await card.moveTo();
+
+    const overlayBtn = await card.$(".product-overlay .add-to-cart");
+    const infoBtn = await card.$(".productinfo .add-to-cart");
+    const addBtn = (await overlayBtn.isExisting()) ? overlayBtn : infoBtn;
+
+    await addBtn.waitForClickable();
+    await addBtn.click();
+
+    const modal = await $(".modal-content");
+    await modal.waitForDisplayed();
+    await expect(modal).toBeDisplayed();
+  }
+
+  async clickContinueShoppingInModal() {
+    const modal = await $(".modal-content");
+    await modal.waitForDisplayed();
+
+    const continueBtn = await modal.$("button.close-modal");
+    await continueBtn.waitForClickable();
+    await continueBtn.click();
+
+    await modal.waitForDisplayed({ reverse: true });
+  }
+
+  async clickViewCartInModal() {
+    const modal = await $(".modal-content");
+    await modal.waitForDisplayed();
+
+    const viewCartLink = await modal.$('a[href="/view_cart"]');
+    await viewCartLink.waitForClickable();
+    await viewCartLink.click();
+
+    await modal.waitForDisplayed({ reverse: true });
+  }
 }
 
 export default new ProductsPage();
