@@ -6,7 +6,7 @@ import PaymentPage from "../../../page-objects/PaymentPage.js";
 import { ORDER_NOTE } from "../../../../test-support/utils/testConstants.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 import {
-  registerNewAccountFromCheckoutModal,
+  registerNewAccount,
   deleteIfLoggedIn,
 } from "../../../../test-support/utils/accountHelpers.js";
 import {
@@ -19,31 +19,28 @@ const NAME = fakeName();
 const EMAIL = fakeEmail();
 const PASSWORD = fakePassword();
 
-describe("Test Case 14: Place Order: Register while Checkout", function () {
-  it("places an order after registering during checkout", async function () {
+describe("Test Case 15: Place Order: Register before Checkout", function () {
+  it("registers first, then places an order successfully", async function () {
     await goHomeAcceptConsent();
+
     await HomePage.assertHomePageVisible();
 
-    await HomePage.addBlueTopFromHome();
-    await HomePage.clickViewCartInAddedModal();
-
-    await CartPage.assertCartPageVisible();
-    await CartPage.clickProceedToCheckout();
-    await registerNewAccountFromCheckoutModal({
-      name: NAME,
-      email: EMAIL,
-      password: PASSWORD,
-    });
+    await registerNewAccount({ name: NAME, email: EMAIL, password: PASSWORD });
 
     await HomePage.assertHomePageVisiblePostLogin();
     await expect(HomePage.loggedInBanner).toBeDisplayed();
     await expect(HomePage.loggedInUsername).toHaveText(NAME);
 
+    await HomePage.addBlueTopFromHome();
+
+    await HomePage.clickContinueShoppingInAddedModal();
     await HomePage.cartMenuLink.click();
+
     await CartPage.assertCartPageVisible();
     await CartPage.clickProceedToCheckout();
 
     await CheckoutPage.assertAddressAndReviewVisible();
+
     await CheckoutPage.placeOrder(ORDER_NOTE);
 
     await PaymentPage.assertOnPaymentPage();
@@ -56,6 +53,7 @@ describe("Test Case 14: Place Order: Register while Checkout", function () {
     });
     await PaymentPage.assertOrderSuccess();
 
+    // Steps 17–18
     const deleted = await deleteIfLoggedIn();
     expect(deleted).toBe(true);
 

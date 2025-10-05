@@ -6,49 +6,43 @@ import PaymentPage from "../../../page-objects/PaymentPage.js";
 import { ORDER_NOTE } from "../../../../test-support/utils/testConstants.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 import {
-  registerNewAccountFromCheckoutModal,
+  seedUiAccount,
+  loginOnly,
   deleteIfLoggedIn,
+  cleanupSeededAccount,
 } from "../../../../test-support/utils/accountHelpers.js";
-import {
-  fakeName,
-  fakeEmail,
-  fakePassword,
-} from "../../../../test-support/utils/fakers.js";
 
-const NAME = fakeName();
-const EMAIL = fakeEmail();
-const PASSWORD = fakePassword();
+let credentials;
 
-describe("Test Case 14: Place Order: Register while Checkout", function () {
-  it("places an order after registering during checkout", async function () {
+before(async function () {
+  credentials = await seedUiAccount();
+});
+
+describe("Test Case 16: Place Order: Login before Checkout", function () {
+  it("logs in first, then places an order successfully", async function () {
     await goHomeAcceptConsent();
+
     await HomePage.assertHomePageVisible();
-
-    await HomePage.addBlueTopFromHome();
-    await HomePage.clickViewCartInAddedModal();
-
-    await CartPage.assertCartPageVisible();
-    await CartPage.clickProceedToCheckout();
-    await registerNewAccountFromCheckoutModal({
-      name: NAME,
-      email: EMAIL,
-      password: PASSWORD,
+    await loginOnly({
+      email: credentials.email,
+      password: credentials.password,
     });
 
-    await HomePage.assertHomePageVisiblePostLogin();
     await expect(HomePage.loggedInBanner).toBeDisplayed();
-    await expect(HomePage.loggedInUsername).toHaveText(NAME);
+    await expect(HomePage.loggedInUsername).toHaveText(credentials.name);
 
+    await HomePage.addBlueTopFromHome();
+    await HomePage.clickContinueShoppingInAddedModal();
     await HomePage.cartMenuLink.click();
+
     await CartPage.assertCartPageVisible();
     await CartPage.clickProceedToCheckout();
-
     await CheckoutPage.assertAddressAndReviewVisible();
-    await CheckoutPage.placeOrder(ORDER_NOTE);
 
+    await CheckoutPage.placeOrder(ORDER_NOTE);
     await PaymentPage.assertOnPaymentPage();
     await PaymentPage.payAndConfirm({
-      name: NAME,
+      name: credentials.name,
       number: "4111111111111111",
       cvc: "123",
       expiryMonth: "12",
@@ -61,5 +55,12 @@ describe("Test Case 14: Place Order: Register while Checkout", function () {
 
     await HomePage.assertHomePageVisible();
     await expect(HomePage.signupLoginLink).toBeDisplayed();
+  });
+});
+
+after(async function () {
+  await cleanupSeededAccount({
+    email: credentials.email,
+    password: credentials.password,
   });
 });

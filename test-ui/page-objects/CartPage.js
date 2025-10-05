@@ -20,8 +20,31 @@ class CartPage {
   get checkoutModal() {
     return $("#checkoutModal .modal-content");
   }
+  get breadcrumbActive() {
+    return $(".breadcrumb .active");
+  }
+  get cartTable() {
+    return $("#cart_info_table");
+  }
+  get emptyCartNotice() {
+    return $("#empty_cart");
+  }
+  get proceedToCheckoutBtn() {
+    return $("#do_action .check_out");
+  }
+  get cartUrl() {
+    return "https://www.automationexercise.com/view_cart";
+  }
+
+  async isEmpty() {
+    return await this.emptyCartNotice.isDisplayed().catch(() => false);
+  }
 
   async clickProceedToCheckout() {
+    if (await this.isEmpty()) {
+      throw new Error("Cannot proceed to checkout: cart is empty.");
+    }
+
     await this.proceedToCheckoutButton.scrollIntoView();
     await this.proceedToCheckoutButton.click();
 
@@ -89,22 +112,6 @@ class CartPage {
     await expect(row.quantity).toBe(expectedQty);
   }
 
-  get breadcrumbActive() {
-    return $(".breadcrumb .active");
-  }
-  get cartTable() {
-    return $("#cart_info_table");
-  }
-  get emptyCartNotice() {
-    return $("#empty_cart");
-  }
-  get proceedToCheckoutBtn() {
-    return $("#do_action .check_out");
-  }
-  get cartUrl() {
-    return "https://www.automationexercise.com/view_cart";
-  }
-
   async assertCartPageVisible() {
     await this.root.waitForDisplayed();
     await expect(browser).toHaveUrl(this.cartUrl);
@@ -113,12 +120,38 @@ class CartPage {
     await expect(this.breadcrumbActive).toHaveText(/Shopping Cart/i);
 
     const tableVisible = await this.cartTable.isDisplayed().catch(() => false);
+    const rowCount = tableVisible ? (await this.rows).length : 0;
     const emptyVisible = await this.emptyCartNotice
       .isDisplayed()
       .catch(() => false);
-    await expect(tableVisible || emptyVisible).toBe(true);
 
-    await expect(this.proceedToCheckoutBtn).toBeDisplayed();
+    await expect(emptyVisible || (tableVisible && rowCount > 0)).toBe(true);
+
+    if (!emptyVisible) {
+      await expect(this.proceedToCheckoutBtn).toBeDisplayed();
+    }
+  }
+
+  async removeFirstItem() {
+    const rows = await this.rows;
+    if (rows.length === 0) throw new Error("Cart is already empty.");
+    const firstRow = rows[0];
+    const deleteBtn = await firstRow.$(".cart_delete .cart_quantity_delete");
+    await deleteBtn.scrollIntoView();
+    await deleteBtn.click();
+    await firstRow.waitForExist({ reverse: true, timeout: 10000 });
+  }
+
+  async assertCartEmpty() {
+    await browser.waitUntil(
+      async () =>
+        (await this.rows).length === 0 ||
+        (await this.emptyCartNotice.isDisplayed().catch(() => false)),
+      { timeout: 10000, timeoutMsg: "Cart did not become empty." }
+    );
+    if (await this.emptyCartNotice.isExisting()) {
+      await expect(this.emptyCartNotice).toBeDisplayed();
+    }
   }
 }
 
