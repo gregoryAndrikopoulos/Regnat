@@ -77,6 +77,83 @@ class HomePage {
   get viewCartInAddedModalLink() {
     return $('.modal-content a[href="/view_cart"]');
   }
+  get continueShoppingInAddedModalBtn() {
+    return this.addedModalRoot.$(".close-modal");
+  }
+  get categoriesAccordion() {
+    return $("#accordian");
+  }
+  get womenToggleLink() {
+    return $('a[href="#Women"]');
+  }
+  get womenPanel() {
+    return $("#Women");
+  }
+  get menToggleLink() {
+    return $('a[href="#Men"]');
+  }
+  get menPanel() {
+    return $("#Men");
+  }
+
+  async _isPanelOpen(panelEl) {
+    const cls = await panelEl.getAttribute("class");
+    return /\bin\b/.test(cls);
+  }
+
+  async assertCategoriesVisible() {
+    await expect(this.categoryTitle).toBeDisplayed();
+    await expect(this.categoryTitle).toHaveText(/Category/i);
+    await expect(this.categoriesAccordion).toBeDisplayed();
+  }
+
+  async openWomenCategory() {
+    await this.womenToggleLink.scrollIntoView();
+    if (!(await this._isPanelOpen(this.womenPanel))) {
+      await this.womenToggleLink.click();
+      await browser.waitUntil(async () => this._isPanelOpen(this.womenPanel), {
+        timeout: 5000,
+        timeoutMsg: "Women panel did not expand",
+      });
+    }
+  }
+
+  async openMenCategory() {
+    await this.menToggleLink.scrollIntoView();
+    if (!(await this._isPanelOpen(this.menPanel))) {
+      await this.menToggleLink.click();
+      await browser.waitUntil(async () => this._isPanelOpen(this.menPanel), {
+        timeout: 5000,
+        timeoutMsg: "Men panel did not expand",
+      });
+    }
+  }
+
+  async clickWomenSubcategory(subcatText) {
+    await this.openWomenCategory();
+    const links = await this.womenPanel.$$(".panel-body a");
+    for (const el of links) {
+      const t = (await el.getText()).trim().toLowerCase();
+      if (t.includes(subcatText.toLowerCase())) {
+        await el.click();
+        return;
+      }
+    }
+    throw new Error(`Women subcategory "${subcatText}" not found`);
+  }
+
+  async clickMenSubcategory(subcatText) {
+    await this.openMenCategory();
+    const links = await this.menPanel.$$(".panel-body a");
+    for (const el of links) {
+      const t = (await el.getText()).trim().toLowerCase();
+      if (t.includes(subcatText.toLowerCase())) {
+        await el.click();
+        return;
+      }
+    }
+    throw new Error(`Men subcategory "${subcatText}" not found`);
+  }
 
   async viewFirstProductFromHome() {
     const link = await this.firstHomeViewProductLink;
@@ -123,11 +200,13 @@ class HomePage {
 
   async addBlueTopFromHome() {
     await this.blueTopAddToCartBtn.scrollIntoView();
+    await this.blueTopAddToCartBtn.waitForClickable({ timeout: 10000 });
     await this.blueTopAddToCartBtn.click();
   }
 
   async clickViewCartInAddedModal() {
     await this.addedModalRoot.waitForDisplayed({ timeout: 10000 });
+    await this.viewCartInAddedModalLink.waitForClickable({ timeout: 10000 });
     await this.viewCartInAddedModalLink.click();
     await browser.waitUntil(
       async () => (await browser.getUrl()).includes("/view_cart"),
@@ -136,6 +215,15 @@ class HomePage {
         timeoutMsg: "Did not navigate to /view_cart from modal",
       }
     );
+  }
+
+  async clickContinueShoppingInAddedModal() {
+    await this.addedModalRoot.waitForDisplayed({ timeout: 10000 });
+    await this.continueShoppingInAddedModalBtn.waitForClickable({
+      timeout: 10000,
+    });
+    await this.continueShoppingInAddedModalBtn.click();
+    await this.addedModalRoot.waitForDisplayed({ reverse: true });
   }
 }
 

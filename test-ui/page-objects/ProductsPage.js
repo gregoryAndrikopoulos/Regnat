@@ -24,6 +24,21 @@ class ProductsPage {
       `//h2[contains(@class,"title") and normalize-space()="Searched Products"]`
     );
   }
+  get categoryHeaderTitle() {
+    return $(".features_items h2.title");
+  }
+  get brandsBox() {
+    return $(".brands_products");
+  }
+  get brandsHeader() {
+    return this.brandsBox.$("h2");
+  }
+  get brandLinks() {
+    return this.brandsBox.$$(".brands-name a");
+  }
+  get productsSectionTitle() {
+    return $(".features_items h2.title");
+  }
 
   async assertAllProductsVisible() {
     await this.allProductsHeader.waitForDisplayed();
@@ -215,6 +230,75 @@ class ProductsPage {
     await viewCartLink.click();
 
     await modal.waitForDisplayed({ reverse: true });
+  }
+
+  async assertCategoryHeader(category, subcategory) {
+    await this.categoryHeaderTitle.waitForDisplayed();
+
+    const raw = await this.categoryHeaderTitle.getText();
+    const normalized = raw
+      .replace(/\s+/g, " ")
+      .replace(/\s*-\s*/g, " - ")
+      .trim()
+      .toLowerCase();
+
+    const expected = `${category} - ${subcategory} products`.toLowerCase();
+    await expect(normalized).toContain(expected);
+  }
+
+  async assertBrandsSidebarVisible() {
+    await this.brandsBox.waitForDisplayed({ timeout: 10000 });
+    await expect(this.brandsHeader).toBeDisplayed();
+    await expect(this.brandsHeader).toHaveText(/Brands/i);
+
+    const links = await this.brandLinks;
+    await expect(links.length).toBeGreaterThan(0);
+  }
+
+  async clickBrand(name) {
+    await this.assertBrandsSidebarVisible();
+
+    const targetName = this.normalize(name);
+    const links = await this.brandLinks;
+
+    let target = null;
+    for (const a of links) {
+      const txt = this.normalize(await a.getText());
+      if (txt.includes(targetName)) {
+        target = a;
+        break;
+      }
+    }
+
+    if (!target) throw new Error(`Brand link "${name}" not found`);
+
+    await target.scrollIntoView();
+    await target.click();
+
+    await browser.waitUntil(
+      async () => {
+        const hdr = await this.productsSectionTitle.getText();
+        return this.normalize(hdr).includes(
+          this.normalize(`Brand - ${name} Products`)
+        );
+      },
+      { timeout: 10000, timeoutMsg: `Brand page for "${name}" did not load` }
+    );
+  }
+
+  async assertBrandHeader(name) {
+    await this.productsSectionTitle.waitForDisplayed({ timeout: 10000 });
+    const normalized = this.normalize(
+      await this.productsSectionTitle.getText()
+    );
+    const expected = this.normalize(`Brand - ${name} Products`);
+    await expect(normalized).toContain(expected);
+  }
+
+  async assertGridHasProducts(min = 1) {
+    await expect(this.productCards).toBeElementsArrayOfSize({ gte: min });
+    const cards = await this.productCards;
+    await expect(cards[0]).toBeDisplayed();
   }
 }
 
