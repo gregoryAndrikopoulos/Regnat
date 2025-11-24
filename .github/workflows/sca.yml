@@ -13,7 +13,7 @@ jobs:
   trivy-fs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Trivy FS scan (repo & lockfile)
         uses: aquasecurity/trivy-action@0.33.1
