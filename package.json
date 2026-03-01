@@ -46,7 +46,7 @@
     "allure-commandline": "^2.36.0",
     "axios": "^1.13.2",
     "cross-env": "^10.1.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "expect-webdriverio": "^5",
