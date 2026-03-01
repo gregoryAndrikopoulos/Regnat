@@ -32,7 +32,7 @@
     "lint:fix:format": "pnpm lint:fix && pnpm format"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^9.39.3",
     "@eslint/json": "^1.0.0",
     "@faker-js/faker": "^10.1.0",
     "@wdio/allure-reporter": "^9.22.0",
