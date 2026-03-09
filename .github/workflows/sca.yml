@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Trivy FS scan (repo & lockfile)
-        uses: aquasecurity/trivy-action@0.34.1
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: fs
           skip-dirs: node_modules,dist,coverage,reports,allure-results,allure-report
@@ -56,7 +56,7 @@ jobs:
           echo "safe=$safe" >> "$GITHUB_OUTPUT"
 
       - name: Trivy image scan ${{ matrix.image }}
-        uses: aquasecurity/trivy-action@0.34.1
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: ${{ matrix.image }}
           format: sarif
