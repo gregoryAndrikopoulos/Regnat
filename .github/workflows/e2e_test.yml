@@ -12,7 +12,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
 
-    uses: gregoryAndrikopoulos/regnat/.github/workflows/shared_workflow.yml@main
+    uses: gregoryAndrikopoulos/wdio-baseline/.github/workflows/shared_workflow.yml@main
     secrets: inherit
     with:
       npm_script: "pnpm test:e2e"
