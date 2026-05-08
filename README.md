@@ -1,4 +1,4 @@
-# Regnat
+# wdio-baseline
 
 > Structured WebdriverIO v9 + Axios setup for reliable **UI** and **API** testing.
 
@@ -10,7 +10,7 @@ regression checks**.
 
 ## Website Under Test
 
-Regnat is designed to test any modern web application.  
+wdio-baseline is designed to test any modern web application.  
 For demonstration purposes, it is configured to run against
 [Automation Exercise](https://www.automationexercise.com/).
 
@@ -18,11 +18,11 @@ For demonstration purposes, it is configured to run against
 
 ## Workflow Status
 
-[![E2E Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/e2e_test.yml)
-[![API Tests](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/api_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/api_test.yml)
-[![Smoke Test](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/smoke_test.yml)
-[![SCA](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sca.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sca.yml)
-[![SAST](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sast.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/regnat/actions/workflows/sast.yml)
+[![E2E Tests](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/e2e_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/e2e_test.yml)
+[![API Tests](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/api_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/api_test.yml)
+[![Smoke Test](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/smoke_test.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/smoke_test.yml)
+[![SCA](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/sca.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/sca.yml)
+[![SAST](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/sast.yml/badge.svg)](https://github.com/gregoryAndrikopoulos/wdio-baseline/actions/workflows/sast.yml)
 
 ---
 
@@ -324,7 +324,7 @@ ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
 
 ## Integration Steps
 
-Regnat can be used as a starting point for test automation in any project.  
+wdio-baseline can be used as a starting point for test automation in any project.  
 To integrate into an existing repository:
 
 1. **Separate application and test logic**
@@ -332,7 +332,7 @@ To integrate into an existing repository:
    - Create a dedicated test directory `your_repo/test/`.
 
 2. **Copy framework directories**  
-   Move the following from Regnat into `your_repo/test/`:
+   Move the following from wdio-baseline into `your_repo/test/`:
    - `test-api/`
    - `test-support/`
    - `test-ui/`
@@ -349,13 +349,13 @@ To integrate into an existing repository:
    This creates a clean slate for building page objects and specs specific to the target application.
 
 4. **Align dependencies and scripts**
-   - Copy relevant `devDependencies` and `scripts` from Regnat’s `package.json` into the repository’s `package.json`.
+   - Copy relevant `devDependencies` and `scripts` from wdio-baseline’s `package.json` into the repository’s `package.json`.
    - Ensure Node.js and pnpm versions are aligned.  
-     Regnat uses `.tool-versions` (asdf) together with `packageManager` in `package.json` to enforce this, but any equivalent mechanism can be used (e.g., `engines`, nvm, Volta, or Corepack).
+     wdio-baseline uses `.tool-versions` (asdf) together with `packageManager` in `package.json` to enforce this, but any equivalent mechanism can be used (e.g., `engines`, nvm, Volta, or Corepack).
    - Adjust version pinning to match the conventions of the host repository.
 
 5. **Tailor configurations**
-   - Update paths if the test directory differs from `Regnat/`.
+   - Update paths if the test directory differs from `wdio-baseline/`.
    - Adjust workflow YAML files under `.github/workflows/` to match branch names and CI requirements.
    - Rename environment variables as needed (see `.env` / `envCredentials.js`).
 

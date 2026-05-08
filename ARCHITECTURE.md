@@ -1,7 +1,7 @@
 # Directory Structure
 
 ```
-Regnat/
+wdio-baseline/
 ├─ .github/workflows/                       # CI/CD workflows (reusable + suite-specific)
 ├─ infra/                                   # Selenium Grid (Docker Compose)
 │  └─ docker-compose.yml
