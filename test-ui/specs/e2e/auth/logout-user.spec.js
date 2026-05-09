@@ -8,13 +8,13 @@ import {
   cleanupSeededAccount,
 } from "../../../../test-support/utils/accountHelpers.js";
 
-let credentials;
-
-before(async function () {
-  credentials = await seedUiAccount();
-});
-
 describe.skip("Test Case 4: Logout User", function () {
+  let credentials;
+
+  before(async function () {
+    credentials = await seedUiAccount();
+  });
+
   it("should login and then logout, returning to login page", async function () {
     await goHomeAcceptConsent();
 
@@ -34,11 +34,11 @@ describe.skip("Test Case 4: Logout User", function () {
     await expect(SignupLoginPage.loginHeader).toBeDisplayed();
     await expect(browser).toHaveUrl(/\/login/);
   });
-});
 
-after(async () => {
-  await cleanupSeededAccount({
-    email: credentials.email,
-    password: credentials.password,
+  after(async () => {
+    await cleanupSeededAccount({
+      email: credentials.email,
+      password: credentials.password,
+    });
   });
 });
