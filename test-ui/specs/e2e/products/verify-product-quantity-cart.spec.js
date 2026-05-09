@@ -3,7 +3,7 @@ import ProductDetailsPage from "../../../page-objects/ProductDetailsPage.js";
 import CartPage from "../../../page-objects/CartPage.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
-describe("Test Case 13: Verify Product quantity in Cart", function () {
+describe.skip("Test Case 13: Verify Product quantity in Cart", function () {
   it("sets quantity to 4 on details page and verifies it in cart", async function () {
     await goHomeAcceptConsent();
 

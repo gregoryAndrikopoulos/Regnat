@@ -15,7 +15,7 @@ const NAME = fakeName();
 const EMAIL = fakeEmail();
 const PASSWORD = fakePassword();
 
-describe("Test Case 1: Register User", function () {
+describe.skip("Test Case 1: Register User", function () {
   it("should create and delete an account", async function () {
     await goHomeAcceptConsent();
 

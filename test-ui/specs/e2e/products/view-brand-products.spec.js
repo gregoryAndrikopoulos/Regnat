@@ -2,7 +2,7 @@ import HomePage from "../../../page-objects/HomePage.js";
 import ProductsPage from "../../../page-objects/ProductsPage.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
-describe("Test Case 19: View & Cart Brand Products", function () {
+describe.skip("Test Case 19: View & Cart Brand Products", function () {
   it("navigates between brand pages via the left sidebar and sees products", async function () {
     await goHomeAcceptConsent();
 

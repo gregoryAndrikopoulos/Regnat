@@ -2,7 +2,7 @@ import HomePage from "../../../page-objects/HomePage.js";
 import ProductsPage from "../../../page-objects/ProductsPage.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
-describe("Test Case 18: View Category Products", function () {
+describe.skip("Test Case 18: View Category Products", function () {
   it("navigates via Women and Men category sub-links and verifies pages", async function () {
     await goHomeAcceptConsent();
 

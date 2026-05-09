@@ -47,40 +47,58 @@ For demonstration purposes, it is configured to run against
 
 - **ESLint** — linting
 - **Prettier** — formatting
-- **asdf** — runtime version manager (pins Node & pnpm versions per project)
+- **mise** — runtime version manager (pins Node per project via `.tool-versions`)
+- **Corepack** — manages pnpm version per project via `packageManager`
 
 ---
 
 ## Runtime Versions (Node & pnpm)
 
-This repository pins tool versions via **asdf** in `.tool-versions`:
+This repository pins tooling using:
+
+- **mise** for Node.js
+- **Corepack** for pnpm
+
+### Node version is defined in `.tool-versions`
 
 ```txt
 nodejs 24.7.0
-pnpm 10.15.1
 ```
 
-**Setup**
+### pnpm version is defined in `package.json`
+
+```json
+{
+  "packageManager": "pnpm@10.15.1"
+}
+```
+
+### Setup
 
 ```bash
-asdf install
-asdf current
-node -v && pnpm -v
+mise install
+corepack enable
+pnpm install
 ```
 
-**Change versions locally**
+### Verify setup
 
 ```bash
-asdf install nodejs <new> && asdf local nodejs <new>
-asdf install pnpm <new>   && asdf local pnpm <new>
-asdf reshim
+node -v
+pnpm -v
 ```
 
-**CI note:** GitHub Actions uses **asdf** and reads **`.tool-versions`** for both **Node** and **pnpm**. Keep **`.tool-versions`** in sync with
-`package.json`’s `"packageManager"` (e.g., `pnpm@10.15.1`). Corepack isn’t used in CI.
+Expected:
 
-**Version sync:** `package.json` sets `"packageManager": "pnpm@10.15.1"`. Keep this in sync with **`.tool-versions`** and the
-versions listed above.
+- Node → 24.7.0
+- pnpm → 10.15.1
+
+### Changing versions locally
+
+```bash
+mise use node@24.7.0
+corepack prepare pnpm@10.15.1 --activate
+```
 
 ---
 
@@ -103,41 +121,11 @@ Create repository **Secrets** with the same names used locally:
 
 ### Additional credential sets
 
-The codebase supports extra sets (`_2`, `_3`, …) via `getCredentials(setNumber)`. To add more:
+The codebase supports extra sets (`_2`, `_3`, …) via `getCredentials(setNumber)`.
 
-1. Add the new variables to `.env` (e.g., `TEST_USER_EMAIL_2`, `TEST_USER_PASSWORD_2`).
-2. Create matching **GitHub Secrets**.
-3. Update the relevant workflow(s) to pass those secrets into the job environment.
-
-### Site-Specific Note (display name)
-
-The suite targets **Automation Exercise**, which shows a display name after
-login.
-
-> Sign-up flow detail: Automation Exercise first prompts for **Name** and
-> **Email Address** before creating an account.
-
-### Faker-based test data
-
-For specs that create **throwaway accounts or inputs** the suite uses **[faker.js](https://fakerjs.dev/)**.  
-This ensures:
-
-- Each run generates unique, realistic values (emails, names, addresses, passwords).
-- CI runs remain deterministic when seeded via `FAKER_SEED`.
-
-Example seeding:
-
-```bash
-export FAKER_SEED=12345
-pnpm test:e2e
-```
-
-This guarantees the same fake data across reruns, useful for debugging failures.
-
-### Security
-
-- Never commit `.env` or print raw secrets in logs.
-- Rotate real credentials if leaked or shared beyond CI.
+1. Add variables to `.env`
+2. Add GitHub Secrets
+3. Update workflows
 
 ---
 
@@ -145,30 +133,18 @@ This guarantees the same fake data across reruns, useful for debugging failures.
 
 ### Prerequisites
 
-- **asdf** (version manager)
+- **mise** (runtime manager)
 - **Docker Desktop** (with Compose)
+- Node is installed via mise
+- pnpm is managed via Corepack (Node 24+)
 
-> This repository pins tool versions in **`.tool-versions`** (Node **24.7.0**,
-> pnpm **10.15.1**).
-
-### Install toolchain & dependencies (recommended)
+### Install toolchain & dependencies
 
 ```bash
-asdf install                # installs node & pnpm from .tool-versions
-node -v && pnpm -v          # verify
-pnpm install                # project deps
+mise install
+corepack enable
+pnpm install
 ```
-
-### Without asdf
-
-Install matching versions manually:
-
-- **Node.js 24.x** (any installer)
-- **pnpm 10.15.x**
-  ```bash
-  npm install -g pnpm@10.15.1
-  pnpm -v
-  ```
 
 ---
 
@@ -176,149 +152,46 @@ Install matching versions manually:
 
 ### Run test infrastructure (Docker)
 
-Start Selenium Grid + nodes:
-
 ```bash
-# Chrome-only (default; fastest)
 pnpm infra:up
-
-# Cross-browser nodes (Firefox + Edge + Chrome)
-pnpm infra:cross:up    # equivalent to: COMPOSE_PROFILES=smoke pnpm infra:up
+pnpm infra:cross:up
 ```
 
-Grid UI: <http://localhost:4444/ui>
-
-Live logs (optional):
+Grid UI: http://localhost:4444/ui
 
 ```bash
 pnpm infra:logs
-```
-
-Stop infrastructure:
-
-```bash
-pnpm infra:down         # or: pnpm infra:cross:down
-```
-
-Infrastructure status (hub ready?):
-
-```bash
+pnpm infra:down
 pnpm infra:status
 ```
-
-> **Compose profiles**
->
-> - The `chrome` node is always available.
-> - `firefox` and `edge` nodes start only when the **`smoke`** profile is
->   enabled (via `infra:cross:up`) or when `COMPOSE_PROFILES` is provided.
 
 ---
 
 ### Run tests locally
 
-**E2E (Chrome-only):**
-
 ```bash
 pnpm test:e2e
-```
-
-**Smoke (cross-browser):**
-
-```bash
-# Run all browsers in one invocation (default: chrome,firefox,edge)
-pnpm infra:cross:up
 pnpm test:smoke
-```
-
-**API Tests (Axios + Mocha):**
-
-API specs live under `test-api/specs/` and target the public  
-[Automation Exercise APIs](https://automationexercise.com/api).
-
-Run locally:
-
-```bash
 pnpm test:api
 ```
-
-JUnit results are written to:
-
-```
-reports/junit/api/api-junit.xml
-```
-
----
-
-### Run tests in CI (GitHub Actions)
-
-- **E2E Test**: Chrome-only, parallelized across specs for speed on pull requests.
-- **API Test**: Axios-based API tests on pull requests.
-- **Cross-browser Smoke Test**: One job brings up Grid with the `smoke` profile
-  and runs the smoke suite **sequentially across browsers in a single
-  invocation** (to keep artifacts and reporting consolidated).
-
-Manual dispatch:
-
-- Open **Actions**.
-- Select **E2E Test**, **API Test**, or **Cross-browser Smoke Test**.
-- Choose a branch and click **Run workflow**.
 
 ---
 
 ## Reports
 
-### Allure (local, UI only)
-
-Local test runs write raw results to:
-
-- `reports/allure/allure-results/` (local)
-- In CI, results are at repo root: `allure-results/` (so the runner can upload
-  them).
-
-Generate and open locally:
+### Allure
 
 ```bash
 pnpm report:allure:open:local
-```
-
-This generates HTML in `reports/allure/allure-report/` and opens it.
-
-### Allure (CI, UI only)
-
-After a CI run, download the **`allure`** artifact. When unzipped to
-`~/Downloads/allure/`, it contains:
-
-- `allure-report/` → generated HTML report (standalone)
-
-Open the report locally:
-
-```bash
 pnpm report:allure:open:ci
 ```
-
-Default path is `~/Downloads/allure/allure-report`. Override with `ALLURE_PATH`
-if needed:
-
-```bash
-ALLURE_PATH="/custom/path/allure-report" pnpm report:allure:open:ci
-```
-
-### JUnit
-
-- **UI Tests (E2E/Smoke)**  
-  JUnit XML stored under `reports/junit/e2e/` or `reports/junit/smoke/`.
-
-- **API Tests**  
-  JUnit XML stored under `reports/junit/api/api-junit.xml`.
 
 ---
 
 ## Visual Regression (UI only)
 
-- The suite captures visual snapshots and compares them to committed baselines.
-- On differences, the test fails and Allure shows baseline / actual / diff.
-- Locally, missing baselines are auto-seeded; in CI, baselines must already
-  exist.
+- Snapshot comparison against baselines
+- Failures show diff in Allure
 
 ---
 

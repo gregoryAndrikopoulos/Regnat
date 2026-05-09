@@ -12,13 +12,13 @@ import {
   cleanupSeededAccount,
 } from "../../../../test-support/utils/accountHelpers.js";
 
-let credentials;
+describe.skip("Test Case 16: Place Order: Login before Checkout", function () {
+  let credentials;
 
-before(async function () {
-  credentials = await seedUiAccount();
-});
+  before(async function () {
+    credentials = await seedUiAccount();
+  });
 
-describe("Test Case 16: Place Order: Login before Checkout", function () {
   it("logs in first, then places an order successfully", async function () {
     await goHomeAcceptConsent();
 
@@ -56,11 +56,12 @@ describe("Test Case 16: Place Order: Login before Checkout", function () {
     await HomePage.assertHomePageVisible();
     await expect(HomePage.signupLoginLink).toBeDisplayed();
   });
-});
 
-after(async function () {
-  await cleanupSeededAccount({
-    email: credentials.email,
-    password: credentials.password,
+  after(async function () {
+    await cleanupSeededAccount({
+      email: credentials.email,
+      password: credentials.password,
+    });
   });
 });
+

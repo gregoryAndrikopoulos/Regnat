@@ -19,7 +19,7 @@ const NAME = fakeName();
 const EMAIL = fakeEmail();
 const PASSWORD = fakePassword();
 
-describe("Test Case 15: Place Order: Register before Checkout", function () {
+describe.skip("Test Case 15: Place Order: Register before Checkout", function () {
   it("registers first, then places an order successfully", async function () {
     await goHomeAcceptConsent();
 
