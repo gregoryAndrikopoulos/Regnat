@@ -42,10 +42,10 @@ jobs:
       - name: 🔧 Install toolchain via mise
         run: mise install
 
-      - name: 🔧 Enable Corepack for pnpm
+      - name: 🔍 Verify toolchain
         run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+          node -v
+          pnpm -v
 
       - name: 🗃️ Cache pnpm package store
         uses: actions/cache@v5
