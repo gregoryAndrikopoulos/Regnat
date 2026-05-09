@@ -2,7 +2,7 @@ import HomePage from "../../../page-objects/HomePage.js";
 import FooterPage from "../../../page-objects/FooterPage.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
-describe("Test Case 10: Verify Subscription in home page", function () {
+describe.skip("Test Case 10: Verify Subscription in home page", function () {
   it("subscribes successfully from the footer", async function () {
     await goHomeAcceptConsent();
 

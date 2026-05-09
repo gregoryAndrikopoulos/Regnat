@@ -36,8 +36,13 @@ jobs:
       - name: 📦 Checkout code
         uses: actions/checkout@v6
 
-      - name: 🔧 Install tools from .tool-versions (node & pnpm)
-        uses: asdf-vm/actions/install@v4
+      - name: 🔧 Setup Node via mise
+        uses: jdx/setup-mise@v1
+        with:
+          version: latest
+
+      - name: 🔧 Enable Corepack for pnpm
+        run: corepack enable
 
       - name: 🗃️ Cache pnpm package store
         uses: actions/cache@v5

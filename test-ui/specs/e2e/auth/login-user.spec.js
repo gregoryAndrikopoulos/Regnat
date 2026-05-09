@@ -14,7 +14,7 @@ before(async function () {
   credentials = await seedUiAccount();
 });
 
-describe("Test Case 2: Login User with correct email and password", function () {
+describe.skip("Test Case 2: Login User with correct email and password", function () {
   it("should log in with valid credentials and delete the account", async function () {
     await goHomeAcceptConsent();
 

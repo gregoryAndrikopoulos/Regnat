@@ -5,8 +5,7 @@
   "description": "wdio-baseline is a structured WebdriverIO v9 test automation framework for scalable end-to-end testing.",
   "type": "module",
   "engines": {
-    "node": ">=24 <25",
-    "pnpm": ">=10 <11"
+    "node": ">=24 <25"
   },
   "packageManager": "pnpm@10.15.1",
   "main": "index.js",

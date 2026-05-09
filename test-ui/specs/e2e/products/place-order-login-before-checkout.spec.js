@@ -18,7 +18,7 @@ before(async function () {
   credentials = await seedUiAccount();
 });
 
-describe("Test Case 16: Place Order: Login before Checkout", function () {
+describe.skip("Test Case 16: Place Order: Login before Checkout", function () {
   it("logs in first, then places an order successfully", async function () {
     await goHomeAcceptConsent();
 

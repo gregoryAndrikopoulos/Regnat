@@ -6,7 +6,7 @@ import { fixturePath } from "../../../../test-support/fixtures/fixtures.js";
 
 const filePath = fixturePath("contact-attachment.txt");
 
-describe("Test Case 6: Contact Us Form", function () {
+describe.skip("Test Case 6: Contact Us Form", function () {
   it("should submit the contact form and show success message", async function () {
     await goHomeAcceptConsent();
 

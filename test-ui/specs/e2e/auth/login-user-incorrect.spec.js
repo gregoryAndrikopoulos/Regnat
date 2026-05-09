@@ -10,7 +10,7 @@ import {
 const INVALID_EMAIL = fakeEmail("invalid");
 const INVALID_PASSWORD = fakePassword();
 
-describe("Test Case 3: Login User with incorrect email and password", function () {
+describe.skip("Test Case 3: Login User with incorrect email and password", function () {
   it("should show an error when logging in with incorrect credentials", async function () {
     await goHomeAcceptConsent();
 

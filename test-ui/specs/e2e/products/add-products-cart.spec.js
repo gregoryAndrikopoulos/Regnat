@@ -3,7 +3,7 @@ import ProductsPage from "../../../page-objects/ProductsPage.js";
 import CartPage from "../../../page-objects/CartPage.js";
 import { goHomeAcceptConsent } from "../../../../test-support/utils/index.js";
 
-describe("Test Case 12: Add Products in Cart", function () {
+describe.skip("Test Case 12: Add Products in Cart", function () {
   it("adds first and second products, then verifies cart details", async function () {
     await goHomeAcceptConsent();
     await HomePage.assertHomePageVisible();

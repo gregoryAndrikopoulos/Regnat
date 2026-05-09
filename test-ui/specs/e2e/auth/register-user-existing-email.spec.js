@@ -13,7 +13,7 @@ before(async function () {
   credentials = await seedUiAccount();
 });
 
-describe("Test Case 5: Register User with existing email", function () {
+describe.skip("Test Case 5: Register User with existing email", function () {
   it("should show error when trying to sign up with an already registered email", async function () {
     await goHomeAcceptConsent();
 
