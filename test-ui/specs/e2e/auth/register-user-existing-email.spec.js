@@ -7,13 +7,13 @@ import {
   seedUiAccount,
 } from "../../../../test-support/utils/accountHelpers.js";
 
-let credentials;
-
-before(async function () {
-  credentials = await seedUiAccount();
-});
-
 describe.skip("Test Case 5: Register User with existing email", function () {
+  let credentials;
+
+  before(async function () {
+    credentials = await seedUiAccount();
+  });
+
   it("should show error when trying to sign up with an already registered email", async function () {
     await goHomeAcceptConsent();
 
@@ -34,11 +34,11 @@ describe.skip("Test Case 5: Register User with existing email", function () {
       "Email Address already exist!"
     );
   });
-});
 
-after(async () => {
-  await cleanupSeededAccount({
-    email: credentials.email,
-    password: credentials.password,
+  after(async () => {
+    await cleanupSeededAccount({
+      email: credentials.email,
+      password: credentials.password,
+    });
   });
 });
