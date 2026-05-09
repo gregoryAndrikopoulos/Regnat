@@ -39,6 +39,9 @@ jobs:
       - name: 🔧 Setup mise
         uses: jdx/mise-action@v4
 
+      - name: 🔧 Install toolchain via mise
+        run: mise install
+
       - name: 🔧 Enable Corepack for pnpm
         run: |
           corepack enable
