@@ -68,7 +68,9 @@ nodejs 24.7.0
 ### pnpm version is defined in `package.json`
 
 ```json
-"packageManager": "pnpm@10.15.1"
+{
+  "packageManager": "pnpm@10.15.1"
+}
 ```
 
 ### Setup
