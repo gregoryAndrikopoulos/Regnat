@@ -7,7 +7,7 @@
   "engines": {
     "node": ">=24 <25"
   },
-  "packageManager": "pnpm@11.1.1",
+  "packageManager": "pnpm@10.33.2",
   "main": "index.js",
   "author": "",
   "license": "ISC",
