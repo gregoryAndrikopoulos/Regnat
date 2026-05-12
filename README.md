@@ -69,7 +69,7 @@ nodejs 24.7.0
 
 ```json
 {
-  "packageManager": "pnpm@10.15.1"
+  "packageManager": "pnpm@10.33.2"
 }
 ```
 
@@ -91,13 +91,13 @@ pnpm -v
 Expected:
 
 - Node → 24.7.0
-- pnpm → 10.15.1
+- pnpm → 10.33.2
 
 ### Changing versions locally
 
 ```bash
 mise use node@24.7.0
-corepack prepare pnpm@10.15.1 --activate
+corepack prepare pnpm@10.33.2 --activate
 ```
 
 ---
